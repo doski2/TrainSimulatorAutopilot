@@ -249,6 +249,26 @@ class TSCIntegration:
                 except Exception:
                     pass
 
+            # Si RPM aún es 0, inferir desde Regulator o VirtualThrottle (si están presentes)
+            if datos_ia.get("rpm", 0.0) == 0.0:
+                try:
+                    if "Regulator" in datos_archivo and datos_archivo.get("Regulator", None) is not None:
+                        reg_val = self._to_float(datos_archivo.get("Regulator", 0.0))
+                        if reg_val > 0.0:
+                            datos_ia["rpm"] = reg_val * self.max_engine_rpm
+                            datos_ia["rpm_inferida"] = True
+                    elif "VirtualThrottle" in datos_archivo and datos_archivo.get("VirtualThrottle", None) is not None:
+                        vt = self._to_float(datos_archivo.get("VirtualThrottle", 0.0))
+                        if vt > 0.0:
+                            datos_ia["rpm"] = vt * self.max_engine_rpm
+                            datos_ia["rpm_inferida"] = True
+                except Exception:
+                    pass
+
+            # Mapear RPMSource (depuración) si existe en el archivo
+            if "RPMSource" in datos_archivo:
+                datos_ia["rpm_fuente"] = datos_archivo.get("RPMSource")
+
         # Priorizar control de freno real (TrainBrakeControl/VirtualBrake) si está disponible
         try:
             if datos_ia.get("posicion_freno_tren") is not None:
