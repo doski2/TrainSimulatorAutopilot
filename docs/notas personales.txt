@@ -1,0 +1,89 @@
+.https://code.visualstudio.com/docs/copilot/guides/context-engineering-guide
+.que podemos mejorar
+.hacer capetas del los trenes y dentro los archivos personalizados: datos,acleracion,frenos,
+comporatamiento de la ia tambien mas control sobre todos los archivos una vez que tengamos los datos de dashboard
+hacer eso 
+.refacturar los iconos de dashboard
+.una replica de dashboard para el sd 40-2
+.https://dash.gallery/Portal/
+.revisar porque no acciona el tren con sendcommand  el ts- problema lua archivo
+.revisar tema semaforos
+.arrancar IA
+.la alertar se muestran muy rapido-probar
+
+
+
+
+2.  Optimización y Rendimiento
+Benchmarks de rendimiento: Ejecutar análisis de rendimiento actual  COMPLETADO
+Limpieza final: Eliminar archivos restantes que no se limpiaron (.pytest_cache en scripts, logs, etc.)
+Análisis de código: Buscar posibles optimizaciones
+3.  Mejoras y Nuevas Funcionalidades
+Mejorar documentación: Actualizar README o agregar ejemplos
+Agregar métricas: Nuevos análisis o visualizaciones
+Mejorar dashboard: Nuevas funcionalidades web
+4.  Mantenimiento
+Actualizar dependencias: Revisar si hay actualizaciones de paquetes  COMPLETADO
+Mejorar logging: Sistema de logs más robusto
+Agregar configuración: Más opciones de configuración
+
+1. Ejecutar las pruebas de rendimiento  COMPLETADO
+
+
+
+ Tareas de Mantenimiento
+5. Verificar CI/CD
+Asegurarse de que el workflow de GitHub Actions funciona
+Probar que todas las herramientas de linting pasan
+6. Actualizar dependencias
+Revisar si hay actualizaciones de requirements.txt
+Verificar compatibilidad con nuevas versiones
+ Tareas de Análisis
+7. Análisis de datos
+Explorar los datos curados en curated COMPLETADO
+Crear visualizaciones adicionales  COMPLETADO
+ Mantenimiento y Limpieza (Recomendado empezar aquí)
+ Limpieza Final
+Eliminar archivos temporales: Hay 7 archivos .pytest_cache que se pueden limpiar
+Limpiar logs antiguos en logs
+Optimizar estructura de archivos
+ Mejoras de Sistema
+Mejorar logging: Sistema de logs más robusto
+Agregar configuración: Más opciones de configuración
+Verificar CI/CD: Asegurar que GitHub Actions funciona
+ Mejoras y Nuevas Funcionalidades
+ Dashboard y Visualización
+Refactorizar iconos del dashboard
+Mejorar dashboard: Nuevas funcionalidades web
+Crear réplica del dashboard para SD 40-2
+ Análisis y Métricas
+Agregar métricas: Nuevos análisis o visualizaciones
+Revisar medida de tracción (métricas del motor)
+Mejorar documentación: Actualizar README o agregar ejemplos
+ Desarrollo Avanzado
+ Expansión a Otros Juegos
+Plantilla de documentación para otros juegos
+Carpetas por trenes: Estructura personalizada por locomotora
+Comportamiento IA específico por tipo de tren
+ Optimizaciones Técnicas
+Análisis de código: Buscar optimizaciones adicionales
+Mejoras de rendimiento más avanzadas
+ Mi Recomendación para Hoy:
+Opción 1: Mantenimiento Completo (Más Seguro)
+Limpiar archivos temporales (.pytest_cache, logs)
+Mejorar el sistema de logging
+Actualizar documentación del proyecto
+Opción 2: Mejoras de Dashboard (Más Visible)
+Refactorizar iconos del dashboard
+Agregar nuevas métricas de visualización
+Crear réplica para SD 40-2
+Opción 3: Expansión del Sistema (Más Ambicioso)
+Crear estructura de carpetas por trenes
+Desarrollar plantillas para otros juegos
+Mejorar comportamiento IA por tipo de locomotora
+ Estado Actual del Proyecto:
+ Versión: v2.0.0 con métricas del motor
+ Funcionalidad: 100% operativa
+ Pruebas: 119/119 PASSED
+ Dependencias: Actualizadas
+ Documentación: Completa

@@ -1,0 +1,152 @@
+# Train Simulator Autopilot - Requirements
+# https://github.com/tu-usuario/train-simulator-autopilot
+# Actualizado: 30 de noviembre de 2025
+
+# =============================================================================
+# DEPENDENCIAS PRINCIPALES
+# =============================================================================
+
+# Computación numérica y análisis de datos
+numpy>=1.26.0
+pandas>=2.1.0
+scipy>=1.11.0
+
+# Machine Learning y IA
+scikit-learn>=1.3.0
+joblib>=1.3.0
+
+# Sistema y utilidades
+psutil>=5.9.0
+
+# =============================================================================
+# FRAMEWORK WEB Y DASHBOARD
+# =============================================================================
+
+# Flask y WebSockets
+flask>=3.0.0
+flask-socketio>=5.3.0
+python-socketio>=5.8.0
+python-engineio>=4.6.0
+eventlet>=0.35.0
+
+# Flask-CORS para compatibilidad
+flask-cors>=4.0.0
+
+# =============================================================================
+# TESTING FRAMEWORK
+# =============================================================================
+
+# Framework de testing principal
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-mock>=3.12.0
+pytest-xdist>=3.5.0  # Para ejecución paralela de tests
+
+# =============================================================================
+# DESARROLLO Y CALIDAD DE CÓDIGO (MODERNO)
+# =============================================================================
+
+# Linting y formateo moderno
+ruff>=0.1.0  # Reemplaza flake8, black, isort
+mypy>=1.7.0
+
+# Entorno de desarrollo
+ipykernel>=6.25.0
+jupyter>=1.0.0
+
+# =============================================================================
+# VISUALIZACIÓN Y REPORTING
+# =============================================================================
+
+# Gráficos y visualización
+matplotlib>=3.8.0
+seaborn>=0.13.0
+plotly>=5.17.0
+bokeh>=3.3.0
+
+# =============================================================================
+# UTILIDADES Y HERRAMIENTAS
+# =============================================================================
+
+# Configuración y archivos
+pyyaml>=6.0.0
+configparser>=5.3.0
+
+# HTTP y networking
+requests>=2.31.0
+
+# Programación de tareas
+schedule>=1.2.0
+
+# Logging mejorado
+colorama>=0.4.6  # Para output coloreado
+
+# Diagramas y visualización de arquitectura
+diagrams>=0.23.0
+
+# Asyncio y concurrencia
+aiofiles>=23.0.0
+
+# =============================================================================
+# DEPENDENCIAS PARA AIRFLOW Y AUTOMATIZACIÓN
+# =============================================================================
+
+# WebSockets para comunicación en tiempo real
+websockets>=12.0
+
+# MQTT para IoT y comunicación
+asyncio-mqtt>=0.16.0
+paho-mqtt>=2.1.0
+
+# Serialización y formatos de datos
+msgpack>=1.0.0
+ujson>=5.8.0
+
+# =============================================================================
+# DEPENDENCIAS OPCIONALES (DESCOMENTAR SEGÚN NECESIDAD)
+# =============================================================================
+
+# Deep Learning (opcional)
+# torch>=2.1.0
+# torchvision>=0.16.0
+
+# Dashboards rápidos (opcional)
+# streamlit>=1.28.0
+
+# Documentación (opcional)
+# sphinx>=7.2.0
+# sphinx-rtd-theme>=1.3.0
+
+# =============================================================================
+# DEPENDENCIAS DE BUILD Y PAQUETIZACIÓN
+# =============================================================================
+
+# Build system
+setuptools>=68.0.0
+wheel>=0.41.0
+
+# PyPI uploads
+twine>=4.0.0
+
+# =============================================================================
+# INSTALACIÓN RECOMENDADA
+# =============================================================================
+#
+# Para instalación completa:
+# pip install -r requirements.txt
+#
+# Para desarrollo moderno:
+# pip install -r requirements.txt
+# pip install ruff mypy  # Herramientas modernas de calidad
+#
+# Para testing únicamente:
+# pip install pytest pytest-cov pytest-mock pytest-xdist
+#
+# Para ejecutar tests:
+# python -m pytest
+#
+# Para linting moderno:
+# ruff check .
+# ruff format .
+#
+# =============================================================================

@@ -1,0 +1,187 @@
+
+// DATOS DE TELEMETRÍA DE TRAIN SIMULATOR CLASSIC
+// Archivo generado por Railworks_GetData_Script.lua
+// Actualizado: 2025-12-02
+
+// CONTROLES DE MOTOR Y POTENCIA (NUEVOS - Dashboard v2.0)
+TractiveEffort: 0          // [IMPLEMENTADO] Fuerza de tracción en Newtons 0 = sin tracción)
+RPM: 318.0007              // [IMPLEMENTADO] Revoluciones por minuto del motor diésel/eléctrico (clamped 0..5000)
+RPMDelta: 0                // [NO RELEVANTE] Valor binario para medición de aceleración
+CompressorState: 0         // [NO RELEVANTE] Estado del compresor
+Wheelslip: 1               // [IMPLEMENTADO] Indicador de deslizamiento de ruedas 0=adherencia perfecta, 1=normal, 1.1-2=deslizamiento)
+Ammeter: 0                 // [IMPLEMENTADO] Corriente eléctrica en Amperes (detecta alias: Ammeter/Amps/Amperes/Current). Positiva=generando, negativa=consumiendo. (ControlMin ahora permite valores negativos)
+
+// CONTROLES DE CABINA Y LUCES
+Headlights: 1              // Luces delanteras: 0=apagadas, 1=encendidas, 2=altas
+DitchLights: 0             // Luces de vía
+EngineStop: 0              // Botón de parada del motor
+EngineStart: 0             // Botón de arranque del motor
+CabLight: 0                // Luz de cabina
+InstrumentLights: 0        // Luces de instrumentos
+StepLights: 0              // Luces de escalones
+NumberLights: 0            // Luces de número de tren
+
+// SISTEMA DE FRENOS
+AirBrakePipePressurePSI: 64        // [IMPLEMENTADO] Presión del tubo de freno (PSI)
+LocoBrakeCylinderPressurePSI: 65   // [IMPLEMENTADO] Presión del cilindro de freno de locomotora (PSI)
+EngineBrakeControl: 0              // [NO RELEVANTE] Control de freno del motor
+TrainBrakeControl: 0.8680892       // [NO RELEVANTE] Control de freno del tren
+DynamicBrake: 0                    // [NO RELEVANTE] Freno dinámico
+EmergencyBrake: 0                  // [NO RELEVANTE] Freno de emergencia
+HandBrake: 0                       // [NO RELEVANTE] Freno de mano
+VirtualEngineBrakeControl: 0.2     // [NO RELEVANTE] Control virtual de freno del motor (0-1) - Valor de entrada, no medición
+VirtualBrake: 0.237                // [NO RELEVANTE] Freno virtual (0-1) - Valor de entrada, no medición
+EqReservoirPressurePSIAdvanced: 90 // [IMPLEMENTADO] Presión del depósito de equalización
+MainReservoirPressurePSIDisplayed: 140 // [IMPLEMENTADO] Presión del depósito principal
+AuxReservoirPressure: 90   // [NO IMPLEMENTADO] Presión del depósito auxiliar
+TrainBrakeCylinderPressurePSI: 65  // [IMPLEMENTADO] Presión del cilindro de freno del tren
+VirtualBrake: 0.237                // [IMPLEMENTADO] Freno virtual (0-1) - Alias de TrainBrakeControl en algunos trenes
+PosicionFrenoTren (TrainBrakeControl): 0.8680892 // [IMPLEMENTADO] Posición del control de freno del tren (0..1)
+ 
+BrakePipePressureTailEnd: 90       // [IMPLEMENTADO] Presión del tubo de freno en cola
+LocoBrakeCylinderPressurePSIDisplayed: 0 // [IMPLEMENTADO] Presión mostrada del cilindro
+LocoBrakeCylinderPressurePSIAdvanced: 0 // [IMPLEMENTADO] Presión avanzada cilindro freno loco
+
+// CONTROLES DE CONDUCCIÓN
+Regulator: 0               // [NO RELEVANTE] Regulador de potencia
+Reverser: 1                // [IMPLEMENTADO] Reversa: -1=atrás, 0=neutro, 1=adelante
+SimpleChangeDirection: 1   // [NO RELEVANTE] Cambio de dirección simple
+SimpleThrottle: 0.0659554  // [NO RELEVANTE] Acelerador simple
+VirtualThrottle: 0         // [IMPLEMENTADO] Acelerador virtual (0-1)
+DrivingMode: 0             // [NO RELEVANTE] Modo de conducción
+BrakeDifficulty: 2         // [NO RELEVANTE] Dificultad de frenos
+DisableBrakeNotches: 0     // [NO RELEVANTE] Deshabilitar muescas de freno
+
+// SENSORES Y DISPLAYS
+SpeedometerMPH: 0.002552876 // [IMPLEMENTADO] Velocímetro en MPH
+SpeedoType: 1              // [IMPLEMENTADO] Tipo de velocímetro: 1=MPH, 2=KPH
+CurrentSpeed: -0.001141237 // [IMPLEMENTADO] Velocidad actual (m/s)
+TimeOfDay: 55265.9         // [NO IMPLEMENTADO] Hora del día (segundos desde medianoche)
+Acceleration: 3.392785E-06 // [IMPLEMENTADO] Aceleración: m/s2
+Gradient: -1.79938         // [IMPLEMENTADO] Gradiente/pendiente: por mil
+DistanceTravelled: 0.0     // [IMPLEMENTADO] Distancia total recorrida (metros)
+SignalAspect: -1           // [IMPLEMENTADO] Estado de señal principal: -1=desconocido, 0=stop, 1=caution, 2=proceed
+KVB_SignalAspect: -1       // [IMPLEMENTADO] Estado de señal específico para cab signalling/KVB (valores compatibles con SignalAspect). Preferido si está presente.
+// Nota: En el código, `senal_procesada` será la señal que se use para IA/UI: si existe `KVB_SignalAspect`, se prioriza; si no, se usa `SignalAspect`. Valores: -1=DESCONOCIDO, 0=ROJA, 1=AMARILLA, 2=VERDE.
+FuelLevel: 3999.824        // [NO RELEVANTE] Nivel de combustible (si el valor es >100 probablemente está en galones o unidades del mod). Use config.ini -> TSC_INTEGRATION.fuel_capacity_gallons para convertir porcentajes a galones.
+
+// LÍMITES DE VELOCIDAD
+CurrentSpeedLimit: 15      // [IMPLEMENTADO] Límite de velocidad actual
+NextSpeedLimitType: 1      // Tipo del siguiente límite
+NextSpeedLimitSpeed: 30    // [IMPLEMENTADO] Velocidad del siguiente límite
+NextSpeedLimitDistance: 157 // [IMPLEMENTADO] Distancia al siguiente límite
+NextSpeedLimitBackType: 1  // Tipo del límite anterior
+NextSpeedLimitBackSpeed: 30 // Velocidad del límite anterior
+NextSpeedLimitBackDistance: 1226 // Distancia al límite anterior
+
+// SISTEMA Y AUDIO
+Horn: 0                    // Bocina
+Bell: 0                    // Campana
+Wipers: 0                  // Limpiaparabrisas
+Sander: 0                  // Arenador
+Startup: 1                 // Estado de arranque
+PCSstate: 0                // [NO IMPLEMENTADO] Estado del sistema de protección del tren
+Active: 1                  // Sistema activo
+SimulationTime: 1505.897   // [IMPLEMENTADO] Tiempo de simulación (segundos)
+
+// IDENTIFICACIÓN DEL TREN
+UN_units: 4                // Unidades del número de tren
+UN_tens: 2                 // Decenas del número de tren
+UN_hundreds: 8             // Centenas del número de tren
+UN_thousands: 8            // Millares del número de tren
+
+// AUDIO Y EFECTOS
+EngineBrakeSound: 0        // Sonido del freno del motor
+TrainBrakeSound: 0         // Sonido del freno del tren
+AirBrakePipePressurePSIDisplayed: 0 // [IMPLEMENTADO] Presión mostrada del tubo de freno
+
+// - Los valores marcados como "NUEVOS" se agregaron en Dashboard v2.0
+// - TractiveEffort se muestra en N (Newtons) en el dashboard
+// - RPM se muestra en revoluciones por minuto
+// - Ammeter se muestra en Amperes
+// - Wheelslip indica deslizamiento: 0=adherencia perfecta, 1=normal, 1.1-2=deslizamiento
+// - DistanceTravelled se muestra en metros y es crucial para navegación IA
+// - Los valores se actualizan cada 100ms desde TSC vía Raildriver Interface
+//
+// VARIABLES IMPLEMENTADAS EN DASHBOARD:
+// - CurrentSpeed, SpeedometerMPH, Acceleration, Gradient, DistanceTravelled
+// - TractiveEffort, RPM, Ammeter, Wheelslip
+// - Presiones de freno (AirBrakePipe, LocoBrakeCylinder, TrainBrakeCylinder)
+// - Límites de velocidad (CurrentSpeedLimit, NextSpeedLimit)
+// - SimulationTime, Reverser, VirtualThrottle
+
+// ======================================================
+// DETALLE POR CONTROL (Basado en debug.txt)
+// Cada línea: ControlName | GetData | MapToIA | UI Widget ID | Notas
+// ======================================================
+Active: PRESENTE | No mapeado directamente | UI: system_status.simulator_active | Nota: Usado para detección de actividad.
+TractiveEffort: PRESENTE | mapeado => esfuerzo_traccion | UI: tractive-effort-value | Nota: Se muestra en N (Newtons).
+RPM: PRESENTE | mapeado => rpm | UI: rpm-value | Nota: Clamp 0..5000.
+RPMDelta: PRESENTE | alias/alias to rpm | UI: (alias rpm) | Nota: fallback para rpm cuando rpm=0.
+CompressorState: PRESENTE | mapeado => estado_compresor | UI: No | Nota: No hay widget, pero está disponible en telemetry.
+Wheelslip: PRESENTE | mapeado => deslizamiento_ruedas | UI: wheelslip-value | Nota: Indica deslizamiento.
+Headlights: PRESENTE | mapeado => luces | UI: control (botón) | Nota: Control de estado existe; no hay widget dedicado.
+DitchLights: PRESENTE | No mapeado | UI: No | Nota: No usado actualmente.
+Ammeter: PRESENTE | mapeado => amperaje | UI: amperage-value | Nota: Se muestra en A (Amperes).
+EngineStop: PRESENTE | No mapeado | UI: No | Nota: Existe en GetData pero no usado por dashboard.
+EngineStart: PRESENTE | No mapeado | UI: No | Nota: Idem EngineStop.
+AirBrakePipePressurePSI: PRESENTE | mapeado => presion_tubo_freno | UI: brake-pipe-value | Nota: Mostrado en PSI; se usa para inferencias si falta.
+LocoBrakeCylinderPressurePSI: PRESENTE | mapeado => presion_freno_loco | UI: loco-brake-value | Nota: Mostrado en PSI.
+Horn: PRESENTE | No mapeado | UI: horn-control (botón) | Nota: Control de bocina UI disponible, no widget de telemetry.
+Regulator: PRESENTE | mapeado => acelerador | UI: locomotive controls / charts | Nota: Representa throttle del tren.
+Reverser: PRESENTE | mapeado => reverser | UI: reverser-control | Nota: Widget presente (select).
+SimpleChangeDirection: PRESENTE | No mapeado | UI: No | Nota: No usado.
+SimpleThrottle: PRESENTE | No mapeado | UI: No | Nota: No usado.
+EngineBrakeControl: PRESENTE | mapeado => freno_motor_control | UI: No | Nota: Mapeado pero no mostrado.
+TrainBrakeControl: PRESENTE | mapeado => posicion_freno_tren | UI: train-brake-pos-value | Nota: Prioritario para el autopilot (si existe).
+DynamicBrake: PRESENTE | mapeado => freno_dinamico | UI: No | Nota: Mapeado para comandos; sin display dedicado.
+SpeedometerMPH: PRESENTE | mapeado => velocimetro_mph | UI: speed-value | Nota: Backend convierte a km/h y se muestra.
+Wipers: PRESENTE | No mapeado | UI: No | Nota: No mostrado en dashboard.
+EmergencyBrake: PRESENTE | mapeado => freno_emergencia | UI: emergency-brake (botón) | Nota: Control de emergencia en UI.
+Startup: PRESENTE | No mapeado | UI: No | Nota: Indicador de estado de arranque.
+HandBrake: PRESENTE | mapeado => freno_mano | UI: No | Nota: Mapeado pero no mostrado.
+Sander: PRESENTE | No mapeado | UI: No | Nota: No mostrado.
+Bell: PRESENTE | No mapeado | UI: No | Nota: Control bocina/campana no en telemetria principal.
+CabLight: PRESENTE | No mapeado | UI: No | Nota: No mostrado.
+InstrumentLights: PRESENTE | No mapeado | UI: No | Nota: No mostrado.
+StepLights: PRESENTE | No mapeado | UI: No | Nota: No mostrado.
+NumberLights: PRESENTE | No mapeado | UI: No | Nota: No mostrado.
+UN_units / UN_tens / UN_hundreds / UN_thousands: PRESENTE | No mapeado | UI: No | Nota: Datos de identificación de tren, no mostrados.
+VirtualEngineBrakeControl: PRESENTE | No mapeado => usado en fallback para comandos | UI: No | Nota: Usado como fallback en autopilot/comandos.
+VirtualBrake: PRESENTE | mapeado => posicion_freno_tren | UI: train-brake-pos-value | Nota: Alias de TrainBrakeControl en algunos mods.
+EqReservoirPressurePSIAdvanced: PRESENTE | mapeado => presion_deposito_equalizacion | UI: eq-reservoir-value | Nota: Mostrado.
+LocoBrakeCylinderPressurePSIAdvanced: PRESENTE | mapeado => presion_freno_loco_avanzada | UI: No | Nota: Mapeado pero sin widget.
+MainReservoirPressurePSIDisplayed: PRESENTE | mapeado => presion_deposito_principal | UI: main-reservoir-value | Nota: Mostrado en dashboard.
+DrivingMode: PRESENTE | No mapeado | UI: No | Nota: No mostrado.
+BrakeDifficulty: PRESENTE | No mapeado | UI: No | Nota: No mostrado.
+DisableBrakeNotches: PRESENTE | No mapeado | UI: No | Nota: No mostrado.
+AirBrakePipePressurePSIDisplayed: PRESENTE | mapeado => presion_tubo_freno_mostrada | UI: No | Nota: Se usa en fallback; no widget dedicado.
+TrainBrakeSound: PRESENTE | No mapeado | UI: No | Nota: Sonidos no mapeados para mostrar valor en UI.
+VirtualThrottle: PRESENTE | No mapeado directo | UI: No | Nota: Se usa como fallback para `Regulator`/throttle en algunos mods.
+TrainBrakeCylinderPressurePSI: PRESENTE | mapeado => presion_freno_tren | UI: train-brake-value | Nota: Mostrado en PSI.
+PCSstate: PRESENTE | No mapeado | UI: No | Nota: Proteccion de sistema no mostrado.
+AuxReservoirPressure: PRESENTE | mapeado => presion_deposito_auxiliar | UI: aux-reservoir-value | Nota: Mostrado.
+BrakePipePressureTailEnd: PRESENTE | mapeado => presion_tubo_freno_cola | UI: brake-pipe-tail-value | Nota: Mostrado.
+
+// ALERTA: Discrepancia Tubo Freno Frente/Cola
+// - Se detecta una discrepancia crítica cuando |presion_tubo_freno - presion_tubo_freno_cola| > 20 PSI (configurable).
+// - La alerta se expone como `brake_pressure_discrepancy` en el sistema de alertas.
+LocoBrakeCylinderPressurePSIDisplayed: PRESENTE | mapeado => presion_freno_loco_mostrada | UI: loco-brake-displayed-value | Nota: Mostrado.
+
+// Notas generales:
+// - "PRESENTE" indica que aparece en el debug.txt que envía la interfaz Raildriver (GetData).
+// - "mapeado" indica que `tsc_integration.py` convierte el control a una clave de telemetry en español.
+// - Cuando no hay widget en el UI, el dato todavía puede estar disponible vía WebSocket (`telemetry_update`) y en la API debug.
+// - Campos marcados como "No mapeado" pueden mapearse fácilmente si se requiere su visualización en el dashboard.
+
+// ======================================================
+// AUTOPILOT Y FRANEO - NOTAS IMPORTANTES
+// ======================================================
+// - El autopilot prioriza `KVB_SignalAspect` y expone `senal_procesada`. Si `autobrake_by_signal` está activo,
+//   la lógica de frenado se comportará así:
+//     - ROJA (0) => Frenada completa (es decir, TrainBrakeControl ó VirtualBrake = 1.0)
+//     - AMARILLA (1) => Frenada suave (aprox. TrainBrakeControl = 0.5)
+//     - VERDE (2) => Sin freno por señal
+// - Para freno, el sistema prioriza: `TrainBrakeControl` > `VirtualBrake` > inferencia de `freno_tren`.
+// - Si no hay sensores directos (p. ej. `TrainBrakeCylinderPressurePSI`), el sistema infiere `presion_freno_tren` y marca `presion_freno_tren_inferida = True`.
+// - Verifique `/api/status` y `telemetry_update` para campos de presencia (`*_presente`) y de inferencia (`*_inferida`).

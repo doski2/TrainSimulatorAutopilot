@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../../../Program Files (x86)/Steam/steamapps/common/RailWorks/Manuals/EN"
+		},
+		{
+			"path": "../../Documents/TSClassic Raildriver and Joystick Interface V3.3.0.9"
+		}
+	],
+	"settings": {
+		"powershell.cwd": "TrainSimulatorAutopilot"
+	}
+}

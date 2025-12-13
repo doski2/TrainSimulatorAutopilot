@@ -1,0 +1,53 @@
+# Dockerfile para Apache Airflow con Train Simulator Autopilot
+FROM apache/airflow:2.8.0-python3.9
+
+# Instalar dependencias del sistema
+USER root
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    git \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instalar Node.js para los dashboards
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
+
+# Cambiar a usuario airflow
+USER airflow
+
+# Instalar dependencias de Python del Train Simulator
+COPY requirements.txt /opt/airflow/requirements.txt
+RUN pip install --no-cache-dir -r /opt/airflow/requirements.txt
+
+# Instalar dependencias adicionales para Airflow
+RUN pip install --no-cache-dir \
+    apache-airflow-providers-postgres \
+    apache-airflow-providers-http \
+    psycopg2-binary \
+    redis
+
+# Crear directorios necesarios
+RUN mkdir -p /opt/airflow/dags /opt/airflow/logs /opt/airflow/plugins /opt/airflow/config
+
+# Copiar configuración de Airflow
+COPY airflow/airflow.cfg /opt/airflow/airflow.cfg
+
+# Copiar DAGs y plugins
+COPY airflow/dags/ /opt/airflow/dags/
+COPY airflow/plugins/ /opt/airflow/plugins/
+
+# Configurar variables de entorno
+ENV AIRFLOW__CORE__LOAD_EXAMPLES=False
+ENV AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
+ENV AIRFLOW__CORE__PLUGINS_FOLDER=/opt/airflow/plugins
+ENV PYTHONPATH=/opt/airflow/train_simulator:$PYTHONPATH
+
+# Puerto de health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8080/health || exit 1
+
+# Comando por defecto
+CMD ["webserver"]
