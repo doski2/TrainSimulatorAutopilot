@@ -1,0 +1,65 @@
+site_name: Train Simulator Autopilot Documentation
+site_description: Documentación completa del sistema de autopilot para Train Simulator Classic
+site_author: Train Simulator Autopilot Team
+
+nav:
+  - Inicio: README.md
+  - Changelog: CHANGELOG.md
+  - Arquitectura: ARCHITECTURE.md
+  - Diagramas: DIAGRAMS.md
+  - Estado del Proyecto: ESTADO_FINAL_PROYECTO.md
+  - API Reference:
+    - API Reference: API_REFERENCE.md
+    - Web Dashboard API: WEB_DASHBOARD_API.md
+    - API Reference (lowercase): api-reference.md
+  - Dashboard:
+    - README Dashboard: README_DASHBOARD.md
+    - Correcciones Dashboard: CORRECCIONES_DASHBOARD.md
+    - Desktop App: README_DESKTOP.md
+  - IA System:
+    - Especificaciones IA: ia-spec.md
+    - Flujo IA: flujo-ia-conduccion.md
+    - Hoja de Trabajo IA: hoja-trabajo-ia.md
+    - Referencias IA: ia-references.md
+  - Testing: testing-framework.md
+  - Troubleshooting: troubleshooting.md
+  - Instalación e Integración:
+    - Guía de Instalación: GUIA_INSTALACION_INTEGRACION.md
+    - Checklist Rápido: CHECKLIST_RAPIDO_INTEGRACION.md
+    - Instrucciones TSC: instrucciones_finales_tsc.md
+  - Performance:
+    - Optimizaciones: OPTIMIZACIONES_PERFORMANCE.md
+    - Reportes: REPORTES_PERFORMANCE.md
+  - Desarrollo:
+    - Guía Desarrollador: GUIA_DESARROLLADOR.md
+    - Logs Técnicos: desarrollo/logs-tecnicos.md
+    - Workflow: workflow-log.md
+    - Maintenance: maintenance-log.md
+  - Datos y Telemetría:
+    - Telemetría: telemetria-datos.md
+    - Señales: signals.md
+    - Data Cleaning: data-cleaning.md
+    - Template Telemetry: TELEMETRY_TEMPLATE_README.md
+    - Data Received: data-received-from-railworks.md
+  - Histórico: historico/historial-proyecto.md
+  - Procedimientos: procedimientos/procedimientos-estandar.md
+  - Ejemplos: ejemplos/ejemplos-codigo.md
+  - Documentación:
+    - Índice: indice-documentacion.md
+    - Integration: integration.md
+    - Security Checklist: security-checklist.md
+    - Resumen Ejecutivo: RESUMEN_EJECUTIVO.md
+  - Documentación Completa: DOCUMENTATION.md
+
+theme:
+  name: mkdocs
+
+plugins:
+  - search
+  - redirects
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - codehilite
+  - admonition

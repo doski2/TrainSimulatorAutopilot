@@ -1,0 +1,23 @@
+# Dependencias mínimas para Airflow DAGs - Versión Optimizada
+# Actualizado: 30 de noviembre de 2025
+
+# WebSockets para comunicación en tiempo real (versión actualizada)
+websockets>=12.0
+
+# MQTT para IoT y comunicación máquina-máquina
+asyncio-mqtt>=0.16.0
+paho-mqtt>=2.1.0
+
+# HTTP requests para APIs
+requests>=2.31.0
+
+# Análisis de datos básico
+pandas>=2.1.0
+numpy>=1.26.0
+
+# Serialización eficiente para datos
+msgpack>=1.0.0
+ujson>=5.8.0
+
+# Utilidades de sistema
+psutil>=5.9.0

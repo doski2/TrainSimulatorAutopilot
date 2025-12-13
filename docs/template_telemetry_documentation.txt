@@ -1,0 +1,44 @@
+# =============================================================================
+# DATOS DE TELEMETRÍA DE [NOMBRE_DEL_JUEGO/SIMULADOR]
+# Archivo generado por [SCRIPT/MÉTODO_DE_CAPTURA]
+# Actualizado: [FECHA]
+# =============================================================================
+
+# [SECCIÓN_1 - EJEMPLO: CONTROLES DE MOTOR Y POTENCIA]
+[VariableName]: [ValorEjemplo]          # [ESTADO] Descripción breve
+[OtraVariable]: [ValorEjemplo]          # [ESTADO] Descripción breve
+
+# [SECCIÓN_2 - EJEMPLO: SISTEMA DE FRENOS/CONTROLES]
+[VariableFreno]: [ValorEjemplo]         # [ESTADO] Descripción del sistema de frenos
+[OtraVariableFreno]: [ValorEjemplo]     # [ESTADO] Descripción adicional
+
+# [SECCIÓN_3 - EJEMPLO: SENSORES Y DISPLAYS]
+[SensorVelocidad]: [ValorEjemplo]       # [ESTADO] Velocidad en unidades apropiadas
+[SensorAceleracion]: [ValorEjemplo]     # [ESTADO] Aceleración medida
+[SensorOtros]: [ValorEjemplo]           # [ESTADO] Otros sensores relevantes
+
+# [SECCIÓN_4 - EJEMPLO: LÍMITES Y NAVEGACIÓN]
+[LimiteVelocidad]: [ValorEjemplo]       # [ESTADO] Límite de velocidad actual
+[SiguienteLimite]: [ValorEjemplo]       # [ESTADO] Información del siguiente límite
+
+# [SECCIÓN_5 - EJEMPLO: SISTEMA Y AUDIO]
+[EstadoSistema]: [ValorEjemplo]         # [ESTADO] Estado general del sistema
+[AudioEfectos]: [ValorEjemplo]          # [ESTADO] Efectos de audio si relevantes
+
+# =============================================================================
+# NOTAS DE IMPLEMENTACIÓN
+# =============================================================================
+# - [Notas específicas del juego/simulador]
+# - Unidades de medida utilizadas
+# - Frecuencia de actualización de datos
+# - Método de captura utilizado
+# - Consideraciones especiales del juego
+#
+# VARIABLES IMPLEMENTADAS EN [SISTEMA/DASHBOARD]:
+# - [Lista de variables implementadas con descripciones breves]
+#
+# VARIABLES DISPONIBLES PARA FUTURA IMPLEMENTACIÓN:
+# - [Lista de variables identificadas pero no implementadas]
+# - [Razones por las que no se implementaron inicialmente]
+#
+# [NOTAS ADICIONALES ESPECÍFICAS DEL JUEGO/SIMULADOR]
