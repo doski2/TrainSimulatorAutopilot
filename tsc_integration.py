@@ -367,6 +367,33 @@ class TSCIntegration:
         # Alias para compatibilidad con front-end y pruebas (amps -> corriente)
         datos_ia.setdefault("amps", datos_ia.get("amperaje", 0.0))
         datos_ia.setdefault("deslizamiento_ruedas", 0.0)
+        # Normalizar wheelslip a una intensidad 0..1 compatible entre assets
+        try:
+            raw_ws = self._to_float(datos_ia.get("deslizamiento_ruedas", 0.0))
+            datos_ia["deslizamiento_ruedas_raw"] = raw_ws
+            # Heurística de normalización:
+            # - Si el valor está en 0..1 => es normalizado por asset (0=bueno, 1=máx deslizamiento)
+            # - Si el valor tiene base 1 (1 = normal, >1 = deslizamiento) mapear 1..2 -> 0..1 y 1..3 -> 0..1
+            if raw_ws <= 1.0:
+                intensity = raw_ws
+                interpretation = "0-1"
+            elif raw_ws <= 2.0:
+                # Base 1, max 2
+                intensity = max(0.0, min(1.0, raw_ws - 1.0))
+                interpretation = "base-1-max-2"
+            elif raw_ws <= 3.0:
+                # Base 1, max 3 => mapear 1..3 -> 0..1
+                intensity = max(0.0, min(1.0, (raw_ws - 1.0) / 2.0))
+                interpretation = "base-1-max-3"
+            else:
+                # Valores extremos: escalar conservadoramente
+                intensity = max(0.0, min(1.0, (raw_ws - 1.0) / max(1.0, raw_ws)))
+                interpretation = "unknown-large-scale"
+            datos_ia["deslizamiento_ruedas_intensidad"] = round(float(intensity), 3)
+            datos_ia["deslizamiento_ruedas_interpretacion"] = interpretation
+        except Exception:
+            datos_ia.setdefault("deslizamiento_ruedas_intensidad", 0.0)
+            datos_ia.setdefault("deslizamiento_ruedas_raw", datos_ia.get("deslizamiento_ruedas", 0.0))
         # Brake Pressure Defaults
         datos_ia.setdefault("presion_tubo_freno", 0.0)
         datos_ia.setdefault("presion_freno_loco", 0.0)

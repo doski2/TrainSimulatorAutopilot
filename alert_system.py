@@ -391,7 +391,8 @@ class AlertSystem:
         if not self.config["wheelslip"]["enabled"]:
             return None
 
-        wheelslip = current_data.get("deslizamiento_ruedas", 0)
+        # Prefer normalized intensity if present
+        wheelslip = current_data.get("deslizamiento_ruedas_intensidad", current_data.get("deslizamiento_ruedas", 0))
         threshold = self.config["wheelslip"]["threshold"]
 
         if wheelslip > threshold:

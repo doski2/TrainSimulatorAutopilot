@@ -317,10 +317,11 @@ function updateTelemetry(data) {
         safeSetText('amperage-value', '--');
     }
     
-    // Mostrar deslizamiento de ruedas
-    const deslizamiento = telemetry.deslizamiento_ruedas;
+    // Mostrar deslizamiento de ruedas (usar valor normalizado si está disponible)
+    const deslizamiento = telemetry.deslizamiento_ruedas_intensidad !== undefined ? telemetry.deslizamiento_ruedas_intensidad : telemetry.deslizamiento_ruedas;
     if (deslizamiento !== undefined && deslizamiento !== null) {
-        safeSetText('wheelslip-value', deslizamiento.toFixed(1));
+        // Mostrar intensidad 0..1 con dos decimales
+        safeSetText('wheelslip-value', deslizamiento.toFixed(2));
     } else {
         safeSetText('wheelslip-value', '--');
     }
