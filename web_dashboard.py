@@ -376,6 +376,7 @@ def telemetry_update_loop():
                             "rpm": 0.0,
                             "amperaje": 0.0,
                             "deslizamiento_ruedas": 0.0,
+                                    "deslizamiento_ruedas_intensidad": 0.0,
                             "presion_tubo_freno": 0.0,
                             "presion_freno_loco": 0.0,
                             "presion_freno_tren": 0.0,

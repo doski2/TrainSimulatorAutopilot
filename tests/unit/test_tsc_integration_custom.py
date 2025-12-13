@@ -115,6 +115,20 @@ def test_wheelslip_normalization_cases():
     datos_ia = integ.convertir_datos_ia(datos_archivo)
     assert datos_ia["deslizamiento_ruedas_intensidad"] == 1.0
 
+
+def test_wheelslip_inference_from_tractive():
+    integ = TSCIntegration(ruta_archivo=None)
+    # Asset doesn't provide Wheelslip, but provides high tractive effort and low speed
+    datos_archivo = {
+        "TractiveEffort": 800.0,  # high effort
+        "CurrentSpeed": 0.5,  # m/s -> 1.8 km/h (low)
+        "RPM": 1200,
+    }
+    datos_ia = integ.convertir_datos_ia(datos_archivo)
+    # Expect inference to set intensity > 0
+    assert datos_ia["deslizamiento_ruedas_intensidad"] > 0.0
+    assert datos_ia.get("deslizamiento_ruedas_inferida") is True
+
     datos_archivo = {"Wheelslip": 3.0}
     datos_ia = integ.convertir_datos_ia(datos_archivo)
     assert datos_ia["deslizamiento_ruedas_intensidad"] == 1.0

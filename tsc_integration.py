@@ -390,6 +390,34 @@ class TSCIntegration:
                 intensity = max(0.0, min(1.0, (raw_ws - 1.0) / max(1.0, raw_ws)))
                 interpretation = "unknown-large-scale"
             datos_ia["deslizamiento_ruedas_intensidad"] = round(float(intensity), 3)
+        except Exception:
+            datos_ia.setdefault("deslizamiento_ruedas_intensidad", 0.0)
+            datos_ia.setdefault("deslizamiento_ruedas_raw", datos_ia.get("deslizamiento_ruedas", 0.0))
+
+        # If wheelslip control not present or raw is zero, try to infer from other telemetry
+        try:
+            if datos_ia.get("deslizamiento_ruedas_raw", 0.0) == 0.0:
+                tractive = self._to_float(datos_ia.get("esfuerzo_traccion", 0.0))
+                speed_kmh = self._to_float(datos_ia.get("velocidad_actual", 0.0))
+                rpm_val = self._to_float(datos_ia.get("rpm", 0.0))
+                inferred = 0.0
+                # Heurística simple y conservadora:
+                # - Si la velocidad es baja (<5 km/h) y el esfuerzo de tracción es alto, hay probabilidad de patinamiento.
+                if speed_kmh < 5.0 and tractive > 300.0:
+                    inferred = min(1.0, (tractive - 300.0) / 1000.0)
+                # - Si RPM es alto y la velocidad baja, también puede indicar patinamiento
+                elif rpm_val > 2000.0 and speed_kmh < 10.0 and tractive > 300.0:
+                    inferred = min(1.0, (tractive - 300.0) / 1000.0)
+                if inferred > 0.0:
+                    # Keep higher of observed intensity and inferred
+                    current_int = datos_ia.get("deslizamiento_ruedas_intensidad", 0.0)
+                    datos_ia["deslizamiento_ruedas_intensidad"] = round(max(float(current_int), inferred), 3)
+                    datos_ia["deslizamiento_ruedas_interpretacion"] = (
+                        datos_ia.get("deslizamiento_ruedas_interpretacion", "") + ",inferred_from_tractive".lstrip(',')
+                    )
+                    datos_ia.setdefault("deslizamiento_ruedas_inferida", True)
+        except Exception:
+            pass
             datos_ia["deslizamiento_ruedas_interpretacion"] = interpretation
         except Exception:
             datos_ia.setdefault("deslizamiento_ruedas_intensidad", 0.0)
