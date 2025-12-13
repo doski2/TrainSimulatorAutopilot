@@ -87,3 +87,12 @@ def test_tractive_effort_presence_flag():
     datos_archivo = {"TractiveEffort": 123.0}
     datos_ia = integ.convertir_datos_ia(datos_archivo)
     assert datos_ia.get("esfuerzo_traccion") == 123.0
+
+
+def test_rpm_inferred_from_regulator():
+    integ = TSCIntegration(ruta_archivo=None)
+    datos_archivo = {"Regulator": 0.5}
+    datos_ia = integ.convertir_datos_ia(datos_archivo)
+    # Default max_engine_rpm is 5000.0, so expected inferred RPM is 2500
+    assert datos_ia.get("rpm_inferida") is True
+    assert pytest.approx(datos_ia.get("rpm", 0), abs=1.0) == 2500.0

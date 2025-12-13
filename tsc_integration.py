@@ -120,6 +120,9 @@ class TSCIntegration:
         self.comandos_anteriores = {}
         # Fuel capacity for converting fraction to gallons (optional)
         self.fuel_capacity_gallons = None
+        # Maximum RPM used for inferring RPM when direct RPM control isn't provided
+        # Default matches common locomotive max RPM (configurable via API/back-end)
+        self.max_engine_rpm = 5000.0
         if fuel_capacity_gallons is not None:
             try:
                 self.fuel_capacity_gallons = float(fuel_capacity_gallons)
@@ -245,9 +248,6 @@ class TSCIntegration:
                         datos_ia["rpm"] = rpm_alt
                 except Exception:
                     pass
-            # Mapear RPMSource (depuración) si existe en el archivo
-            if "RPMSource" in datos_archivo:
-                datos_ia["rpm_fuente"] = datos_archivo.get("RPMSource")
 
         # Priorizar control de freno real (TrainBrakeControl/VirtualBrake) si está disponible
         try:
@@ -305,6 +305,24 @@ class TSCIntegration:
             pass
         datos_ia.setdefault("velocimetro_mph", 0.0)
         datos_ia.setdefault("tipo_velocimetro", 1)
+        # If RPM still zero here, try inferring from Regulator or VirtualThrottle and set flags
+        if datos_ia.get("rpm", 0.0) == 0.0:
+            try:
+                if "Regulator" in datos_archivo and datos_archivo.get("Regulator", 0) is not None:
+                    reg_val = self._to_float(datos_archivo.get("Regulator", 0.0))
+                    if reg_val > 0.0:
+                        datos_ia["rpm"] = reg_val * self.max_engine_rpm
+                        datos_ia["rpm_inferida"] = True
+                elif "VirtualThrottle" in datos_archivo and datos_archivo.get("VirtualThrottle", 0) is not None:
+                    vt = self._to_float(datos_archivo.get("VirtualThrottle", 0.0))
+                    if vt > 0.0:
+                        datos_ia["rpm"] = vt * self.max_engine_rpm
+                        datos_ia["rpm_inferida"] = True
+            except Exception:
+                pass
+        # Mapear RPMSource (depuración) si existe en el archivo
+        if "RPMSource" in datos_archivo:
+            datos_ia["rpm_fuente"] = datos_archivo.get("RPMSource")
         datos_ia.setdefault("distancia_recorrida", 0.0)
         datos_ia.setdefault("esfuerzo_traccion", 0.0)
         # Amperaje (A) is the primary metric name; keep 'corriente' and 'amps' as aliases
@@ -342,6 +360,9 @@ class TSCIntegration:
         datos_ia.setdefault("presion_freno_loco_mostrada", 0.0)
         datos_ia.setdefault("presion_freno_loco_avanzada", 0.0)
         datos_ia.setdefault("presion_freno_tren_inferida", False)
+        # RPM inference flags and source
+        datos_ia.setdefault("rpm_inferida", False)
+        datos_ia.setdefault("rpm_fuente", None)
         # Engine Control Defaults
         datos_ia.setdefault("freno_mano", 0.0)
         datos_ia.setdefault("freno_emergencia", 0.0)
