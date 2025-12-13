@@ -1,0 +1,78 @@
+/* web/static/css/icons.css */
+/* Sistema de iconos SVG personalizado para Train Simulator Dashboard */
+
+.train-icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    fill: currentColor;
+    vertical-align: middle;
+}
+
+/* Iconos principales del dashboard */
+.icon-speedometer {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E") no-repeat center;
+    background-size: contain;
+}
+
+.icon-locomotive {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 15.5C4 17.43 5.57 19 7.5 19l.5-2c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.5H4v-1.5zM12 2l-2.5 2.5L9 7h6l-.5-2.5L12 2zm-1 4.5L10.5 6H13.5l-.5-1.5L11 6.5zM19 15.5c0-1.93-1.57-3.5-3.5-3.5-.76 0-1.45.3-2 .78V8H9v4.78c-.55-.48-1.24-.78-2-.78-1.93 0-3.5 1.57-3.5 3.5v.5h.5c.83 0 1.5.67 1.5 1.5S4.33 19 3.5 19H3v1h18v-1h-.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5h.5v-.5z'/%3E%3C/svg%3E") no-repeat center;
+    background-size: contain;
+}
+
+.icon-railway-signal {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/%3E%3C/svg%3E") no-repeat center;
+    background-size: contain;
+}
+
+.icon-fuel {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19 7h-3V6a3 3 0 0 0-3-3H9a3 3 0 0 0-3 3v1H3a1 1 0 0 0-1 1v11a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1zM9 6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1H9V6zm10 13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V9h2v1a1 1 0 0 0 2 0V9h4v1a1 1 0 0 0 2 0V9h2v10z'/%3E%3C/svg%3E") no-repeat center;
+    background-size: contain;
+}
+
+.icon-engine {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l-2.5 2.5L9 7h6l-.5-2.5L12 2zm-1 4.5L10.5 6H13.5l-.5-1.5L11 6.5zM19 15.5c0-1.93-1.57-3.5-3.5-3.5-.76 0-1.45.3-2 .78V8H9v4.78c-.55-.48-1.24-.78-2-.78-1.93 0-3.5 1.57-3.5 3.5v.5h.5c.83 0 1.5.67 1.5 1.5S4.33 19 3.5 19H3v1h18v-1h-.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5h.5v-.5z'/%3E%3C/svg%3E") no-repeat center;
+    background-size: contain;
+}
+
+.icon-brake {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E") no-repeat center;
+    background-size: contain;
+}
+
+.icon-track {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 15.5C4 17.43 5.57 19 7.5 19l.5-2c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.5H4v-1.5zM12 2l-2.5 2.5L9 7h6l-.5-2.5L12 2zm-1 4.5L10.5 6H13.5l-.5-1.5L11 6.5zM19 15.5c0-1.93-1.57-3.5-3.5-3.5-.76 0-1.45.3-2 .78V8H9v4.78c-.55-.48-1.24-.78-2-.78-1.93 0-3.5 1.57-3.5 3.5v.5h.5c.83 0 1.5.67 1.5 1.5S4.33 19 3.5 19H3v1h18v-1h-.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5h.5v-.5z'/%3E%3C/svg%3E") no-repeat center;
+    background-size: contain;
+}
+
+/* Iconos animados */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.icon-pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Iconos de estado */
+.icon-status-active {
+    color: #28a745;
+}
+
+.icon-status-inactive {
+    color: #dc3545;
+}
+
+.icon-status-warning {
+    color: #ffc107;
+}
+
+/* Iconos responsivos */
+@media (max-width: 768px) {
+    .train-icon {
+        width: 1.2em;
+        height: 1.2em;
+    }
+}

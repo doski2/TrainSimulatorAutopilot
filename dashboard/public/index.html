@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚂 Train Simulator Signaling Dashboard</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .metric-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        #settings-panel {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-dark text-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-traffic-light me-2"></i>
+                Train Simulator Signaling Dashboard
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#signaling">Señalización</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#systems">Sistemas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#commands">Comandos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="settings-link">⚙️ Configuración</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <span id="connection-status" class="badge bg-success me-2">
+                        <i class="fas fa-circle"></i> Conectado
+                    </span>
+                    <span id="system-status" class="badge bg-secondary">
+                        <i class="fas fa-cog"></i> Sistema OK
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <!-- Alertas del sistema -->
+        <div id="alert-container"></div>
+
+        <!-- Fila principal -->
+        <div class="row">
+            <!-- Panel de Señalización -->
+            <div class="col-lg-8">
+                <div class="card bg-dark border-primary mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-traffic-light me-2"></i>
+                            Estado de Señalización en Tiempo Real
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Métricas principales -->
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="metric-value" id="timestamp">--</div>
+                                    <div class="metric-label">Timestamp</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-server"></i>
+                                    </div>
+                                    <div class="metric-value" id="estado-sistema">--</div>
+                                    <div class="metric-label">Estado Sistema</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-cogs"></i>
+                                    </div>
+                                    <div class="metric-value" id="sistemas-activos">--</div>
+                                    <div class="metric-label">Sistemas Activos</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-signal"></i>
+                                    </div>
+                                    <div class="metric-value" id="senal-actual">--</div>
+                                    <div class="metric-label">Señal Actual</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gráfico de señales -->
+                        <div class="mb-4">
+                            <canvas id="signalChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel lateral -->
+            <div class="col-lg-4">
+                <!-- Estado de Sistemas -->
+                <div class="card bg-dark border-info mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-cogs me-2"></i>
+                            Sistemas de Señalización
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="systems-list">
+                            <!-- Los sistemas se cargarán dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel de Comandos -->
+                <div class="card bg-dark border-warning">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-terminal me-2"></i>
+                            Comandos del Sistema
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Tipo de Comando</label>
+                            <select class="form-select bg-dark text-light border-secondary" id="command-type">
+                                <option value="acses">ACSES</option>
+                                <option value="ptc">PTC</option>
+                                <option value="atc">ATC</option>
+                                <option value="cab">CAB</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Parámetros (JSON)</label>
+                            <textarea class="form-control bg-dark text-light border-secondary" id="command-params" rows="3" placeholder='{"action": "set_signal", "value": "green"}'></textarea>
+                        </div>
+                        <button class="btn btn-primary w-100" id="send-command">
+                            <i class="fas fa-paper-plane me-2"></i>Enviar Comando
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de Configuración -->
+        <div class="row mt-4" id="settings-panel">
+            <div class="col-12">
+                <div class="card bg-dark border-warning">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-cogs me-2"></i>
+                            Configuración del Dashboard
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Tema Visual</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Tema</label>
+                                    <select class="form-select bg-dark text-light border-secondary" id="theme-select">
+                                        <option value="dark">Oscuro (Predeterminado)</option>
+                                        <option value="light">Claro</option>
+                                        <option value="blue">Azul Industrial</option>
+                                        <option value="green">Verde Tren</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Animaciones</label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="animations-toggle" checked>
+                                        <label class="form-check-label" for="animations-toggle">
+                                            Habilitar animaciones
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Visualización de Datos</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Intervalo de actualización (ms)</label>
+                                    <input type="number" class="form-control bg-dark text-light border-secondary" id="update-interval" value="1000" min="500" max="5000">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Puntos de historial</label>
+                                    <input type="number" class="form-control bg-dark text-light border-secondary" id="history-points" value="50" min="10" max="200">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <h6>Notificaciones</h6>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="alert-system" checked>
+                                            <label class="form-check-label" for="alert-system">
+                                                Alertas del sistema
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="alert-signals" checked>
+                                            <label class="form-check-label" for="alert-signals">
+                                                Alertas de señales
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="alert-commands" checked>
+                                            <label class="form-check-label" for="alert-commands">
+                                                Confirmaciones de comandos
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-primary me-2" id="save-settings">
+                                <i class="fas fa-save me-2"></i>Guardar Configuración
+                            </button>
+                            <button class="btn btn-secondary" id="reset-settings">
+                                <i class="fas fa-undo me-2"></i>Restaurar Predeterminados
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script>
+        // Configuración del dashboard
+        let dashboardConfig = {
+            theme: 'dark',
+            animations: true,
+            updateInterval: 1000,
+            historyPoints: 50,
+            alerts: {
+                system: true,
+                signals: true,
+                commands: true
+            }
+        };
+
+        let socket;
+        let signalChart;
+        let telemetryHistory = [];
+        let maxHistoryPoints = 50;
+
+        // Inicialización cuando el DOM está listo
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔥 DOM Content Loaded - Iniciando signaling dashboard...');
+            initializeDashboard();
+        });
+
+        function initializeDashboard() {
+            console.log('🚀 Inicializando signaling dashboard...');
+
+            // Inicializar gráfico de señales
+            initializeCharts();
+
+            // Conectar WebSocket
+            connectWebSocket();
+
+            // Configurar event listeners
+            setupEventListeners();
+
+            // Inicializar configuración
+            initializeSettings();
+
+            // Solicitar datos iniciales
+            fetchInitialData();
+        }
+
+        function initializeCharts() {
+            const ctx = document.getElementById('signalChart').getContext('2d');
+            signalChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Estado de Señal',
+                        data: [],
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function connectWebSocket() {
+            socket = io();
+
+            socket.on('connect', function() {
+                console.log('✅ Conectado al servidor WebSocket');
+                updateConnectionStatus(true);
+            });
+
+            socket.on('disconnect', function() {
+                console.log('❌ Desconectado del servidor WebSocket');
+                updateConnectionStatus(false);
+            });
+
+            socket.on('initial-data', function(data) {
+                console.log('📦 Datos iniciales recibidos:', data);
+                updateDashboard(data);
+            });
+
+            socket.on('data-update', function(data) {
+                console.log('🔄 Actualización de datos:', data);
+                updateDashboard(data);
+            });
+        }
+
+        function setupEventListeners() {
+            console.log('🔧 Configurando event listeners...');
+
+            // Toggle del panel de configuración
+            const settingsLink = document.getElementById('settings-link');
+            console.log('🔗 Elemento settings-link encontrado:', !!settingsLink);
+            if (settingsLink) {
+                console.log('✅ Añadiendo event listener al enlace de configuración');
+                settingsLink.addEventListener('click', function(e) {
+                    console.log('🎯 Enlace de configuración clicado');
+                    e.preventDefault();
+                    toggleSettingsPanel();
+                });
+                console.log('✅ Event listener añadido correctamente');
+            } else {
+                console.error('❌ Elemento settings-link no encontrado');
+            }
+
+            // Enviar comando
+            const sendCommandBtn = document.getElementById('send-command');
+            if (sendCommandBtn) {
+                sendCommandBtn.addEventListener('click', sendCommand);
+            }
+
+            // Guardar configuración
+            const saveBtn = document.getElementById('save-settings');
+            if (saveBtn) {
+                saveBtn.addEventListener('click', saveSettings);
+            }
+
+            // Restaurar configuración
+            const resetBtn = document.getElementById('reset-settings');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', resetSettings);
+            }
+        }
+
+        function initializeSettings() {
+            loadSettings();
+            applyTheme();
+        }
+
+        function toggleSettingsPanel() {
+            console.log('🔄 Alternando panel de configuración...');
+
+            const panel = document.getElementById('settings-panel');
+            console.log('📋 Panel encontrado:', !!panel);
+
+            if (!panel) {
+                console.error('❌ Panel de configuración no encontrado');
+                return;
+            }
+
+            const currentDisplay = panel.style.display;
+            console.log('👁️ Display actual:', currentDisplay);
+
+            if (currentDisplay === 'none' || currentDisplay === '') {
+                console.log('🙉 Mostrando panel');
+                panel.style.display = 'block';
+                loadSettingsToUI();
+                panel.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                console.log('🙈 Ocultando panel');
+                panel.style.display = 'none';
+            }
+
+            console.log('✅ Alternancia completada');
+        }
+
+        function loadSettings() {
+            const saved = localStorage.getItem('signalingDashboardConfig');
+            if (saved) {
+                dashboardConfig = { ...dashboardConfig, ...JSON.parse(saved) };
+            }
+        }
+
+        function loadSettingsToUI() {
+            document.getElementById('theme-select').value = dashboardConfig.theme;
+            document.getElementById('animations-toggle').checked = dashboardConfig.animations;
+            document.getElementById('update-interval').value = dashboardConfig.updateInterval;
+            document.getElementById('history-points').value = dashboardConfig.historyPoints;
+            document.getElementById('alert-system').checked = dashboardConfig.alerts.system;
+            document.getElementById('alert-signals').checked = dashboardConfig.alerts.signals;
+            document.getElementById('alert-commands').checked = dashboardConfig.alerts.commands;
+        }
+
+        function saveSettings() {
+            dashboardConfig.theme = document.getElementById('theme-select').value;
+            dashboardConfig.animations = document.getElementById('animations-toggle').checked;
+            dashboardConfig.updateInterval = parseInt(document.getElementById('update-interval').value);
+            dashboardConfig.historyPoints = parseInt(document.getElementById('history-points').value);
+            dashboardConfig.alerts.system = document.getElementById('alert-system').checked;
+            dashboardConfig.alerts.signals = document.getElementById('alert-signals').checked;
+            dashboardConfig.alerts.commands = document.getElementById('alert-commands').checked;
+
+            localStorage.setItem('signalingDashboardConfig', JSON.stringify(dashboardConfig));
+            applyTheme();
+
+            showAlert('Configuración guardada correctamente', 'success');
+            toggleSettingsPanel();
+        }
+
+        function resetSettings() {
+            dashboardConfig = {
+                theme: 'dark',
+                animations: true,
+                updateInterval: 1000,
+                historyPoints: 50,
+                alerts: {
+                    system: true,
+                    signals: true,
+                    commands: true
+                }
+            };
+            localStorage.setItem('signalingDashboardConfig', JSON.stringify(dashboardConfig));
+            loadSettingsToUI();
+            applyTheme();
+            showAlert('Configuración restaurada', 'info');
+        }
+
+        function applyTheme() {
+            const body = document.body;
+            body.className = `bg-${dashboardConfig.theme} text-${dashboardConfig.theme === 'light' ? 'dark' : 'light'}`;
+        }
+
+        function fetchInitialData() {
+            fetch('/api/status')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('📊 Estado inicial:', data);
+                    updateStatus(data);
+                })
+                .catch(error => console.error('Error fetching status:', error));
+        }
+
+        function updateDashboard(data) {
+            updateStatus(data);
+            updateSystems(data.sistemas_activos);
+            updateChart(data);
+        }
+
+        function updateStatus(data) {
+            document.getElementById('timestamp').textContent = new Date(data.timestamp).toLocaleTimeString();
+            document.getElementById('estado-sistema').textContent = data.estado_sistema;
+            document.getElementById('sistemas-activos').textContent = Object.keys(data.sistemas_activos || {}).length;
+            document.getElementById('senal-actual').textContent = data.senal_actual || '--';
+        }
+
+        function updateSystems(systems) {
+            const container = document.getElementById('systems-list');
+            container.innerHTML = '';
+
+            for (const [name, system] of Object.entries(systems || {})) {
+                const systemCard = document.createElement('div');
+                systemCard.className = 'mb-3 p-3 border rounded';
+                systemCard.innerHTML = `
+                    <h6 class="text-uppercase">${name}</h6>
+                    <div class="small">
+                        Estado: <span class="badge bg-${system.activo ? 'success' : 'secondary'}">${system.activo ? 'Activo' : 'Inactivo'}</span><br>
+                        Última actualización: ${new Date(system.timestamp).toLocaleTimeString()}
+                    </div>
+                `;
+                container.appendChild(systemCard);
+            }
+        }
+
+        function updateChart(data) {
+            // Actualizar gráfico con datos de señalización
+            const now = new Date().toLocaleTimeString();
+            telemetryHistory.push({
+                time: now,
+                value: data.senal_actual || 0
+            });
+
+            if (telemetryHistory.length > maxHistoryPoints) {
+                telemetryHistory.shift();
+            }
+
+            signalChart.data.labels = telemetryHistory.map(item => item.time);
+            signalChart.data.datasets[0].data = telemetryHistory.map(item => item.value);
+            signalChart.update();
+        }
+
+        function sendCommand() {
+            const type = document.getElementById('command-type').value;
+            const paramsText = document.getElementById('command-params').value;
+
+            try {
+                const params = JSON.parse(paramsText);
+                const command = {
+                    type: type,
+                    ...params,
+                    timestamp: Date.now()
+                };
+
+                fetch('/api/command', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(command)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert('Comando enviado correctamente', 'success');
+                        document.getElementById('command-params').value = '';
+                    } else {
+                        showAlert('Error al enviar comando', 'danger');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error sending command:', error);
+                    showAlert('Error de conexión', 'danger');
+                });
+            } catch (e) {
+                showAlert('Parámetros JSON inválidos', 'warning');
+            }
+        }
+
+        function updateConnectionStatus(connected) {
+            const status = document.getElementById('connection-status');
+            status.className = `badge ${connected ? 'bg-success' : 'bg-danger'} me-2`;
+            status.innerHTML = `<i class="fas fa-circle"></i> ${connected ? 'Conectado' : 'Desconectado'}`;
+        }
+
+        function showAlert(message, type) {
+            const container = document.getElementById('alert-container');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show`;
+            alert.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            container.appendChild(alert);
+
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

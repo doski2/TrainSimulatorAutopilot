@@ -1,0 +1,212 @@
+# Train Simulator Autopilot - Configuration File
+# Archivo de configuración principal: config.ini
+# Copiar este archivo como config.ini y ajustar las rutas según el sistema
+
+[DEFAULT]
+# Configuración general del sistema
+debug = false
+log_level = INFO
+log_file = tsc_autopilot.log
+
+[TSC]
+# Configuración de integración con Train Simulator Classic
+# Ajustar estas rutas según la instalación de TSC
+
+# Ruta al archivo GetData.txt (lectura de datos del simulador)
+# Default: C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins\GetData.txt
+ruta_getdata = C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins\GetData.txt
+
+# Ruta al archivo SendCommand.txt (envío de comandos al simulador)
+# Default: C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins\SendCommand.txt
+ruta_sendcommand = C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins\SendCommand.txt
+
+# Configuración de conexión
+frecuencia_muestreo = 10          # Hz (10 = 100ms entre muestras)
+timeout_conexion = 5.0            # Segundos para timeout de conexión
+reintentos_conexion = 3           # Número de reintentos de conexión
+intervalo_reintento = 2.0         # Segundos entre reintentos
+
+# Configuración de datos
+validar_datos = true              # Validar integridad de datos
+filtrar_ruido = true              # Aplicar filtros de ruido
+normalizar_datos = true           # Normalizar valores de telemetría
+autobrake_by_signal = true        # Si true, autopilot aplica frenos por semáforo
+
+[PREDICTIVE]
+# Configuración del sistema de análisis predictivo
+
+# Modelo de machine learning
+modelo_archivo = data/predictive_model.pkl
+auto_guardar_modelo = true        # Guardar modelo automáticamente
+intervalo_guardado = 3600         # Segundos entre guardados automáticos
+
+# Parámetros de análisis
+ventana_analisis = 10             # Número de muestras para análisis (lookback)
+horizonte_prediccion = 5          # Pasos de predicción hacia adelante
+umbral_confianza = 0.8            # Umbral mínimo de confianza (0.0-1.0)
+
+# Características a analizar
+analizar_velocidad = true
+analizar_aceleracion = true
+analizar_combustible = true
+analizar_temperatura = true
+analizar_presion = true
+analizar_senales = true
+
+# Optimizaciones
+usar_cache = true                 # Cache de cálculos
+procesamiento_paralelo = true     # Procesamiento paralelo si disponible
+optimizacion_memoria = true       # Optimizaciones de memoria
+
+[WEB]
+# Configuración del dashboard web
+
+# Servidor
+host = 0.0.0.0                   # 0.0.0.0 = todas las interfaces
+puerto = 5001                     # Puerto del servidor web
+debug = false                     # Modo debug (solo desarrollo)
+ssl = false                       # Habilitar HTTPS
+
+# Interface
+tema = oscuro                     # oscuro, claro, azul_industrial, verde_tren
+idioma = es                       # es, en
+unidades_velocidad = mph          # mph, kmh, ms
+unidades_temperatura = f          # f, c
+unidades_distancia = ft           # ft, m, km
+
+# Actualización en tiempo real
+intervalo_actualizacion = 100     # ms entre actualizaciones
+max_conexiones = 10               # Máximo número de conexiones simultáneas
+timeout_conexion = 30             # Segundos de timeout para websockets
+
+# Características del dashboard
+mostrar_graficos = true
+mostrar_alertas = true
+mostrar_historial = true
+auto_scroll = true
+guardar_historial = true
+
+[AUTOPILOT]
+# Configuración del sistema de piloto automático
+
+# Modos de operación
+modo_automatico = true            # Habilitar modo automático
+modo_semi_automatico = true       # Habilitar modo semi-automático
+modo_manual = true                # Permitir control manual
+
+# Límites de seguridad
+velocidad_maxima = 79             # mph - límite máximo de velocidad
+velocidad_minima = 0              # mph - velocidad mínima
+aceleracion_maxima = 2.0          # mph/s - aceleración máxima
+deceleracion_maxima = -3.0        # mph/s - deceleración máxima (frenado)
+
+# Comportamiento
+sensibilidad_acelerador = 0.1     # Sensibilidad del control de acelerador
+sensibilidad_freno = 0.2          # Sensibilidad del control de freno
+anticipacion_curvas = 500         # Pies de anticipación para curvas
+margen_seguridad = 5              # mph de margen sobre límites
+
+# Locomotoras
+seleccion_automatica_loco = true  # Seleccionar locomotora automáticamente
+soporte_multi_locomotora = true   # Soporte para múltiples locomotoras
+tiempo_cambio_loco = 30           # Segundos entre cambios de locomotora
+
+[LOGGING]
+# Configuración del sistema de logging
+
+# Archivo de log principal
+archivo_log = tsc_autopilot.log
+nivel_log = INFO                  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+max_tamano_archivo = 10485760     # 10MB máximo por archivo
+backup_count = 5                  # Número de archivos de backup
+
+# Logs específicos por componente
+log_tsc = true                    # Log de integración TSC
+log_predictive = true             # Log de análisis predictivo
+log_web = true                    # Log del dashboard web
+log_autopilot = true              # Log del piloto automático
+
+# Formato de logs
+formato_log = %(asctime)s - %(name)s - %(levelname)s - %(message)s
+formato_fecha = %Y-%m-%d %H:%M:%S
+
+[ALERTS]
+# Configuración del sistema de alertas
+
+# Alertas activas
+alerta_velocidad = true
+alerta_combustible = true
+alerta_temperatura = true
+alerta_conexion = true
+alerta_prediccion = true
+
+# Umbrales de alertas
+umbral_velocidad_alta = 75        # mph
+umbral_combustible_bajo = 10      # %
+umbral_temperatura_alta = 200     # °F
+umbral_presion_aceite_baja = 30   # psi
+umbral_confianza_baja = 0.7       # confianza de predicción
+
+# Notificaciones
+notificar_sonido = true
+notificar_visual = true
+notificar_email = false           # Requiere configuración SMTP
+
+[PERFORMANCE]
+# Configuración de rendimiento y optimización
+
+# Límites de recursos
+limite_cpu = 50                   # % CPU máximo
+limite_memoria = 512              # MB memoria máxima
+limite_disco = 1024               # MB disco máximo para logs/datos
+
+# Optimizaciones
+compresion_datos = true
+cache_predicciones = true
+lazy_loading = true
+pooling_conexiones = true
+
+# Monitoreo
+monitorear_rendimiento = true
+intervalo_monitoreo = 60          # Segundos entre mediciones
+guardar_metricas = true
+
+[BACKUP]
+# Configuración de backups y recuperación
+
+# Backups automáticos
+backup_automatico = true
+intervalo_backup = 86400          # Segundos (24 horas)
+max_backups = 7                   # Número máximo de backups
+
+# Directorios de backup
+backup_modelos = data/backup/modelos/
+backup_config = data/backup/config/
+backup_logs = data/backup/logs/
+
+# Recuperación automática
+recuperacion_automatica = true
+punto_recuperacion = ultimo       # ultimo, mas_reciente, especifico
+
+[SECURITY]
+# Configuración de seguridad
+
+# Validación de entrada
+validar_entrada = true
+sanitizar_datos = true
+rate_limiting = true
+
+# Límites de rate limiting
+max_requests_segundo = 10
+max_conexiones_ip = 3
+timeout_sesion = 3600             # Segundos
+
+# Encriptación
+encriptar_logs = false            # Requiere configuración adicional
+encriptar_config = false
+
+# Auditoría
+auditar_comandos = true
+auditar_conexiones = true
+auditar_predicciones = false</content>
+<parameter name="filePath">c:\Users\doski\TrainSimulatorAutopilot\config.ini.example

@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚂 Train Simulator Autopilot - Dashboard</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link href="/static/css/dashboard.css" rel="stylesheet">
+    <link href="/static/css/icons.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-train me-2"></i>
+                Train Simulator Autopilot
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#telemetry">Telemetría</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#predictions">Predicciones</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#control">Control</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#locomotives">Locomotoras</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <a class="nav-link me-3" href="#" id="settings-link" style="color: inherit; text-decoration: none;">
+                        <i class="fas fa-cog"></i> Configuración
+                    </a>
+                    <span id="connection-status" class="badge bg-success me-2">
+                        <i class="fas fa-circle"></i> Conectado
+                    </span>
+                    <span id="brake-pressure-status" class="badge bg-secondary me-2">
+                        <i class="fas fa-compress-arrows-alt"></i> Freno?
+                    </span>
+                    <span id="update-count" class="badge bg-secondary me-2">0</span>
+                    <span id="last-update" class="badge bg-secondary me-2">--</span>
+                    <span id="system-status" class="badge bg-secondary">
+                        <i class="fas fa-cog"></i> Sistema OK
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <!-- Alertas del sistema -->
+        <div id="alert-container"></div>
+
+        <!-- Panel de Alertas Activas -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card bg-dark border-danger">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Alertas Activas
+                            <span id="alerts-count" class="badge bg-danger ms-2">0</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="active-alerts-container">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-shield-alt fa-2x mb-3"></i>
+                                <p>No hay alertas activas</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fila principal -->
+        <div class="row">
+            <!-- Panel de Telemetría -->
+            <div class="col-lg-8">
+                <div class="card bg-dark border-primary mb-3">
+                    <div class="card-header py-2">
+                        <h5 class="card-title mb-0 h6">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Telemetría en Tiempo Real
+                        </h5>
+                    </div>
+                    <div class="card-body py-3">
+                        <!-- Métricas principales -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-tachometer-alt"></i>
+                                    </div>
+                                    <div class="metric-value" id="speed-value">--</div>
+                                    <div class="metric-label" id="speed-label">Velocidad (km/h)</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-gauge-high"></i>
+                                    </div>
+                                    <div class="metric-value" id="acceleration-value">--</div>
+                                    <div class="metric-label">Aceleración (m/s²)</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-mountain"></i>
+                                    </div>
+                                    <div class="metric-value" id="gradient-value">--</div>
+                                    <div class="metric-label" id="gradient-label">Pendiente (‰)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sistema de Frenos -->
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-wind"></i>
+                                    </div>
+                                    <div class="metric-value" id="brake-pipe-value">--</div>
+                                    <div class="metric-label">Tubo de Freno (PSI)</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-compress-arrows-alt"></i>
+                                    </div>
+                                    <div class="metric-value" id="loco-brake-value">--</div>
+                                    <div class="metric-label">Freno Loco (PSI)</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-train"></i>
+                                    </div>
+                                    <div class="metric-value" id="train-brake-value">--</div>
+                                    <div class="metric-label">Freno Tren (PSI)</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-hand-rock"></i>
+                                    </div>
+                                    <div class="metric-value" id="train-brake-pos-value">--</div>
+                                    <div class="metric-label">Posición Freno Tren (%)</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </div>
+                                    <div class="metric-value" id="brake-pipe-tail-value">--</div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="metric-label">Tubo Freno Cola (PSI)</div>
+                                        <span id="brake-pipe-tail-presence" class="badge bg-secondary ms-2">NO</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sistema de Frenos - Fila 2 -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-gauge-high"></i>
+                                    </div>
+                                    <div class="metric-value" id="loco-brake-displayed-value">--</div>
+                                    <div class="metric-label">Freno Loco Mostrado (PSI)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Depósitos de Aire -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-tachometer-alt"></i>
+                                    </div>
+                                    <div class="metric-value" id="eq-reservoir-value">--</div>
+                                    <div class="metric-label">Depósito Equalización (PSI)</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-wind"></i>
+                                    </div>
+                                    <div class="metric-value" id="main-reservoir-value">--</div>
+                                    <div class="metric-label">Depósito Principal (PSI)</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-compress-arrows-alt"></i>
+                                    </div>
+                                    <div class="metric-value" id="aux-reservoir-value">--</div>
+                                    <div class="metric-label">Depósito Auxiliar (PSI)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Combustible y Distancia -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-gas-pump"></i>
+                                    </div>
+                                    <div class="metric-value" id="fuel-level-value">--</div>
+                                    <div class="metric-label">Combustible</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-route"></i>
+                                    </div>
+                                    <div class="metric-value" id="distance-travelled-value">--</div>
+                                    <div class="metric-label">Distancia Recorrida (km)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Métricas del motor -->
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-tachometer-alt"></i>
+                                    </div>
+                                    <div class="metric-value" id="rpm-value">--</div>
+                                    <div class="metric-label">RPM Motor</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-bolt"></i>
+                                    </div>
+                                    <div class="metric-value" id="amperage-value">--</div>
+                                    <div class="metric-label">Corriente (A)</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <div class="metric-value" id="wheelslip-value">--</div>
+                                    <div class="metric-label">Deslizamiento</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-cogs"></i>
+                                    </div>
+                                    <div class="metric-value" id="tractive-effort-value">--</div>
+                                    <div class="metric-label">Esfuerzo Tracción (N)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Límites de velocidad -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-road"></i>
+                                    </div>
+                                    <div class="metric-value" id="next-speed-limit-value">--</div>
+                                    <div class="metric-label">Límite Siguiente (km/h)</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-route"></i>
+                                    </div>
+                                    <div class="metric-value" id="next-speed-distance-value">--</div>
+                                    <div class="metric-label">Distancia Límite (m)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gráfico de velocidad -->
+                        <div class="chart-container mb-4">
+                            <canvas id="speedChart" height="200"></canvas>
+                        </div>
+
+                        <!-- Métricas adicionales -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card bg-secondary">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Límites y Señales</h6>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <small class="text-muted">Límite Actual</small>
+                                                <div class="h4 mb-0" id="speed-limit">--</div>
+                                            </div>
+                                            <div class="col-6">
+                                                <small class="text-muted">Próximo Límite</small>
+                                                <div class="h4 mb-0" id="next-limit">--</div>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <small class="text-muted">Señal Principal</small>
+                                                <div class="h4 mb-0" id="main-signal">--</div>
+                                            </div>
+                                            <div class="col-6">
+                                                <small class="text-muted">Señal Avanzada</small>
+                                                <div class="h4 mb-0" id="distant-signal">--</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-secondary">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Estado del Sistema</h6>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <small class="text-muted">Piloto Automático</small>
+                                                <div class="h4 mb-0">
+                                                    <span id="autopilot-status" class="badge bg-danger">INACTIVO</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <small class="text-muted">Análisis Predictivo</small>
+                                                <div class="h4 mb-0">
+                                                    <span id="predictive-status" class="badge bg-danger">INACTIVO</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <small class="text-muted">Tiempo Simulación</small>
+                                                <div class="h4 mb-0" id="simulation-time-value">--</div>
+                                            </div>
+                                            <div class="col-6">
+                                                <small class="text-muted">Última Actualización</small>
+                                                <div class="small text-muted" id="last-update">--</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de Control -->
+            <div class="col-lg-4">
+                <div class="card bg-dark border-success mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-gamepad me-2"></i>
+                            Control del Sistema
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Control de Piloto Automático -->
+                        <div class="control-section mb-4">
+                            <h6>Piloto Automático</h6>
+                            <div class="d-grid gap-2">
+                                <button id="start-autopilot" class="btn btn-success">
+                                    <i class="fas fa-play me-2"></i>Iniciar Piloto
+                                </button>
+                                <button id="stop-autopilot" class="btn btn-danger" disabled>
+                                    <i class="fas fa-stop me-2"></i>Detener Piloto
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Control Predictivo -->
+                        <div class="control-section mb-4">
+                            <h6>Análisis Predictivo</h6>
+                            <div class="d-grid gap-2">
+                                <button id="start-predictive" class="btn btn-primary">
+                                    <i class="fas fa-brain me-2"></i>Iniciar Predictivo
+                                </button>
+                                <button id="stop-predictive" class="btn btn-warning" disabled>
+                                    <i class="fas fa-brain me-2"></i>Detener Predictivo
+                                </button>
+                                <button id="train-model" class="btn btn-info">
+                                    <i class="fas fa-graduation-cap me-2"></i>Entrenar Modelo
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Control de Locomotora -->
+                        <div class="control-section mb-4">
+                            <h6>Control de Locomotora</h6>
+                            <div class="d-grid gap-2">
+                                <button id="toggle-doors" class="btn btn-secondary">
+                                    <i class="fas fa-door-open me-2"></i>Abrir/Cerrar Puertas
+                                </button>
+                                <button id="toggle-lights" class="btn btn-warning">
+                                    <i class="fas fa-lightbulb me-2"></i>Encender/Apagar Luces
+                                </button>
+                                <button id="emergency-brake" class="btn btn-danger">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>Freno de Emergencia
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Información del Sistema -->
+                        <div class="control-section">
+                            <h6>Información del Sistema</h6>
+                            <div class="small">
+                                <div class="mb-1">
+                                    <strong>TSC Conectado:</strong>
+                                    <span id="tsc-connected" class="badge bg-danger">NO</span>
+                                </div>
+                                <div class="mb-1">
+                                    <strong>Multi-Locomotora:</strong>
+                                    <span id="multi-loco-status" class="badge bg-danger">NO</span>
+                                </div>
+                                <div class="mb-1">
+                                    <strong>Modelo Entrenado:</strong>
+                                    <span id="model-trained" class="badge bg-danger">NO</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel de Predicciones -->
+                <div class="card bg-dark border-info">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-crystal-ball me-2"></i>
+                            Predicciones ML
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="predictions-content">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                                <p>Esperando predicciones...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de Locomotoras Múltiples -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card bg-dark border-warning">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-trains me-2"></i>
+                            Locomotoras Múltiples
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="locomotives-content">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-search fa-2x mb-3"></i>
+                                <p>Escaneando locomotoras...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de Rendimiento y Optimizaciones -->
+        <div class="row mt-4">
+            <div class="col-lg-6">
+                <div class="card bg-dark border-info mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-chart-line me-2"></i>
+                            Rendimiento del Sistema
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="metric-value" id="latency-value">--</div>
+                                    <div class="metric-label">Latencia (ms)</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-compress"></i>
+                                    </div>
+                                    <div class="metric-value" id="compression-ratio">--</div>
+                                    <div class="metric-label">Compresión (%)</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-memory"></i>
+                                    </div>
+                                    <div class="metric-value" id="cache-hit-rate">--</div>
+                                    <div class="metric-label">Cache Hit (%)</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-tachometer-alt"></i>
+                                    </div>
+                                    <div class="metric-value" id="update-frequency">--</div>
+                                    <div class="metric-label">Updates/seg</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card bg-dark border-success">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-file-alt me-2"></i>
+                            Estado de Reportes
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="reports-status">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-file-alt fa-2x mb-3"></i>
+                                <p>Cargando estado de reportes...</p>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button id="generate-report" class="btn btn-primary me-2">
+                                <i class="fas fa-plus me-2"></i>Generar Reporte
+                            </button>
+                            <button id="view-reports" class="btn btn-outline-info">
+                                <i class="fas fa-eye me-2"></i>Ver Reportes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de Visualizaciones Bokeh -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card bg-dark border-primary">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-chart-area me-2"></i>
+                            Visualizaciones Interactivas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="bokeh-container" style="height: 400px;">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-chart-line fa-2x mb-3"></i>
+                                <p>Cargando visualizaciones Bokeh...</p>
+                                <button id="load-bokeh" class="btn btn-primary">
+                                    <i class="fas fa-sync me-2"></i>Cargar Gráficos
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Configuración -->
+        <!-- FIX: Convertido de panel inline a modal Bootstrap para evitar problemas de display en Electron -->
+        <div class="modal fade" id="settings-modal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content bg-dark text-light">
+                    <div class="modal-header border-secondary">
+                        <h5 class="modal-title">
+                            <i class="fas fa-cogs me-2"></i>
+                            Configuración del Dashboard
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Tema Visual</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Tema</label>
+                                    <select class="form-select bg-dark text-light border-secondary" id="theme-select">
+                                        <option value="dark">Oscuro (Predeterminado)</option>
+                                        <option value="light">Claro</option>
+                                        <option value="blue">Azul Industrial</option>
+                                        <option value="green">Verde Tren</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Animaciones</label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="animations-toggle" checked>
+                                        <label class="form-check-label" for="animations-toggle">
+                                            Habilitar animaciones
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Visualización de Datos</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Intervalo de actualización (ms)</label>
+                                    <input type="number" class="form-control bg-dark text-light border-secondary" id="update-interval" value="1000" min="500" max="5000">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Puntos de historial</label>
+                                    <input type="number" class="form-control bg-dark text-light border-secondary" id="history-points" value="50" min="10" max="200">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Unidad de velocidad</label>
+                                    <select class="form-select bg-dark text-light border-secondary" id="speed-unit">
+                                        <option value="mph">Millas por hora (mph)</option>
+                                        <option value="kmh">Kilómetros por hora (km/h)</option>
+                                        <option value="ms">Metros por segundo (m/s)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <h6>Notificaciones</h6>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="alert-speed-limit" checked>
+                                            <label class="form-check-label" for="alert-speed-limit">
+                                                Alertas de límite de velocidad
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="alert-emergency" checked>
+                                            <label class="form-check-label" for="alert-emergency">
+                                                Alertas de emergencia
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="alert-system" checked>
+                                            <label class="form-check-label" for="alert-system">
+                                                Alertas del sistema
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="autobrake-by-signal" checked>
+                                            <label class="form-check-label" for="autobrake-by-signal">
+                                                Autobrake por señal (Autobrake by Signal)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-secondary">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>Cancelar
+                        </button>
+                        <button type="button" class="btn btn-primary" id="save-settings">
+                            <i class="fas fa-save me-2"></i>Guardar Configuración
+                        </button>
+                        <button type="button" class="btn btn-outline-warning" id="reset-settings">
+                            <i class="fas fa-undo me-2"></i>Restaurar Predeterminados
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

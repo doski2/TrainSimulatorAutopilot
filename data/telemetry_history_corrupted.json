@@ -1,0 +1,1402 @@
+[
+  {
+    "timestamp": "2025-11-09T22:51:37.049906",
+    "data": {
+      "velocidad_actual": 47.296656198292595,
+      "acelerador": 0.31746266765190345,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 0.3142473325952739,
+      "limite_velocidad": 160.0,
+      "radio_curva": 859.7720466912608,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.049906",
+    "data": {
+      "velocidad_actual": 50.110922589709865,
+      "acelerador": 0.33046236980525145,
+      "freno_tren": 0.0187849009172836,
+      "freno_motor": 0.0,
+      "pendiente": -0.5443827245251827,
+      "limite_velocidad": 160.0,
+      "radio_curva": 739.9361310081194,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.049906",
+    "data": {
+      "velocidad_actual": 50.9784478053244,
+      "acelerador": 0.4546550863809202,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -0.2916937497932768,
+      "limite_velocidad": 160.0,
+      "radio_curva": 799.4472137679874,
+      "senal_principal": 1,
+      "senal_avanzada": "1"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.049906",
+    "data": {
+      "velocidad_actual": 52.77915635002898,
+      "acelerador": 0.6031408507107945,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 0.822544912103189,
+      "limite_velocidad": 160.0,
+      "radio_curva": 667.1813951101569,
+      "senal_principal": 1,
+      "senal_avanzada": "1"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.049906",
+    "data": {
+      "velocidad_actual": 56.21863831605386,
+      "acelerador": 0.6078622274817734,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 0.19686123586912352,
+      "limite_velocidad": 160.0,
+      "radio_curva": 641.6705786463112,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.049906",
+    "data": {
+      "velocidad_actual": 59.057122226218915,
+      "acelerador": 0.4882979518608674,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -0.4606387709597875,
+      "limite_velocidad": 160.0,
+      "radio_curva": 832.4083969394795,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.049906",
+    "data": {
+      "velocidad_actual": 60.58212279471304,
+      "acelerador": 0.550266617917704,
+      "freno_tren": 0.044716616505438074,
+      "freno_motor": 0.0,
+      "pendiente": -0.38508228041631654,
+      "limite_velocidad": 160.0,
+      "radio_curva": 875.4997797244736,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.049906",
+    "data": {
+      "velocidad_actual": 61.69078762414878,
+      "acelerador": 0.44920459081809255,
+      "freno_tren": 0.04877725635611796,
+      "freno_motor": 0.0,
+      "pendiente": -0.8392175232226385,
+      "limite_velocidad": 160.0,
+      "radio_curva": 752.082576215471,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.049906",
+    "data": {
+      "velocidad_actual": 65.1797163447007,
+      "acelerador": 0.3916133083880504,
+      "freno_tren": 0.04173977096152142,
+      "freno_motor": 0.0,
+      "pendiente": -0.18565897666381712,
+      "limite_velocidad": 160.0,
+      "radio_curva": 829.656138432897,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.049906",
+    "data": {
+      "velocidad_actual": 65.35488024539488,
+      "acelerador": 0.5723031630556048,
+      "freno_tren": 0.07690182832329846,
+      "freno_motor": 0.0,
+      "pendiente": 0.36163602504763415,
+      "limite_velocidad": 160.0,
+      "radio_curva": 796.4173960890048,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.049906",
+    "data": {
+      "velocidad_actual": 67.60136160998479,
+      "acelerador": 0.6503779568339261,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 1.5646436558140062,
+      "limite_velocidad": 160.0,
+      "radio_curva": 904.2491617339421,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.049906",
+    "data": {
+      "velocidad_actual": 70.35711257151175,
+      "acelerador": 0.6258222156904004,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -0.21967188783751193,
+      "limite_velocidad": 160.0,
+      "radio_curva": 719.1506397106813,
+      "senal_principal": 1,
+      "senal_avanzada": "1"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.049906",
+    "data": {
+      "velocidad_actual": 72.5014483315248,
+      "acelerador": 0.5656429609347491,
+      "freno_tren": 0.01285584350281397,
+      "freno_motor": 0.0,
+      "pendiente": -0.5017570435845365,
+      "limite_velocidad": 160.0,
+      "radio_curva": 831.4512895863172,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.049906",
+    "data": {
+      "velocidad_actual": 74.9686449905329,
+      "acelerador": 0.4395024455470688,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 0.09707754934804039,
+      "limite_velocidad": 160.0,
+      "radio_curva": 760.7891846867842,
+      "senal_principal": 1,
+      "senal_avanzada": "1"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.049906",
+    "data": {
+      "velocidad_actual": 73.34482395243653,
+      "acelerador": 0.38820029957566476,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -1.4635149481321186,
+      "limite_velocidad": 160.0,
+      "radio_curva": 771.0863143530058,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.049906",
+    "data": {
+      "velocidad_actual": 78.40405085681454,
+      "acelerador": 0.672490018954452,
+      "freno_tren": 0.008728890641591948,
+      "freno_motor": 0.0,
+      "pendiente": -0.16128571166600914,
+      "limite_velocidad": 160.0,
+      "radio_curva": 825.7550390722764,
+      "senal_principal": 1,
+      "senal_avanzada": "1"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.049906",
+    "data": {
+      "velocidad_actual": 79.98144919548837,
+      "acelerador": 0.32520494622436097,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -0.07444591576616721,
+      "limite_velocidad": 160.0,
+      "radio_curva": 700.741382059681,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.049906",
+    "data": {
+      "velocidad_actual": 119.92809945510093,
+      "acelerador": 0.6533168398576256,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 1.231621056242643,
+      "limite_velocidad": 160.0,
+      "radio_curva": 683.1321962380468,
+      "senal_principal": 1,
+      "senal_avanzada": "1"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 120.75925757145588,
+      "acelerador": 0.519824456714207,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -0.5748962887471792,
+      "limite_velocidad": 160.0,
+      "radio_curva": 938.4015718932678,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 120.18317786246985,
+      "acelerador": 0.5528930083302218,
+      "freno_tren": 0.004982568254382061,
+      "freno_motor": 0.0,
+      "pendiente": 1.0952278129049893,
+      "limite_velocidad": 160.0,
+      "radio_curva": 749.6524345883801,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 120.66737542410938,
+      "acelerador": 0.3594356814908422,
+      "freno_tren": 0.026816801619103266,
+      "freno_motor": 0.0,
+      "pendiente": -0.18276964841627136,
+      "limite_velocidad": 160.0,
+      "radio_curva": 708.5309068738723,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 119.2470106326972,
+      "acelerador": 0.3608104925463207,
+      "freno_tren": 0.011372996730206471,
+      "freno_motor": 0.0,
+      "pendiente": -0.1610307581028378,
+      "limite_velocidad": 160.0,
+      "radio_curva": 930.7142754282428,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 117.91097663665842,
+      "acelerador": 0.6087793897565887,
+      "freno_tren": 0.06496984071322437,
+      "freno_motor": 0.0,
+      "pendiente": -0.10293335854775248,
+      "limite_velocidad": 160.0,
+      "radio_curva": 713.2853843950447,
+      "senal_principal": 1,
+      "senal_avanzada": "1"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 119.82096097911327,
+      "acelerador": 0.5405477801909492,
+      "freno_tren": 0.014653623664934064,
+      "freno_motor": 0.0,
+      "pendiente": 0.17322410474848784,
+      "limite_velocidad": 160.0,
+      "radio_curva": 728.5648581973633,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 121.39901341630382,
+      "acelerador": 0.5716678215334581,
+      "freno_tren": 0.036725053244002284,
+      "freno_motor": 0.0,
+      "pendiente": -0.6084274461796195,
+      "limite_velocidad": 160.0,
+      "radio_curva": 704.550273803858,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 123.28056728725913,
+      "acelerador": 0.5002439767760642,
+      "freno_tren": 0.0411030079997245,
+      "freno_motor": 0.0,
+      "pendiente": -0.41034115917585523,
+      "limite_velocidad": 160.0,
+      "radio_curva": 989.6792982653948,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 118.13893143475829,
+      "acelerador": 0.43745151170595614,
+      "freno_tren": 0.0604690985343317,
+      "freno_motor": 0.0,
+      "pendiente": -0.3858903747466293,
+      "limite_velocidad": 160.0,
+      "radio_curva": 853.7960003691995,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 120.09635368128909,
+      "acelerador": 0.5502927026878527,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 1.3600845832948094,
+      "limite_velocidad": 160.0,
+      "radio_curva": 848.2472415243185,
+      "senal_principal": 1,
+      "senal_avanzada": "1"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 119.299272989892,
+      "acelerador": 0.6147220203877477,
+      "freno_tren": 0.05227855841731585,
+      "freno_motor": 0.0,
+      "pendiente": 0.37017040897386927,
+      "limite_velocidad": 160.0,
+      "radio_curva": 765.7858287394619,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 120.60136841411159,
+      "acelerador": 0.4762447990372843,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -0.622869389355994,
+      "limite_velocidad": 160.0,
+      "radio_curva": 815.3725105945528,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 122.98729417538522,
+      "acelerador": 0.6091878973837556,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 0.025680429739817684,
+      "limite_velocidad": 160.0,
+      "radio_curva": 938.2004604171943,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 121.54511822072337,
+      "acelerador": 0.9109624466110826,
+      "freno_tren": 0.02854452553465835,
+      "freno_motor": 0.0,
+      "pendiente": 0.2568929754561044,
+      "limite_velocidad": 160.0,
+      "radio_curva": 913.5565640180599,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 119.31202694469279,
+      "acelerador": 0.3587322067818986,
+      "freno_tren": 0.008251139905466926,
+      "freno_motor": 0.0,
+      "pendiente": 0.08809046102616068,
+      "limite_velocidad": 160.0,
+      "radio_curva": 714.4071082170632,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 125.31557732372153,
+      "acelerador": 0.24536515325144742,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -0.933632596295874,
+      "limite_velocidad": 160.0,
+      "radio_curva": 908.8950596967366,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 123.67033662732842,
+      "acelerador": 0.3793403693159501,
+      "freno_tren": 0.11945179786962312,
+      "freno_motor": 0.0,
+      "pendiente": 0.06427550003554057,
+      "limite_velocidad": 160.0,
+      "radio_curva": 984.3413758320534,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 115.2879283619164,
+      "acelerador": 0.5945660492180939,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 0.09322715738471382,
+      "limite_velocidad": 160.0,
+      "radio_curva": 788.5263558533101,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 118.12211475333612,
+      "acelerador": 0.5512803958793493,
+      "freno_tren": 0.01588835162185593,
+      "freno_motor": 0.0,
+      "pendiente": 0.8306508653040771,
+      "limite_velocidad": 160.0,
+      "radio_curva": 638.7772692825476,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 119.60038828834254,
+      "acelerador": 0.6491396234078535,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 0.45893097352738804,
+      "limite_velocidad": 160.0,
+      "radio_curva": 751.5765927133749,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 119.50577393668712,
+      "acelerador": 0.500341118367507,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 0.9360028402361521,
+      "limite_velocidad": 160.0,
+      "radio_curva": 789.4881495253586,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 122.82477812116628,
+      "acelerador": 0.4415669888305775,
+      "freno_tren": 0.07206366445330578,
+      "freno_motor": 0.0,
+      "pendiente": -0.7150706889803163,
+      "limite_velocidad": 160.0,
+      "radio_curva": 656.413784882056,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 120.6074934917095,
+      "acelerador": 0.5515765694597069,
+      "freno_tren": 0.032358134839352196,
+      "freno_motor": 0.0,
+      "pendiente": 0.45486908747990845,
+      "limite_velocidad": 160.0,
+      "radio_curva": 812.6094827824029,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 125.30506700694697,
+      "acelerador": 0.24290044510640738,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -0.6189077494134245,
+      "limite_velocidad": 160.0,
+      "radio_curva": 858.8317206484577,
+      "senal_principal": 1,
+      "senal_avanzada": "1"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 119.91212493508195,
+      "acelerador": 0.4639269381997892,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 0.10379913064285995,
+      "limite_velocidad": 160.0,
+      "radio_curva": 764.451135908364,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 122.61206186970547,
+      "acelerador": 0.5783278602361916,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 0.15364976043830467,
+      "limite_velocidad": 160.0,
+      "radio_curva": 743.9818959803031,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 115.75545404795521,
+      "acelerador": 0.5551652265605848,
+      "freno_tren": 0.0776429887919663,
+      "freno_motor": 0.0,
+      "pendiente": -0.6102850521409272,
+      "limite_velocidad": 160.0,
+      "radio_curva": 756.0482124525723,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 123.29291058560362,
+      "acelerador": 0.47002351642229234,
+      "freno_tren": 0.016208317624422108,
+      "freno_motor": 0.0,
+      "pendiente": 0.010501920816379524,
+      "limite_velocidad": 160.0,
+      "radio_curva": 786.9856945632315,
+      "senal_principal": 1,
+      "senal_avanzada": "1"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 122.03259017954473,
+      "acelerador": 0.5085840029483552,
+      "freno_tren": 0.06024614608892871,
+      "freno_motor": 0.0,
+      "pendiente": 0.532613541273459,
+      "limite_velocidad": 160.0,
+      "radio_curva": 680.3339530786478,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 121.2359928612574,
+      "acelerador": 0.4416918383146309,
+      "freno_tren": 0.003790227909686317,
+      "freno_motor": 0.0,
+      "pendiente": 0.31417275463213995,
+      "limite_velocidad": 160.0,
+      "radio_curva": 732.2838288487889,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 119.99565632308158,
+      "acelerador": 0.6759787313788117,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 0.40190652568812923,
+      "limite_velocidad": 160.0,
+      "radio_curva": 820.3822727527468,
+      "senal_principal": 1,
+      "senal_avanzada": "1"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 117.60983904726604,
+      "acelerador": 0.37085611943022634,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 0.11602496867881815,
+      "limite_velocidad": 160.0,
+      "radio_curva": 778.6552848288153,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 115.62352388797942,
+      "acelerador": 0.578045331128104,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 0.7850161402713361,
+      "limite_velocidad": 160.0,
+      "radio_curva": 795.1804514464187,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 121.16478363491736,
+      "acelerador": 0.6119123441226416,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -0.4136154717761615,
+      "limite_velocidad": 160.0,
+      "radio_curva": 840.1711722098942,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 119.38325019125655,
+      "acelerador": 0.6212342533572884,
+      "freno_tren": 0.02368136938637823,
+      "freno_motor": 0.0,
+      "pendiente": 0.22883822721441946,
+      "limite_velocidad": 160.0,
+      "radio_curva": 805.4350577938571,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 125.05546967310164,
+      "acelerador": 0.47122878501545545,
+      "freno_tren": 0.04361603183603391,
+      "freno_motor": 0.0,
+      "pendiente": 0.47963541304260343,
+      "limite_velocidad": 160.0,
+      "radio_curva": 818.3342005738352,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 118.32528666966863,
+      "acelerador": 0.627216097415472,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 0.48815456324055134,
+      "limite_velocidad": 160.0,
+      "radio_curva": 664.4942044482068,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 118.82349065266976,
+      "acelerador": 0.695136773245399,
+      "freno_tren": 0.04752119190930251,
+      "freno_motor": 0.0,
+      "pendiente": 0.07519689323810382,
+      "limite_velocidad": 160.0,
+      "radio_curva": 742.3096344337597,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 122.18416898642135,
+      "acelerador": 0.5606029868772352,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 0.7383293127148145,
+      "limite_velocidad": 160.0,
+      "radio_curva": 771.7778811012789,
+      "senal_principal": 1,
+      "senal_avanzada": "1"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 121.33779840722435,
+      "acelerador": 0.7028892890201943,
+      "freno_tren": 0.06189081559867309,
+      "freno_motor": 0.0,
+      "pendiente": 2.143432735454561,
+      "limite_velocidad": 160.0,
+      "radio_curva": 640.5572341205633,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 118.74331534205864,
+      "acelerador": 0.8002660778854755,
+      "freno_tren": 0.07581166614669482,
+      "freno_motor": 0.0,
+      "pendiente": 2.700312488523114,
+      "limite_velocidad": 160.0,
+      "radio_curva": 831.2458481097948,
+      "senal_principal": 1,
+      "senal_avanzada": "1"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 117.60677596540643,
+      "acelerador": 0.6707346834877784,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 2.774967264260378,
+      "limite_velocidad": 160.0,
+      "radio_curva": 812.0295631711899,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 116.5443728471694,
+      "acelerador": 0.9798590413947559,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 3.2572194170293747,
+      "limite_velocidad": 160.0,
+      "radio_curva": 769.6135564569073,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 114.0996006673518,
+      "acelerador": 0.9954873171825088,
+      "freno_tren": 0.0033759240705054476,
+      "freno_motor": 0.0,
+      "pendiente": 3.7755759877612616,
+      "limite_velocidad": 160.0,
+      "radio_curva": 1006.0747924881987,
+      "senal_principal": 1,
+      "senal_avanzada": "1"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 111.46354278579678,
+      "acelerador": 0.8608575983292651,
+      "freno_tren": 0.07445225869422395,
+      "freno_motor": 0.0,
+      "pendiente": 3.877670421221602,
+      "limite_velocidad": 160.0,
+      "radio_curva": 887.7825168480114,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 109.22518654663583,
+      "acelerador": 0.7345953730759018,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 3.529212243424794,
+      "limite_velocidad": 160.0,
+      "radio_curva": 773.0593165555442,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 108.99721153701618,
+      "acelerador": 0.9693216768762117,
+      "freno_tren": 0.049077368836504064,
+      "freno_motor": 0.0,
+      "pendiente": 3.358771127897981,
+      "limite_velocidad": 160.0,
+      "radio_curva": 833.0700557063932,
+      "senal_principal": 1,
+      "senal_avanzada": "1"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 107.92837833416232,
+      "acelerador": 0.753237422926173,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 2.148308780322423,
+      "limite_velocidad": 160.0,
+      "radio_curva": 593.2557899960124,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 106.36101472650748,
+      "acelerador": 0.7880136325488483,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 2.955439980243606,
+      "limite_velocidad": 160.0,
+      "radio_curva": 848.7673274923294,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 105.93906835356017,
+      "acelerador": 0.698293440502787,
+      "freno_tren": 0.025202325775892223,
+      "freno_motor": 0.0,
+      "pendiente": 2.968660451363414,
+      "limite_velocidad": 160.0,
+      "radio_curva": 746.9742381627559,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 102.04983716382641,
+      "acelerador": 0.7412030759955536,
+      "freno_tren": 0.0028737001512148387,
+      "freno_motor": 0.0,
+      "pendiente": 2.603563583868828,
+      "limite_velocidad": 160.0,
+      "radio_curva": 571.7197509959202,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 102.19790594379316,
+      "acelerador": 0.7537809196312878,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 2.650137246003707,
+      "limite_velocidad": 160.0,
+      "radio_curva": 861.4166700043426,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 99.93664619672141,
+      "acelerador": 0.7150699835900028,
+      "freno_tren": 0.11870708717002983,
+      "freno_motor": 0.0,
+      "pendiente": 3.3787538550236524,
+      "limite_velocidad": 160.0,
+      "radio_curva": 768.9275735382806,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.050910",
+    "data": {
+      "velocidad_actual": 98.73488999350256,
+      "acelerador": 0.9399040819806409,
+      "freno_tren": 0.015562507727176806,
+      "freno_motor": 0.0,
+      "pendiente": 3.822483856750642,
+      "limite_velocidad": 160.0,
+      "radio_curva": 1107.8880808455237,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 99.00771344325274,
+      "acelerador": 0.610304039885381,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 3.5597874557172884,
+      "limite_velocidad": 160.0,
+      "radio_curva": 709.5458116212928,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 94.90237802944453,
+      "acelerador": 0.9363855192951303,
+      "freno_tren": 0.044081987847472526,
+      "freno_motor": 0.0,
+      "pendiente": 2.676713557878737,
+      "limite_velocidad": 160.0,
+      "radio_curva": 799.2027358683382,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 96.85825543655132,
+      "acelerador": 0.9754504762132311,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 3.739972069445013,
+      "limite_velocidad": 160.0,
+      "radio_curva": 958.203818296378,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 91.6011263020946,
+      "acelerador": 0.8488368420839263,
+      "freno_tren": 0.09547083202350654,
+      "freno_motor": 0.0,
+      "pendiente": 2.5621908733076215,
+      "limite_velocidad": 160.0,
+      "radio_curva": 660.1432426180859,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 91.02581613022755,
+      "acelerador": 0.7655491688090885,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": 3.2814846183452855,
+      "limite_velocidad": 160.0,
+      "radio_curva": 758.65487611823,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 88.6529759166479,
+      "acelerador": 0.32947176397522526,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -1.9757391860275866,
+      "limite_velocidad": 160.0,
+      "radio_curva": 776.105195313359,
+      "senal_principal": 1,
+      "senal_avanzada": "1"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 87.72125041781868,
+      "acelerador": 0.2819795572117829,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -2.453781831020799,
+      "limite_velocidad": 160.0,
+      "radio_curva": 746.7419697779595,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 86.23531315643072,
+      "acelerador": 0.1380260871593241,
+      "freno_tren": 0.027168009618996753,
+      "freno_motor": 0.0,
+      "pendiente": -1.950333847285387,
+      "limite_velocidad": 160.0,
+      "radio_curva": 733.7376241054153,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 83.76368338284564,
+      "acelerador": 0.05443444898368782,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -1.7147006657034203,
+      "limite_velocidad": 160.0,
+      "radio_curva": 769.3283600678183,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 79.82240597078997,
+      "acelerador": 0.325321643074137,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -1.680703770611313,
+      "limite_velocidad": 160.0,
+      "radio_curva": 734.8163892197841,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 78.88195735416255,
+      "acelerador": 0.37839504302935667,
+      "freno_tren": 0.05531645524142214,
+      "freno_motor": 0.0,
+      "pendiente": -1.976300664341793,
+      "limite_velocidad": 160.0,
+      "radio_curva": 877.1638149301336,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 76.68703077758846,
+      "acelerador": 0.23412498771168955,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -3.2358222500636447,
+      "limite_velocidad": 160.0,
+      "radio_curva": 837.1145873371308,
+      "senal_principal": 1,
+      "senal_avanzada": "1"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 75.97197011243769,
+      "acelerador": 0.4278141501717292,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -2.30199259335791,
+      "limite_velocidad": 160.0,
+      "radio_curva": 811.372946021298,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 73.05136784523931,
+      "acelerador": 0.31506490303420503,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -2.2438031120362467,
+      "limite_velocidad": 160.0,
+      "radio_curva": 828.9774856896413,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 71.21372271438139,
+      "acelerador": 0.49853173369841286,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -0.9622996006772806,
+      "limite_velocidad": 160.0,
+      "radio_curva": 930.1052433162299,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 69.13241254901763,
+      "acelerador": 0.2083022418676624,
+      "freno_tren": 0.08382186561376415,
+      "freno_motor": 0.0,
+      "pendiente": -2.9353959605129276,
+      "limite_velocidad": 160.0,
+      "radio_curva": 832.6927373764163,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 68.37633685287415,
+      "acelerador": 0.298607018148496,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -2.109550264404432,
+      "limite_velocidad": 160.0,
+      "radio_curva": 828.6941261224298,
+      "senal_principal": 1,
+      "senal_avanzada": "1"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 66.62768007626586,
+      "acelerador": 0.2599203284604493,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -2.739293122889921,
+      "limite_velocidad": 160.0,
+      "radio_curva": 863.2781866106285,
+      "senal_principal": 1,
+      "senal_avanzada": "1"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 62.99653100913779,
+      "acelerador": 0.4539166987581503,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -0.864653571097802,
+      "limite_velocidad": 160.0,
+      "radio_curva": 718.2998560739106,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 61.00626858629382,
+      "acelerador": 0.3514762944356088,
+      "freno_tren": 0.016683105264347416,
+      "freno_motor": 0.0,
+      "pendiente": -1.9642168813903038,
+      "limite_velocidad": 160.0,
+      "radio_curva": 903.7539944257899,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 60.77090099690853,
+      "acelerador": 0.23003542423269863,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -2.2550081994273734,
+      "limite_velocidad": 160.0,
+      "radio_curva": 744.7354226652994,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 58.83956389186389,
+      "acelerador": 0.384823786327653,
+      "freno_tren": 0.0938397906279033,
+      "freno_motor": 0.0,
+      "pendiente": -1.56519703994717,
+      "limite_velocidad": 160.0,
+      "radio_curva": 722.6210800896426,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 55.6545202366398,
+      "acelerador": 0.32132380466941957,
+      "freno_tren": 0,
+      "freno_motor": 0.0,
+      "pendiente": -2.6223273516557084,
+      "limite_velocidad": 160.0,
+      "radio_curva": 567.5280338547599,
+      "senal_principal": 1,
+      "senal_avanzada": "1"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 52.35843698576056,
+      "acelerador": 0.5585736292776737,
+      "freno_tren": 0.006461059098761376,
+      "freno_motor": 0.0,
+      "pendiente": -1.8600156868400899,
+      "limite_velocidad": 160.0,
+      "radio_curva": 810.9394794604893,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-09T22:51:37.051918",
+    "data": {
+      "velocidad_actual": 51.700787070041876,
+      "acelerador": 0.3804999977262819,
+      "freno_tren": 0.012512196628682427,
+      "freno_motor": 0.0,
+      "pendiente": -1.637116688050654,
+      "limite_velocidad": 160.0,
+      "radio_curva": 686.0245571843294,
+      "senal_principal": 1,
+      "senal_avanzada": "0"
+    }
+  },
+  {
+    "timestamp": "2025-11-11T23:15:01.560590",
+    "data": {
+      "velocidad_actual": 45.2,
+      "acelerador": 0.6,
+      "freno_tren": 0.0,
+      "freno_motor": 0.0,
+      "pendiente": 2.1,
+      "limite_velocidad": 160,
+      "radio_curva": 850,
+      "senal_principal": 1,
+      "senal_avanzada": 0
+    }
+  },
+  {
+    "timestamp": "2025-11-11T23:15:01.561594",
+    "data": {
+      "velocidad_actual": 52.8,
+      "acelerador": 0.7,
+      "freno_tren": 0.0,
+      "freno_motor": 0.0,
+      "pendiente": 1.8,
+      "limite_velocidad": 160,
+      "radio_curva": 1200,
+      "senal_principal": 1,
+      "senal_avanzada": 1
+    }
+  },
+  {
+    "timestamp": "2025-11-11T23:15:01.562597",
+    "data": {
+      "velocidad_actual": 58.3,
+      "acelerador": 0.5,
+      "freno_tren": 0.1,
+      "freno_motor": 0.0,
+      "pendiente": -0.5,
+      "limite_velocidad": 160,
+      "radio_curva": 950,
+      "senal_principal": 1,
+      "senal_avanzada": 0
+    }
+  }
+]

@@ -1,0 +1,10 @@
+pandas
+numpy
+scikit-learn
+tensorflow>=2.12
+fastapi
+uvicorn
+pydantic
+pytest
+python-dateutil
+pyyaml
