@@ -1445,16 +1445,20 @@ function acknowledgeAlert(alertId) {
 
 // Actualizar métricas de rendimiento
 function updatePerformanceMetrics(performance) {
+    // Normalizar estructura: algunos backends envían un objeto completo con
+    // `current_metrics` -> { current_metrics: { websocket_latency: ... } }
+    const perf = (performance && performance.current_metrics) ? performance.current_metrics : performance || {};
+
     // Latencia
     const latencyValue = document.getElementById('latency-value');
-    if (latencyValue && performance.websocket_latency !== undefined) {
-        latencyValue.textContent = performance.websocket_latency.toFixed(1) + ' ms';
+    if (latencyValue && perf.websocket_latency !== undefined) {
+        latencyValue.textContent = perf.websocket_latency.toFixed(1) + ' ms';
     }
 
     // Ratio de compresión
     const compressionValue = document.getElementById('compression-ratio');
-    if (compressionValue && performance.compression_ratio !== undefined) {
-        compressionValue.textContent = (performance.compression_ratio * 100).toFixed(1) + '%';
+    if (compressionValue && (perf.compression_ratio !== undefined)) {
+        compressionValue.textContent = (perf.compression_ratio * 100).toFixed(1) + '%';
     }
 
     // Cache hit rate
@@ -1465,8 +1469,10 @@ function updatePerformanceMetrics(performance) {
 
     // Frecuencia de actualización
     const updateFreqValue = document.getElementById('update-frequency');
-    if (updateFreqValue && performance.update_frequency !== undefined) {
-        updateFreqValue.textContent = performance.update_frequency.toFixed(1);
+    // Compatibilidad con distintos nombres: `update_frequency` o `metrics_update_frequency`
+    const updateFreq = (perf.update_frequency !== undefined) ? perf.update_frequency : perf.metrics_update_frequency;
+    if (updateFreqValue && updateFreq !== undefined) {
+        updateFreqValue.textContent = updateFreq.toFixed(1);
     }
 }
 
