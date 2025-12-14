@@ -458,6 +458,16 @@ def telemetry_update_loop():
                         print(ws_debug)
                     except Exception:
                         pass
+                    # Debug: active alerts payload
+                    try:
+                        active_list = active_alerts.get('alerts') if isinstance(active_alerts, dict) else active_alerts
+                        if isinstance(active_list, list):
+                            print(f"[DEBUG] Active alerts (count) = {len(active_list)}")
+                            print(f"[DEBUG] Active alerts (types) = {[a.get('alert_type') for a in active_list[:10]]}")
+                        else:
+                            print(f"[DEBUG] Active alerts: {active_alerts}")
+                    except Exception:
+                        pass
                 except Exception as emit_error:
                     print(f"[WS] Error en emit: {emit_error}")
                     print(

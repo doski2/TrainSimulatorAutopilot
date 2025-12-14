@@ -230,6 +230,7 @@ function controlAction(action) {
 function updateTelemetry(data) {
     const telemetry = data.telemetry || {};
     console.debug('[UI] telemetry_update received', telemetry); // Debug log for telemetry updates
+    console.debug('[UI] active_alerts payload', activeAlerts); // Debug check for active alerts payload
 
     // Utility: safely set textContent if element exists
     function safeSetText(elementId, text) {
