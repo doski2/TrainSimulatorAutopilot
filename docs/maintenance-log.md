@@ -310,7 +310,10 @@ a (N) (línea 273)
 correcciones
 - `docs/indice-documentacion.md` - Actualizado índice para incluir nueva
 documentación
- - `scripts/cleanup_persisted_fuel.py` - Nuevo script para limpiar datos históricos relacionados con combustible
+- `docs/indice-documentacion.md` - Actualizado índice para incluir nueva
+   documentación
+- `scripts/cleanup_persisted_fuel.py` - Nuevo script para limpiar datos
+   históricos relacionados con combustible
 
 **Problemas encontrados**:
 
@@ -335,14 +338,18 @@ disponible
    - Modificada función `updateActiveAlerts()` para manejar ambos formatos de
 datos
    - Compatible con array directo y objeto con propiedad `alerts`
-   - Añadido `active_alerts_list` en el payload `telemetry_update` y preferido por la UI
-   - Implementación de dedupe en UI (`knownAlertKeys`) para evitar notificaciones repetidas
-   - Implementada auto-resolución de alertas transitorias en `alert_system.py` (`_resolve_transient_alerts`)
+    - Añadido `active_alerts_list` en el payload
+       `telemetry_update` y preferido por la UI
+    - Implementación de dedupe en UI (`knownAlertKeys`) para evitar
+       notificaciones repetidas
+    - Implementada auto-resolución de alertas transitorias en
+       `alert_system.py` (`_resolve_transient_alerts`)
 
 3. **Documentación**:
    - Creado archivo `CORRECCIONES_DASHBOARD.md` con documentación completa
-   - Actualizado índice de documentación
-    - Documentado deprecación de FuelLevel para TSC y añadido script de limpieza
+    - Actualizado índice de documentación
+    - Documentado la deprecación de `FuelLevel` para TSC y añadido el
+       script de limpieza correspondiente
 
 **Verificación realizada**:
 
