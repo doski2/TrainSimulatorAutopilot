@@ -60,7 +60,7 @@ def on_telemetry_update(data):
                 print(f"   {k}:", telemetry.get(k))
         else:
             print("  telemetry payload not dict; raw:", data)
-        # Además de la telemetría, algunos servidores incluyen listas de alertas activas
+        # In addition to telemetry, some servers include lists of active alerts
         try:
             alerts_list = data.get("active_alerts_list") if isinstance(data, dict) else None
             if alerts_list:
