@@ -122,3 +122,18 @@ def test_enviar_comandos_fallback_dinamico(tsc_integration, tmp_path):
     tsc_integration.enviar_comandos({"freno_dinamico": 0.5})
     contenido = open(tsc_integration.ruta_archivo_comandos, encoding="utf-8").read()
     assert "VirtualEngineBrakeControl:0.500" in contenido
+
+
+def test_enviar_comandos_escribe_archivo_lua(tsc_integration, tmp_path):
+    """Verificar que enviar_comandos escriba también plugins/autopilot_commands.txt"""
+    # Preparar ruta de SendCommand en tmp dir
+    cmd_file = tmp_path / "SendCommand.txt"
+    tsc_integration.ruta_archivo_comandos = str(cmd_file)
+
+    # Enviar comando para iniciar autopilot
+    tsc_integration.enviar_comandos({"autopilot": True})
+
+    lua_file = tmp_path / "autopilot_commands.txt"
+    assert lua_file.exists()
+    contenido = lua_file.read_text(encoding="utf-8").strip()
+    assert "start_autopilot" in contenido
