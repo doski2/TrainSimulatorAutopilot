@@ -184,11 +184,6 @@ function setupEventListeners() {
         controlAction('train_model');
     });
 
-    // Controles de locomotora
-    document.getElementById('toggle-doors').addEventListener('click', () => {
-        controlAction('toggle_doors');
-    });
-
     document.getElementById('toggle-lights').addEventListener('click', () => {
         controlAction('toggle_lights');
     });

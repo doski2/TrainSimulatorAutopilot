@@ -135,7 +135,7 @@ class MultiLocomotiveIntegration:
             "freno_dinamico": "VirtualEngineBrakeControl",
             "reverser": "VirtualReverser",
             # Nuevos controles de locomotora
-            "puertas": "DoorSwitch",
+            # Doors controlled by AI in future; omit DoorSwitch mapping
             "luces": "LightSwitch",
             "freno_emergencia": "BrakeControl",
         }

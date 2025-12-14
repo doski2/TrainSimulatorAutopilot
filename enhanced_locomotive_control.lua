@@ -12,17 +12,14 @@ KPH = 3.60	-- Convert meters per second to KPH
 delete_Files = 1 -- Delete Getdata.txt and sendcommand.txt files on first run
 
 -- Enhanced locomotive control variables
-autoDoorsEnabled = true
+autoDoorsEnabled = false  -- Disabled: doors managed by AI in future
 lastSpeed = 0
 doorsState = 0 -- 0 = closed, 1 = open
 lightsState = 0 -- 0 = off, 1 = on
 
 function Initialise()
     -- Initialize locomotive controls on startup
-    if Call("ControlExists", "DoorSwitch", 0) == 1 then
-        Call("SetControlValue", "DoorSwitch", 0, 0)  -- Doors closed
-        doorsState = 0
-    end
+    -- Door control initialization removed; AI will manage doors in future
     if Call("ControlExists", "LightSwitch", 0) == 1 then
         Call("SetControlValue", "LightSwitch", 0, 0) -- Lights off
         lightsState = 0
@@ -34,18 +31,7 @@ function Update(time)
     if Call("GetIsEngineWithKey") == 1 then
         local currentSpeed = Call("GetSpeed")
 
-        -- Auto-doors logic (open when moving, close when stopped)
-        if autoDoorsEnabled and Call("ControlExists", "DoorSwitch", 0) == 1 then
-            if currentSpeed > 2.0 and doorsState == 0 then -- Speed > ~5 km/h
-                Call("SetControlValue", "DoorSwitch", 0, 1)
-                doorsState = 1
-                Call("ScenarioManager:ShowMessage", "Auto: Doors opened", 3, 1)
-            elseif currentSpeed < 1.0 and doorsState == 1 then -- Speed < ~2 km/h
-                Call("SetControlValue", "DoorSwitch", 0, 0)
-                doorsState = 0
-                Call("ScenarioManager:ShowMessage", "Auto: Doors closed", 3, 1)
-            end
-        end
+        -- Door automation disabled; doors will be handled by AI when implemented
 
         lastSpeed = currentSpeed
     end
@@ -53,13 +39,7 @@ end
 
 function OnControlValueChange(name, index, value)
     -- Handle control changes with feedback
-    if name == "DoorSwitch" then
-        doorsState = value
-        if value == 1 then
-            Call("ScenarioManager:ShowMessage", "Doors opened", 3, 1)
-        else
-            Call("ScenarioManager:ShowMessage", "Doors closed", 3, 1)
-        end
+    -- Door control events removed; handled by AI in future
     elseif name == "LightSwitch" then
         lightsState = value
         if value == 1 then

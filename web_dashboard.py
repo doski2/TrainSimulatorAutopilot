@@ -154,7 +154,6 @@ system_status = {
 
 # Estado de controles de locomotora
 control_states = {
-    "doors_open": False,  # Estado actual de las puertas
     "lights_on": False,  # Estado actual de las luces
 }
 
@@ -866,44 +865,7 @@ def control_action(action):
                     400,
                 )
 
-        elif action == "toggle_doors":
-            # Alternar puertas
-            if tsc_integration:
-                try:
-                    # Alternar estado
-                    control_states["doors_open"] = not control_states["doors_open"]
-                    command = "doors_open" if control_states["doors_open"] else "doors_close"
-
-                    success = tsc_integration.enviar_comandos({"command": command})
-                    if success:
-                        status_msg = (
-                            "Puertas ABIERTAS"
-                            if control_states["doors_open"]
-                            else "Puertas CERRADAS"
-                        )
-                        socketio.emit(
-                            "system_message",
-                            {"message": f"Comando enviado: {status_msg}", "type": "info"},
-                        )
-                    else:
-                        return (
-                            jsonify(
-                                {"success": False, "error": "Error enviando comando de puertas"}
-                            ),
-                            500,
-                        )
-                except Exception as e:
-                    return (
-                        jsonify(
-                            {
-                                "success": False,
-                                "error": f"Error enviando comando de puertas: {str(e)}",
-                            }
-                        ),
-                        500,
-                    )
-            else:
-                return jsonify({"success": False, "error": "Sistema TSC no inicializado"}), 500
+        # Doors control removed: IA will handle door operations in future
 
         elif action == "toggle_lights":
             # Alternar luces

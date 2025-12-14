@@ -111,7 +111,7 @@ class TSCIntegration:
             "freno_dinamico": "DynamicBrake",
             "reverser": "Reverser",  # Changed to Reverser
             # Nuevos controles de locomotora
-            "puertas": "DoorSwitch",  # May not exist
+            # Doors handled by AI in future; remove direct DoorSwitch mapping
             "luces": "Headlights",  # Changed to Headlights
             "freno_emergencia": "EmergencyBrake",  # Changed to EmergencyBrake,
         }
