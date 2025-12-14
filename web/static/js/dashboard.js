@@ -1349,14 +1349,7 @@ function updateActiveAlerts(alertsData) {
 
     container.innerHTML = alertsHtml;
 
-    // Limpiar IDs conocidos que ya no están activos (permitir futuras notificaciones)
-    const toRemove = [...knownAlertIds].filter(id => !currentIds.has(id));
-    toRemove.forEach(id => {
-        knownAlertIds.delete(id);
-        const key = knownAlertIdToKey.get(id);
-        knownAlertIdToKey.delete(id);
-        if (key && knownAlertKeys.has(key) && !currentKeys.has(key)) knownAlertKeys.delete(key);
-    });
+    // (Cleanup of known IDs is handled above to avoid duplication)
 }
 
 // Obtener clase CSS para severidad de alerta
