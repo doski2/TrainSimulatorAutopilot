@@ -192,6 +192,14 @@ function setupEventListeners() {
         controlAction('emergency_brake');
     });
 
+    // Performance monitor toggle (single button on Control tab)
+    const perfBtn = document.getElementById('toggle-performance-monitor');
+    if (perfBtn) {
+        perfBtn.addEventListener('click', () => {
+            controlAction('toggle_performance');
+        });
+    }
+
     // Controles de reportes
     document.getElementById('generate-report').addEventListener('click', () => {
         generateReport();
@@ -218,6 +226,19 @@ function controlAction(action) {
     .then(data => {
         if (data.success) {
             // Action executed successfully
+            if (action === 'toggle_performance' && typeof data.performance_monitoring !== 'undefined') {
+                const perfBtn = document.getElementById('toggle-performance-monitor');
+                updateStatusBadge('performance-monitor-status', data.performance_monitoring);
+                if (perfBtn) {
+                    if (data.performance_monitoring) {
+                        perfBtn.className = 'btn btn-danger';
+                        perfBtn.innerHTML = '<i class="fas fa-tachometer-alt me-2"></i>Detener Monitor Rendimiento';
+                    } else {
+                        perfBtn.className = 'btn btn-secondary';
+                        perfBtn.innerHTML = '<i class="fas fa-tachometer-alt me-2"></i>Iniciar Monitor Rendimiento';
+                    }
+                }
+            }
         } else {
             showAlert(`Error en acción ${action}: ${data.error}`, 'danger');
         }
@@ -557,6 +578,19 @@ function updateSystemStatus(status) {
     updateStatusBadge('tsc-connected', status.tsc_connected);
     updateStatusBadge('multi-loco-status', status.multi_loco_active);
     updateStatusBadge('model-trained', status.predictive_active);
+    updateStatusBadge('performance-monitor-status', status.performance_monitoring);
+    // Ensure toggle button text and style reflect current state
+    const perfBtn = document.getElementById('toggle-performance-monitor');
+    if (perfBtn) {
+        if (status.performance_monitoring) {
+            perfBtn.className = 'btn btn-danger';
+            perfBtn.innerHTML = '<i class="fas fa-tachometer-alt me-2"></i>Detener Monitor Rendimiento';
+        } else {
+            perfBtn.className = 'btn btn-secondary';
+            perfBtn.innerHTML = '<i class="fas fa-tachometer-alt me-2"></i>Iniciar Monitor Rendimiento';
+        }
+    }
+
     updateStatusBadge('brake-pressure-status', status.brake_pressure_present);
 
     // Contador de actualizaciones

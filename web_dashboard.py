@@ -150,6 +150,7 @@ system_status = {
     "alerts_active": False,
     "reports_active": False,
     "autobrake_by_signal": True,
+    "performance_monitoring": False,
 }
 
 # Estado de controles de locomotora
@@ -451,6 +452,12 @@ def telemetry_update_loop():
                         import traceback
 
                         traceback.print_exc()
+                    # Ensure system_status reflects performance monitor state
+                    try:
+                        system_status["performance_monitoring"] = performance_monitor.is_monitoring
+                    except Exception:
+                        system_status["performance_monitoring"] = False
+
                     # Debug: active alerts payload
                     try:
                         active_list = active_alerts.get('alerts') if isinstance(active_alerts, dict) else active_alerts
@@ -754,6 +761,7 @@ def control_action(action):
             "toggle_doors",
             "toggle_lights",
             "emergency_brake",
+            "toggle_performance",
         ]
 
         if action not in allowed_actions:
@@ -839,6 +847,31 @@ def control_action(action):
                 return (
                     jsonify({"success": False, "error": "Analizador predictivo no ejecutándose"}),
                     400,
+                )
+
+        elif action == "toggle_performance":
+            # Toggle performance monitoring
+            try:
+                if performance_monitor.is_monitoring:
+                    performance_monitor.stop_monitoring()
+                    system_status["performance_monitoring"] = False
+                    socketio.emit(
+                        "system_message",
+                        {"message": "Monitor de rendimiento detenido", "type": "info"},
+                    )
+                else:
+                    performance_monitor.start_monitoring()
+                    system_status["performance_monitoring"] = True
+                    socketio.emit(
+                        "system_message",
+                        {"message": "Monitor de rendimiento iniciado", "type": "success"},
+                    )
+
+                return jsonify({"success": True, "performance_monitoring": system_status["performance_monitoring"]})
+            except Exception as e:
+                return (
+                    jsonify({"success": False, "error": f"Error toggling performance monitor: {e}"}),
+                    500,
                 )
 
         elif action == "train_model":
