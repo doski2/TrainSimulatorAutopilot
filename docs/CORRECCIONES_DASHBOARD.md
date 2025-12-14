@@ -23,7 +23,7 @@ redondeo con `toFixed(0)`
 kiloNewtons (kN)
 3. **Actualización de etiqueta**: Cambiada la etiqueta HTML de "(kN)" a "(N)"
 
-### Archivos Modificados
+### Archivos Modificados (Fuel)
 
 - `tsc_integration.py`: Línea ~190, agregado valor por defecto
 - `web/static/js/dashboard.js`: Líneas 318-322, cambio de kN a N
@@ -130,18 +130,20 @@ function updateActiveAlerts(alertsData) {
 
 ### Archivos Modificados
 
- - `tsc_integration.py`, `tsc_integration_optimized.py`: eliminación de
+- `tsc_integration.py`, `tsc_integration_optimized.py`: eliminación de
    mapeo/métricas de combustible
- - `web/static/js/dashboard.js`, `web/templates` y `sd40` templates:
+- `web/static/js/dashboard.js`, `web/templates` y `sd40` templates:
    eliminación de UI/alertas de combustible
- - `alert_system.py`: eliminación de `check fuel_low` y limpieza de alertas
+- `alert_system.py`: eliminación de `check fuel_low` y limpieza de alertas
    persistentes
- - `scripts/cleanup_persisted_fuel.py`: script para limpiar
+- `scripts/cleanup_persisted_fuel.py`: script para limpiar
    alertas/telemetría histórica
 
 ### Notas
 
-- El campo `FuelLevel` sigue presente en GetData proveniente de Railworks para compatibilidad pero no se utiliza en lógica del piloto automático para TSC.
+- El campo `FuelLevel` sigue presente en GetData proveniente de Railworks
+  para compatibilidad, pero no se utiliza en la lógica del piloto automático
+  para TSC.
 
 ## 3. Mejoras en la Visualización de Datos
 
