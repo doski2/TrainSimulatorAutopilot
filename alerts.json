@@ -11,8 +11,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739433"
   },
   {
     "alert_id": "wheelslip_20251203_004248",
@@ -26,8 +26,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739439"
   },
   {
     "alert_id": "wheelslip_20251203_004454",
@@ -41,8 +41,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739442"
   },
   {
     "alert_id": "wheelslip_20251203_004721",
@@ -56,8 +56,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739445"
   },
   {
     "alert_id": "wheelslip_20251203_222821",
@@ -71,8 +71,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739451"
   },
   {
     "alert_id": "wheelslip_20251203_222921",
@@ -86,8 +86,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739456"
   },
   {
     "alert_id": "wheelslip_20251203_223021",
@@ -101,8 +101,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739459"
   },
   {
     "alert_id": "wheelslip_20251203_223121",
@@ -116,8 +116,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739462"
   },
   {
     "alert_id": "wheelslip_20251203_223221",
@@ -131,8 +131,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739465"
   },
   {
     "alert_id": "wheelslip_20251203_223329",
@@ -146,8 +146,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739468"
   },
   {
     "alert_id": "wheelslip_20251203_223429",
@@ -161,8 +161,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739472"
   },
   {
     "alert_id": "wheelslip_20251203_223946",
@@ -176,8 +176,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739474"
   },
   {
     "alert_id": "wheelslip_20251203_224108",
@@ -191,8 +191,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739475"
   },
   {
     "alert_id": "wheelslip_20251203_224208",
@@ -206,8 +206,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739477"
   },
   {
     "alert_id": "wheelslip_20251203_224308",
@@ -221,8 +221,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739479"
   },
   {
     "alert_id": "wheelslip_20251203_224408",
@@ -236,8 +236,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739481"
   },
   {
     "alert_id": "wheelslip_20251203_224508",
@@ -251,8 +251,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739483"
   },
   {
     "alert_id": "wheelslip_20251203_224608",
@@ -266,8 +266,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739485"
   },
   {
     "alert_id": "wheelslip_20251203_224708",
@@ -281,8 +281,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739486"
   },
   {
     "alert_id": "wheelslip_20251203_224808",
@@ -296,8 +296,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739488"
   },
   {
     "alert_id": "wheelslip_20251203_224908",
@@ -311,8 +311,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739493"
   },
   {
     "alert_id": "wheelslip_20251203_225008",
@@ -326,8 +326,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739499"
   },
   {
     "alert_id": "wheelslip_20251203_225108",
@@ -341,8 +341,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739501"
   },
   {
     "alert_id": "wheelslip_20251203_225208",
@@ -356,8 +356,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739503"
   },
   {
     "alert_id": "wheelslip_20251203_225308",
@@ -371,8 +371,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739505"
   },
   {
     "alert_id": "wheelslip_20251203_225408",
@@ -386,8 +386,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739507"
   },
   {
     "alert_id": "wheelslip_20251203_225508",
@@ -401,8 +401,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739509"
   },
   {
     "alert_id": "wheelslip_20251203_225608",
@@ -416,8 +416,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739511"
   },
   {
     "alert_id": "wheelslip_20251203_225708",
@@ -431,8 +431,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739513"
   },
   {
     "alert_id": "wheelslip_20251203_225808",
@@ -446,8 +446,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739515"
   },
   {
     "alert_id": "wheelslip_20251203_225909",
@@ -461,8 +461,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739518"
   },
   {
     "alert_id": "wheelslip_20251203_230009",
@@ -476,8 +476,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739519"
   },
   {
     "alert_id": "wheelslip_20251203_230109",
@@ -491,8 +491,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739523"
   },
   {
     "alert_id": "wheelslip_20251203_230209",
@@ -506,8 +506,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739524"
   },
   {
     "alert_id": "wheelslip_20251203_230309",
@@ -521,8 +521,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739526"
   },
   {
     "alert_id": "wheelslip_20251203_230409",
@@ -536,8 +536,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739528"
   },
   {
     "alert_id": "wheelslip_20251203_230551",
@@ -551,8 +551,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739530"
   },
   {
     "alert_id": "wheelslip_20251203_230651",
@@ -566,8 +566,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739532"
   },
   {
     "alert_id": "wheelslip_20251203_230751",
@@ -581,8 +581,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739534"
   },
   {
     "alert_id": "wheelslip_20251203_230851",
@@ -596,8 +596,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739536"
   },
   {
     "alert_id": "wheelslip_20251203_230951",
@@ -611,8 +611,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739538"
   },
   {
     "alert_id": "wheelslip_20251203_231051",
@@ -626,8 +626,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739539"
   },
   {
     "alert_id": "wheelslip_20251203_231151",
@@ -641,8 +641,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739541"
   },
   {
     "alert_id": "wheelslip_20251203_231251",
@@ -656,8 +656,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739543"
   },
   {
     "alert_id": "wheelslip_20251203_231351",
@@ -671,8 +671,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739545"
   },
   {
     "alert_id": "wheelslip_20251203_231927",
@@ -686,8 +686,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739547"
   },
   {
     "alert_id": "wheelslip_20251203_232027",
@@ -701,8 +701,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739549"
   },
   {
     "alert_id": "wheelslip_20251203_232209",
@@ -716,8 +716,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739551"
   },
   {
     "alert_id": "wheelslip_20251203_232309",
@@ -731,8 +731,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739553"
   },
   {
     "alert_id": "wheelslip_20251203_232409",
@@ -746,8 +746,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739554"
   },
   {
     "alert_id": "wheelslip_20251203_232509",
@@ -761,8 +761,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739556"
   },
   {
     "alert_id": "wheelslip_20251203_232609",
@@ -776,8 +776,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739558"
   },
   {
     "alert_id": "wheelslip_20251203_232709",
@@ -791,8 +791,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739560"
   },
   {
     "alert_id": "wheelslip_20251203_232809",
@@ -806,8 +806,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739562"
   },
   {
     "alert_id": "wheelslip_20251203_232909",
@@ -821,8 +821,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739564"
   },
   {
     "alert_id": "wheelslip_20251203_233009",
@@ -836,8 +836,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739565"
   },
   {
     "alert_id": "wheelslip_20251203_233109",
@@ -851,8 +851,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739569"
   },
   {
     "alert_id": "wheelslip_20251203_233209",
@@ -866,8 +866,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739571"
   },
   {
     "alert_id": "wheelslip_20251203_233309",
@@ -881,8 +881,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739573"
   },
   {
     "alert_id": "wheelslip_20251204_233122",
@@ -896,8 +896,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739575"
   },
   {
     "alert_id": "wheelslip_20251204_233222",
@@ -911,8 +911,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739576"
   },
   {
     "alert_id": "wheelslip_20251204_233322",
@@ -926,8 +926,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739578"
   },
   {
     "alert_id": "wheelslip_20251204_233422",
@@ -941,8 +941,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739580"
   },
   {
     "alert_id": "wheelslip_20251204_233522",
@@ -956,8 +956,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739582"
   },
   {
     "alert_id": "wheelslip_20251204_233623",
@@ -971,8 +971,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739584"
   },
   {
     "alert_id": "wheelslip_20251204_233723",
@@ -986,8 +986,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739586"
   },
   {
     "alert_id": "wheelslip_20251204_233823",
@@ -1001,8 +1001,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739587"
   },
   {
     "alert_id": "wheelslip_20251204_233923",
@@ -1016,8 +1016,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739589"
   },
   {
     "alert_id": "wheelslip_20251204_234937",
@@ -1031,8 +1031,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739591"
   },
   {
     "alert_id": "wheelslip_20251204_235037",
@@ -1046,8 +1046,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739597"
   },
   {
     "alert_id": "wheelslip_20251204_235137",
@@ -1061,8 +1061,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739599"
   },
   {
     "alert_id": "wheelslip_20251204_235237",
@@ -1076,8 +1076,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739601"
   },
   {
     "alert_id": "wheelslip_20251204_235337",
@@ -1091,8 +1091,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739603"
   },
   {
     "alert_id": "wheelslip_20251204_235437",
@@ -1106,8 +1106,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739604"
   },
   {
     "alert_id": "wheelslip_20251204_235537",
@@ -1121,8 +1121,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739606"
   },
   {
     "alert_id": "wheelslip_20251204_235637",
@@ -1136,8 +1136,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739609"
   },
   {
     "alert_id": "wheelslip_20251204_235737",
@@ -1151,8 +1151,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739611"
   },
   {
     "alert_id": "wheelslip_20251204_235837",
@@ -1166,8 +1166,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739613"
   },
   {
     "alert_id": "wheelslip_20251204_235937",
@@ -1181,8 +1181,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739615"
   },
   {
     "alert_id": "wheelslip_20251205_235046",
@@ -1196,8 +1196,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739616"
   },
   {
     "alert_id": "wheelslip_20251205_235146",
@@ -1211,8 +1211,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739618"
   },
   {
     "alert_id": "wheelslip_20251205_235246",
@@ -1226,8 +1226,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739620"
   },
   {
     "alert_id": "wheelslip_20251205_235346",
@@ -1241,8 +1241,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739622"
   },
   {
     "alert_id": "wheelslip_20251205_235446",
@@ -1256,8 +1256,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739624"
   },
   {
     "alert_id": "wheelslip_20251205_235546",
@@ -1271,8 +1271,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739626"
   },
   {
     "alert_id": "wheelslip_20251205_235646",
@@ -1286,8 +1286,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739627"
   },
   {
     "alert_id": "wheelslip_20251205_235746",
@@ -1301,8 +1301,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739629"
   },
   {
     "alert_id": "wheelslip_20251205_235846",
@@ -1316,8 +1316,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739631"
   },
   {
     "alert_id": "wheelslip_20251205_235946",
@@ -1331,8 +1331,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739633"
   },
   {
     "alert_id": "wheelslip_20251206_000046",
@@ -1346,8 +1346,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739634"
   },
   {
     "alert_id": "wheelslip_20251206_000146",
@@ -1361,8 +1361,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739636"
   },
   {
     "alert_id": "wheelslip_20251206_000246",
@@ -1376,8 +1376,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739638"
   },
   {
     "alert_id": "wheelslip_20251206_000346",
@@ -1391,8 +1391,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739640"
   },
   {
     "alert_id": "wheelslip_20251206_000446",
@@ -1406,8 +1406,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739643"
   },
   {
     "alert_id": "wheelslip_20251206_000547",
@@ -1421,8 +1421,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739644"
   },
   {
     "alert_id": "wheelslip_20251206_000647",
@@ -1436,8 +1436,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739646"
   },
   {
     "alert_id": "wheelslip_20251206_000747",
@@ -1451,8 +1451,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739648"
   },
   {
     "alert_id": "wheelslip_20251206_000847",
@@ -1466,8 +1466,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739650"
   },
   {
     "alert_id": "wheelslip_20251206_000947",
@@ -1481,8 +1481,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739652"
   },
   {
     "alert_id": "wheelslip_20251206_001047",
@@ -1496,8 +1496,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739653"
   },
   {
     "alert_id": "wheelslip_20251206_001147",
@@ -1511,8 +1511,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739655"
   },
   {
     "alert_id": "wheelslip_20251206_001247",
@@ -1526,8 +1526,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739657"
   },
   {
     "alert_id": "wheelslip_20251206_001347",
@@ -1541,8 +1541,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739659"
   },
   {
     "alert_id": "wheelslip_20251206_001447",
@@ -1556,8 +1556,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739661"
   },
   {
     "alert_id": "wheelslip_20251206_001547",
@@ -1571,8 +1571,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.739662"
   },
   {
     "alert_id": "wheelslip_20251206_001647",
@@ -1586,8 +1586,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740227"
   },
   {
     "alert_id": "wheelslip_20251206_001747",
@@ -1601,8 +1601,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740233"
   },
   {
     "alert_id": "wheelslip_20251206_001847",
@@ -1616,8 +1616,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740236"
   },
   {
     "alert_id": "wheelslip_20251206_001947",
@@ -1631,8 +1631,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740238"
   },
   {
     "alert_id": "wheelslip_20251206_002230",
@@ -1646,8 +1646,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740240"
   },
   {
     "alert_id": "wheelslip_20251206_002330",
@@ -1661,8 +1661,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740241"
   },
   {
     "alert_id": "wheelslip_20251206_002430",
@@ -1676,8 +1676,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740243"
   },
   {
     "alert_id": "wheelslip_20251206_002530",
@@ -1691,8 +1691,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740244"
   },
   {
     "alert_id": "wheelslip_20251206_002630",
@@ -1706,8 +1706,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740246"
   },
   {
     "alert_id": "wheelslip_20251206_002730",
@@ -1721,8 +1721,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740247"
   },
   {
     "alert_id": "wheelslip_20251206_002830",
@@ -1736,8 +1736,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740249"
   },
   {
     "alert_id": "wheelslip_20251206_003239",
@@ -1751,8 +1751,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740250"
   },
   {
     "alert_id": "wheelslip_20251206_003339",
@@ -1766,8 +1766,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740252"
   },
   {
     "alert_id": "wheelslip_20251206_003439",
@@ -1781,8 +1781,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740253"
   },
   {
     "alert_id": "wheelslip_20251206_003643",
@@ -1796,8 +1796,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740255"
   },
   {
     "alert_id": "wheelslip_20251206_003743",
@@ -1811,8 +1811,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740257"
   },
   {
     "alert_id": "wheelslip_20251206_122545",
@@ -1826,8 +1826,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740258"
   },
   {
     "alert_id": "wheelslip_20251206_122645",
@@ -1841,8 +1841,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740260"
   },
   {
     "alert_id": "wheelslip_20251206_152909",
@@ -1856,8 +1856,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740261"
   },
   {
     "alert_id": "wheelslip_20251206_153009",
@@ -1871,8 +1871,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740263"
   },
   {
     "alert_id": "wheelslip_20251206_153109",
@@ -1886,8 +1886,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740264"
   },
   {
     "alert_id": "wheelslip_20251206_153209",
@@ -1901,8 +1901,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740266"
   },
   {
     "alert_id": "wheelslip_20251206_153309",
@@ -1916,8 +1916,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740267"
   },
   {
     "alert_id": "wheelslip_20251206_153409",
@@ -1931,8 +1931,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740269"
   },
   {
     "alert_id": "wheelslip_20251206_153509",
@@ -1946,8 +1946,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740270"
   },
   {
     "alert_id": "wheelslip_20251206_153609",
@@ -1961,8 +1961,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740272"
   },
   {
     "alert_id": "wheelslip_20251206_153709",
@@ -1976,8 +1976,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740273"
   },
   {
     "alert_id": "wheelslip_20251206_153809",
@@ -1991,8 +1991,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740275"
   },
   {
     "alert_id": "wheelslip_20251206_153909",
@@ -2006,8 +2006,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740276"
   },
   {
     "alert_id": "wheelslip_20251206_154009",
@@ -2021,8 +2021,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740278"
   },
   {
     "alert_id": "wheelslip_20251206_154109",
@@ -2036,8 +2036,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740279"
   },
   {
     "alert_id": "wheelslip_20251206_154209",
@@ -2051,8 +2051,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740285"
   },
   {
     "alert_id": "wheelslip_20251206_154309",
@@ -2066,8 +2066,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740286"
   },
   {
     "alert_id": "wheelslip_20251206_154409",
@@ -2081,8 +2081,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740287"
   },
   {
     "alert_id": "wheelslip_20251206_154509",
@@ -2096,8 +2096,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740289"
   },
   {
     "alert_id": "wheelslip_20251206_160027",
@@ -2111,8 +2111,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740290"
   },
   {
     "alert_id": "wheelslip_20251206_160127",
@@ -2126,8 +2126,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740292"
   },
   {
     "alert_id": "wheelslip_20251206_160227",
@@ -2141,8 +2141,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740294"
   },
   {
     "alert_id": "wheelslip_20251206_160327",
@@ -2156,8 +2156,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740295"
   },
   {
     "alert_id": "wheelslip_20251206_160427",
@@ -2171,8 +2171,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740296"
   },
   {
     "alert_id": "wheelslip_20251206_160527",
@@ -2186,8 +2186,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740298"
   },
   {
     "alert_id": "wheelslip_20251206_160627",
@@ -2201,8 +2201,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740299"
   },
   {
     "alert_id": "wheelslip_20251206_160727",
@@ -2216,8 +2216,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740301"
   },
   {
     "alert_id": "wheelslip_20251206_160827",
@@ -2231,8 +2231,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740302"
   },
   {
     "alert_id": "wheelslip_20251206_160927",
@@ -2246,8 +2246,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740304"
   },
   {
     "alert_id": "wheelslip_20251206_161027",
@@ -2261,8 +2261,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740305"
   },
   {
     "alert_id": "wheelslip_20251206_161127",
@@ -2276,8 +2276,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740307"
   },
   {
     "alert_id": "wheelslip_20251206_161227",
@@ -2291,8 +2291,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740308"
   },
   {
     "alert_id": "wheelslip_20251206_161327",
@@ -2306,8 +2306,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740310"
   },
   {
     "alert_id": "wheelslip_20251207_002432",
@@ -2321,8 +2321,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740311"
   },
   {
     "alert_id": "wheelslip_20251207_002532",
@@ -2336,8 +2336,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740312"
   },
   {
     "alert_id": "wheelslip_20251207_002811",
@@ -2351,8 +2351,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740314"
   },
   {
     "alert_id": "wheelslip_20251207_002911",
@@ -2366,8 +2366,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740315"
   },
   {
     "alert_id": "wheelslip_20251207_003011",
@@ -2381,8 +2381,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740317"
   },
   {
     "alert_id": "wheelslip_20251207_003111",
@@ -2396,8 +2396,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740318"
   },
   {
     "alert_id": "wheelslip_20251207_003211",
@@ -2411,8 +2411,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740319"
   },
   {
     "alert_id": "wheelslip_20251207_003311",
@@ -2426,8 +2426,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740321"
   },
   {
     "alert_id": "wheelslip_20251207_005229",
@@ -2441,8 +2441,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740322"
   },
   {
     "alert_id": "wheelslip_20251207_005329",
@@ -2456,8 +2456,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740324"
   },
   {
     "alert_id": "wheelslip_20251207_010100",
@@ -2471,8 +2471,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740325"
   },
   {
     "alert_id": "wheelslip_20251207_010201",
@@ -2486,8 +2486,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740327"
   },
   {
     "alert_id": "wheelslip_20251207_010722",
@@ -2501,8 +2501,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740328"
   },
   {
     "alert_id": "wheelslip_20251207_010822",
@@ -2516,8 +2516,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740330"
   },
   {
     "alert_id": "wheelslip_20251207_010922",
@@ -2531,8 +2531,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740331"
   },
   {
     "alert_id": "wheelslip_20251207_011022",
@@ -2546,8 +2546,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740333"
   },
   {
     "alert_id": "wheelslip_20251207_011122",
@@ -2561,8 +2561,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740334"
   },
   {
     "alert_id": "wheelslip_20251207_011222",
@@ -2576,8 +2576,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740336"
   },
   {
     "alert_id": "speed_20251209_234539",
@@ -2866,8 +2866,8 @@
     "data": {
       "error": "'<' not supported between instances of 'NoneType' and 'int'"
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T22:30:52.160317"
   },
   {
     "alert_id": "health_check_20251213_133216",
@@ -2879,8 +2879,8 @@
     "data": {
       "error": "'<' not supported between instances of 'NoneType' and 'int'"
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:43:14.233336"
   },
   {
     "alert_id": "health_check_20251213_133316",
@@ -2920,8 +2920,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740341"
   },
   {
     "alert_id": "wheelslip_20251214_005631",
@@ -2935,8 +2935,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740343"
   },
   {
     "alert_id": "wheelslip_20251214_005849",
@@ -2950,8 +2950,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740344"
   },
   {
     "alert_id": "wheelslip_20251214_010257",
@@ -2965,8 +2965,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740346"
   },
   {
     "alert_id": "wheelslip_20251214_010357",
@@ -2980,8 +2980,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740347"
   },
   {
     "alert_id": "wheelslip_20251214_010457",
@@ -2995,8 +2995,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740349"
   },
   {
     "alert_id": "wheelslip_20251214_010557",
@@ -3010,8 +3010,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740351"
   },
   {
     "alert_id": "wheelslip_20251214_010657",
@@ -3025,8 +3025,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740352"
   },
   {
     "alert_id": "wheelslip_20251214_010757",
@@ -3040,8 +3040,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740353"
   },
   {
     "alert_id": "wheelslip_20251214_010857",
@@ -3055,8 +3055,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740355"
   },
   {
     "alert_id": "wheelslip_20251214_010957",
@@ -3070,8 +3070,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740356"
   },
   {
     "alert_id": "wheelslip_20251214_011057",
@@ -3085,8 +3085,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740358"
   },
   {
     "alert_id": "wheelslip_20251214_011157",
@@ -3100,8 +3100,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740359"
   },
   {
     "alert_id": "wheelslip_20251214_011257",
@@ -3115,8 +3115,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740360"
   },
   {
     "alert_id": "wheelslip_20251214_011357",
@@ -3130,8 +3130,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740362"
   },
   {
     "alert_id": "wheelslip_20251214_011457",
@@ -3145,8 +3145,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740363"
   },
   {
     "alert_id": "wheelslip_20251214_011557",
@@ -3160,8 +3160,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740365"
   },
   {
     "alert_id": "wheelslip_20251214_011657",
@@ -3175,8 +3175,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740366"
   },
   {
     "alert_id": "wheelslip_20251214_011757",
@@ -3190,8 +3190,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740368"
   },
   {
     "alert_id": "wheelslip_20251214_011857",
@@ -3205,8 +3205,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740369"
   },
   {
     "alert_id": "wheelslip_20251214_011957",
@@ -3220,8 +3220,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740370"
   },
   {
     "alert_id": "wheelslip_20251214_012057",
@@ -3235,8 +3235,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740372"
   },
   {
     "alert_id": "wheelslip_20251214_012157",
@@ -3250,8 +3250,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740373"
   },
   {
     "alert_id": "wheelslip_20251214_012257",
@@ -3265,8 +3265,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740375"
   },
   {
     "alert_id": "wheelslip_20251214_012358",
@@ -3280,8 +3280,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740376"
   },
   {
     "alert_id": "wheelslip_20251214_012458",
@@ -3295,8 +3295,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740378"
   },
   {
     "alert_id": "wheelslip_20251214_012558",
@@ -3310,8 +3310,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740379"
   },
   {
     "alert_id": "wheelslip_20251214_012658",
@@ -3325,8 +3325,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740381"
   },
   {
     "alert_id": "wheelslip_20251214_012758",
@@ -3340,8 +3340,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740382"
   },
   {
     "alert_id": "wheelslip_20251214_012858",
@@ -3355,8 +3355,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740383"
   },
   {
     "alert_id": "wheelslip_20251214_012958",
@@ -3370,8 +3370,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740385"
   },
   {
     "alert_id": "wheelslip_20251214_013058",
@@ -3385,8 +3385,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740386"
   },
   {
     "alert_id": "wheelslip_20251214_013158",
@@ -3400,8 +3400,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740388"
   },
   {
     "alert_id": "wheelslip_20251214_013258",
@@ -3415,8 +3415,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740389"
   },
   {
     "alert_id": "wheelslip_20251214_013358",
@@ -3430,8 +3430,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740391"
   },
   {
     "alert_id": "wheelslip_20251214_013458",
@@ -3445,8 +3445,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740392"
   },
   {
     "alert_id": "wheelslip_20251214_013558",
@@ -3460,8 +3460,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740394"
   },
   {
     "alert_id": "wheelslip_20251214_013658",
@@ -3475,8 +3475,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740395"
   },
   {
     "alert_id": "wheelslip_20251214_013758",
@@ -3490,8 +3490,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740397"
   },
   {
     "alert_id": "wheelslip_20251214_013858",
@@ -3505,8 +3505,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740785"
   },
   {
     "alert_id": "wheelslip_20251214_013959",
@@ -3520,8 +3520,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740790"
   },
   {
     "alert_id": "wheelslip_20251214_014059",
@@ -3535,8 +3535,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740794"
   },
   {
     "alert_id": "wheelslip_20251214_014159",
@@ -3550,8 +3550,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740797"
   },
   {
     "alert_id": "wheelslip_20251214_014259",
@@ -3565,8 +3565,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740801"
   },
   {
     "alert_id": "wheelslip_20251214_014359",
@@ -3580,8 +3580,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740804"
   },
   {
     "alert_id": "wheelslip_20251214_014459",
@@ -3595,8 +3595,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740807"
   },
   {
     "alert_id": "wheelslip_20251214_014559",
@@ -3610,8 +3610,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740811"
   },
   {
     "alert_id": "wheelslip_20251214_014659",
@@ -3625,8 +3625,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740815"
   },
   {
     "alert_id": "wheelslip_20251214_014759",
@@ -3640,8 +3640,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740818"
   },
   {
     "alert_id": "wheelslip_20251214_014859",
@@ -3655,8 +3655,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740821"
   },
   {
     "alert_id": "wheelslip_20251214_014959",
@@ -3670,8 +3670,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740825"
   },
   {
     "alert_id": "wheelslip_20251214_015059",
@@ -3685,8 +3685,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740828"
   },
   {
     "alert_id": "wheelslip_20251214_015159",
@@ -3700,8 +3700,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740832"
   },
   {
     "alert_id": "wheelslip_20251214_015259",
@@ -3715,8 +3715,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740835"
   },
   {
     "alert_id": "wheelslip_20251214_015359",
@@ -3730,8 +3730,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740842"
   },
   {
     "alert_id": "wheelslip_20251214_015459",
@@ -3745,8 +3745,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740845"
   },
   {
     "alert_id": "wheelslip_20251214_015559",
@@ -3760,8 +3760,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740849"
   },
   {
     "alert_id": "wheelslip_20251214_015659",
@@ -3775,8 +3775,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740852"
   },
   {
     "alert_id": "wheelslip_20251214_015800",
@@ -3790,8 +3790,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740855"
   },
   {
     "alert_id": "wheelslip_20251214_015900",
@@ -3805,8 +3805,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740859"
   },
   {
     "alert_id": "wheelslip_20251214_020000",
@@ -3820,8 +3820,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740863"
   },
   {
     "alert_id": "wheelslip_20251214_020100",
@@ -3835,8 +3835,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740866"
   },
   {
     "alert_id": "wheelslip_20251214_020200",
@@ -3850,8 +3850,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740869"
   },
   {
     "alert_id": "wheelslip_20251214_020300",
@@ -3880,8 +3880,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740873"
   },
   {
     "alert_id": "wheelslip_20251214_020500",
@@ -3895,8 +3895,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740876"
   },
   {
     "alert_id": "wheelslip_20251214_020600",
@@ -3910,8 +3910,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740882"
   },
   {
     "alert_id": "wheelslip_20251214_020700",
@@ -3925,8 +3925,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740885"
   },
   {
     "alert_id": "wheelslip_20251214_020800",
@@ -3940,8 +3940,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740888"
   },
   {
     "alert_id": "wheelslip_20251214_020900",
@@ -3955,8 +3955,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740891"
   },
   {
     "alert_id": "wheelslip_20251214_021000",
@@ -3970,8 +3970,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740894"
   },
   {
     "alert_id": "wheelslip_20251214_021100",
@@ -3985,8 +3985,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740898"
   },
   {
     "alert_id": "wheelslip_20251214_021200",
@@ -4000,8 +4000,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740902"
   },
   {
     "alert_id": "wheelslip_20251214_021300",
@@ -4015,8 +4015,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740904"
   },
   {
     "alert_id": "wheelslip_20251214_021400",
@@ -4030,8 +4030,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740907"
   },
   {
     "alert_id": "wheelslip_20251214_021500",
@@ -4045,8 +4045,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740911"
   },
   {
     "alert_id": "wheelslip_20251214_021600",
@@ -4060,8 +4060,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740914"
   },
   {
     "alert_id": "wheelslip_20251214_021700",
@@ -4075,8 +4075,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740916"
   },
   {
     "alert_id": "wheelslip_20251214_024435",
@@ -4090,8 +4090,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740918"
   },
   {
     "alert_id": "wheelslip_20251214_201748",
@@ -4105,8 +4105,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740920"
   },
   {
     "alert_id": "wheelslip_20251214_201848",
@@ -4120,8 +4120,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740922"
   },
   {
     "alert_id": "wheelslip_20251214_201948",
@@ -4135,8 +4135,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740923"
   },
   {
     "alert_id": "wheelslip_20251214_202048",
@@ -4150,8 +4150,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740925"
   },
   {
     "alert_id": "wheelslip_20251214_202148",
@@ -4165,8 +4165,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740926"
   },
   {
     "alert_id": "wheelslip_20251214_202248",
@@ -4180,8 +4180,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740928"
   },
   {
     "alert_id": "wheelslip_20251214_202348",
@@ -4195,8 +4195,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740929"
   },
   {
     "alert_id": "wheelslip_20251214_202448",
@@ -4210,8 +4210,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740931"
   },
   {
     "alert_id": "wheelslip_20251214_202548",
@@ -4225,8 +4225,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740932"
   },
   {
     "alert_id": "wheelslip_20251214_202648",
@@ -4240,8 +4240,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740934"
   },
   {
     "alert_id": "wheelslip_20251214_202748",
@@ -4255,8 +4255,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740935"
   },
   {
     "alert_id": "wheelslip_20251214_202848",
@@ -4270,8 +4270,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740937"
   },
   {
     "alert_id": "wheelslip_20251214_202948",
@@ -4285,8 +4285,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740938"
   },
   {
     "alert_id": "wheelslip_20251214_203048",
@@ -4300,8 +4300,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740940"
   },
   {
     "alert_id": "wheelslip_20251214_203148",
@@ -4315,8 +4315,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740941"
   },
   {
     "alert_id": "wheelslip_20251214_203248",
@@ -4330,8 +4330,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740943"
   },
   {
     "alert_id": "wheelslip_20251214_203348",
@@ -4345,8 +4345,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740944"
   },
   {
     "alert_id": "wheelslip_20251214_203448",
@@ -4360,8 +4360,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740946"
   },
   {
     "alert_id": "wheelslip_20251214_203548",
@@ -4375,8 +4375,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740947"
   },
   {
     "alert_id": "wheelslip_20251214_203648",
@@ -4390,8 +4390,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740949"
   },
   {
     "alert_id": "wheelslip_20251214_203748",
@@ -4405,8 +4405,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740950"
   },
   {
     "alert_id": "wheelslip_20251214_203848",
@@ -4420,8 +4420,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740951"
   },
   {
     "alert_id": "wheelslip_20251214_203948",
@@ -4435,8 +4435,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740953"
   },
   {
     "alert_id": "wheelslip_20251214_204048",
@@ -4450,8 +4450,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740954"
   },
   {
     "alert_id": "wheelslip_20251214_204148",
@@ -4465,8 +4465,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740956"
   },
   {
     "alert_id": "wheelslip_20251214_204248",
@@ -4480,8 +4480,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740957"
   },
   {
     "alert_id": "wheelslip_20251214_204348",
@@ -4495,8 +4495,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740959"
   },
   {
     "alert_id": "wheelslip_20251214_204448",
@@ -4510,8 +4510,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740960"
   },
   {
     "alert_id": "wheelslip_20251214_204548",
@@ -4525,8 +4525,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740961"
   },
   {
     "alert_id": "wheelslip_20251214_204648",
@@ -4540,8 +4540,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740963"
   },
   {
     "alert_id": "wheelslip_20251214_204748",
@@ -4555,8 +4555,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740964"
   },
   {
     "alert_id": "wheelslip_20251214_204848",
@@ -4570,8 +4570,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740966"
   },
   {
     "alert_id": "wheelslip_20251214_204949",
@@ -4585,8 +4585,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740967"
   },
   {
     "alert_id": "wheelslip_20251214_205049",
@@ -4600,8 +4600,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740969"
   },
   {
     "alert_id": "wheelslip_20251214_205149",
@@ -4615,8 +4615,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740970"
   },
   {
     "alert_id": "wheelslip_20251214_205249",
@@ -4630,8 +4630,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740972"
   },
   {
     "alert_id": "wheelslip_20251214_205349",
@@ -4645,8 +4645,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740974"
   },
   {
     "alert_id": "wheelslip_20251214_205449",
@@ -4660,8 +4660,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740975"
   },
   {
     "alert_id": "wheelslip_20251214_205549",
@@ -4675,8 +4675,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740976"
   },
   {
     "alert_id": "wheelslip_20251214_205649",
@@ -4690,8 +4690,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740978"
   },
   {
     "alert_id": "wheelslip_20251214_205749",
@@ -4705,8 +4705,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740979"
   },
   {
     "alert_id": "wheelslip_20251214_212036",
@@ -4720,8 +4720,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740981"
   },
   {
     "alert_id": "wheelslip_20251214_212136",
@@ -4735,8 +4735,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740982"
   },
   {
     "alert_id": "wheelslip_20251214_212236",
@@ -4750,8 +4750,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740984"
   },
   {
     "alert_id": "wheelslip_20251214_212336",
@@ -4765,8 +4765,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740985"
   },
   {
     "alert_id": "wheelslip_20251214_212436",
@@ -4780,8 +4780,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740986"
   },
   {
     "alert_id": "wheelslip_20251214_212536",
@@ -4795,8 +4795,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740988"
   },
   {
     "alert_id": "wheelslip_20251214_212636",
@@ -4810,8 +4810,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740989"
   },
   {
     "alert_id": "wheelslip_20251214_212736",
@@ -4825,8 +4825,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740991"
   },
   {
     "alert_id": "wheelslip_20251214_212836",
@@ -4840,8 +4840,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740992"
   },
   {
     "alert_id": "wheelslip_20251214_212936",
@@ -4855,8 +4855,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740994"
   },
   {
     "alert_id": "wheelslip_20251214_213036",
@@ -4870,8 +4870,8 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740995"
   },
   {
     "alert_id": "wheelslip_20251214_213136",
@@ -4885,7 +4885,172 @@
       "threshold": 0.5,
       "slip_amount": 0.5
     },
-    "acknowledged": false,
-    "acknowledged_at": null
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740997"
+  },
+  {
+    "alert_id": "wheelslip_20251214_213236",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-14T21:32:36.946295",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.740998"
+  },
+  {
+    "alert_id": "wheelslip_20251214_213336",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-14T21:33:36.953450",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.741000"
+  },
+  {
+    "alert_id": "wheelslip_20251214_213436",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-14T21:34:36.960912",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.741001"
+  },
+  {
+    "alert_id": "wheelslip_20251214_213536",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-14T21:35:36.969447",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.741003"
+  },
+  {
+    "alert_id": "wheelslip_20251214_213636",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-14T21:36:36.979193",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.741004"
+  },
+  {
+    "alert_id": "wheelslip_20251214_213736",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-14T21:37:36.987695",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.741006"
+  },
+  {
+    "alert_id": "wheelslip_20251214_213836",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-14T21:38:36.997767",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.741007"
+  },
+  {
+    "alert_id": "wheelslip_20251214_213937",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-14T21:39:37.008742",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.741008"
+  },
+  {
+    "alert_id": "wheelslip_20251214_214037",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-14T21:40:37.018285",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.741010"
+  },
+  {
+    "alert_id": "wheelslip_20251214_214137",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-14T21:41:37.027920",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.741012"
+  },
+  {
+    "alert_id": "wheelslip_20251214_214237",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-14T21:42:37.035443",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-14T21:42:57.741013"
   }
 ]
