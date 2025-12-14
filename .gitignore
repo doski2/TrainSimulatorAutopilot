@@ -254,3 +254,6 @@ test_*.json
 # Package files
 *.tar.gz
 *.zip
+
+# Telemetry history (large, keep local only)
+data/telemetry_history.json
