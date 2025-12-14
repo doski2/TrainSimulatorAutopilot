@@ -1,5 +1,7 @@
 // Dashboard JavaScript for Train Simulator Autopilot
 let socket;
+// Conjunto de alert IDs que ya fueron notificadas en el cliente
+let knownAlertIds = new Set();
 let speedChart;
 let telemetryHistory = [];
 let maxHistoryPoints = 50;
@@ -730,7 +732,7 @@ function updateConnectionStatus(connected) {
     }
 }
 
-function showAlert(message, type = 'info') {
+function showAlert(message, type = 'info', sticky = false) {
     const alertContainer = document.getElementById('alert-container');
 
     const alertId = 'alert-' + Date.now();
@@ -744,13 +746,15 @@ function showAlert(message, type = 'info') {
 
     alertContainer.insertAdjacentHTML('beforeend', alertHtml);
 
-    // Auto-remover después de 5 segundos
-    setTimeout(() => {
-        const alertElement = document.getElementById(alertId);
-        if (alertElement) {
-            alertElement.remove();
-        }
-    }, 5000);
+    // Auto-remover después de 5 segundos a menos que sea persistente (sticky)
+    if (!sticky) {
+        setTimeout(() => {
+            const alertElement = document.getElementById(alertId);
+            if (alertElement) {
+                alertElement.remove();
+            }
+        }, 5000);
+    }
 }
 
 // Funciones de utilidad
@@ -1249,6 +1253,24 @@ function updateActiveAlerts(alertsData) {
         alerts = [];
     }
 
+    // Detectar alertas nuevas: crear set de ids actuales
+    const currentIds = new Set(alerts.map(a => a.alert_id));
+
+    // Notificar nuevas alertas criticas (persistentes)
+    alerts.forEach(alert => {
+        if (!knownAlertIds.has(alert.alert_id)) {
+            // Alerta nueva
+            if (alert.severity === 'critical') {
+                // Mostrar notificación persistente
+                showAlert(`${alert.title}: ${alert.message}`, 'danger', true);
+            } else if (alert.severity === 'high') {
+                // Notificar alto nivel de severidad (no persistente)
+                showAlert(`${alert.title}: ${alert.message}`, 'warning', false);
+            }
+            knownAlertIds.add(alert.alert_id);
+        }
+    });
+
     // Actualizar contador
     countBadge.textContent = alerts.length;
     countBadge.className = `badge ms-2 ${getAlertBadgeClass(alerts.length)}`;
@@ -1283,6 +1305,10 @@ function updateActiveAlerts(alertsData) {
     `).join('');
 
     container.innerHTML = alertsHtml;
+
+    // Limpiar IDs conocidos que ya no están activos (permitir futuras notificaciones)
+    const toRemove = [...knownAlertIds].filter(id => !currentIds.has(id));
+    toRemove.forEach(id => knownAlertIds.delete(id));
 }
 
 // Obtener clase CSS para severidad de alerta
