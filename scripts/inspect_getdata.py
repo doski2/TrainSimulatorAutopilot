@@ -2,7 +2,7 @@ import os
 import sys
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if ROOT not in sys.path:
-	sys.path.insert(0, ROOT)
+    sys.path.insert(0, ROOT)
 from tsc_integration import TSCIntegration
 integ = TSCIntegration()
 raw = integ.leer_datos_archivo()
