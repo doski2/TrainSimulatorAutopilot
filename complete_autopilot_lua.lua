@@ -252,11 +252,7 @@ function checkAlerts()
         SysCall("PlayerEngineSetControlValue", "Regulator", reduced_throttle, 0)
     end
 
-    -- Fuel level alert
-    local fuelLevel = Call("GetFuelLevel") or 1.0
-    if fuelLevel < 0.15 then  -- Low fuel
-        SysCall("ScenarioManager:ShowMessage", string.format("LOW FUEL: %.1f%%", fuelLevel * 100), 5, 3)
-    end
+    -- Fuel level check removed (TSC scenarios use infinite fuel)
 
     -- Speed limit monitoring
     local currentLimit = Call("GetCurrentSpeedLimit") or 0
@@ -453,7 +449,6 @@ function getdata()
         "ControlName:AuxReservoirPressure\nControlValue:%.2f\n" ..
         "ControlName:BrakePipePressureTailEnd\nControlValue:%.2f\n" ..
         "ControlName:LocoBrakeCylinderPressurePSIDisplayed\nControlValue:%.2f\n" ..
-        "ControlName:FuelLevel\nControlValue:%.2f\n" ..
         "ControlName:CurrentSpeedLimit\nControlValue:%.2f\n" ..
         "ControlName:NextSpeedLimitSpeed\nControlValue:%.2f\n" ..
         "ControlName:NextSpeedLimitDistance\nControlValue:%.2f\n" ..
@@ -480,7 +475,7 @@ function getdata()
         Call("GetControlValue", "AuxReservoirPressure", 0) or 0,
         Call("GetControlValue", "BrakePipePressureTailEnd", 0) or 0,
         Call("GetControlValue", "LocoBrakeCylinderPressurePSIDisplayed", 0) or 0,
-        Call("GetFuelLevel") or 0,
+        -- FuelLevel removed (TSC trains use infinite fuel)
         Call("GetCurrentSpeedLimit") or 0,
         Call("GetNextSpeedLimit") or 0,
         Call("GetNextSpeedLimitDistance") or 0,

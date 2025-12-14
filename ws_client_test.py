@@ -60,6 +60,25 @@ def on_telemetry_update(data):
                 print(f"   {k}:", telemetry.get(k))
         else:
             print("  telemetry payload not dict; raw:", data)
+        # Además de la telemetría, algunos servidores incluyen listas de alertas activas
+        try:
+            alerts_list = data.get("active_alerts_list") if isinstance(data, dict) else None
+            if alerts_list:
+                print(f"  active_alerts_list: {len(alerts_list)} alerts (showing up to 3):")
+                for a in alerts_list[:3]:
+                    # a debería ser un dict con id, severity, name, message
+                    aid = a.get("id") if isinstance(a, dict) else a
+                    sev = a.get("severity") if isinstance(a, dict) else None
+                    name = a.get("name") if isinstance(a, dict) else None
+                    msg = a.get("message") if isinstance(a, dict) else None
+                    print(f"    - {aid} | {sev} | {name} | {msg}")
+            else:
+                # Fallback a la lista corta de nuevas alertas si existe
+                alerts_short = data.get("alerts") if isinstance(data, dict) else None
+                if alerts_short:
+                    print(f"  new alerts this cycle: {len(alerts_short)}")
+        except Exception as e:
+            print("[CLIENT] Error processing active_alerts_list:", e)
     except Exception as e:
         print("[CLIENT] Error processing telemetry_update:", e)
 

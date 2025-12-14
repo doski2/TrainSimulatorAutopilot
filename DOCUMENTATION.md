@@ -91,11 +91,13 @@ python configurator.py
    command_file_path = C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins\SendCommand.txt
    update_frequency_hz = 10
 
-  fuel_capacity_gallons = 300.0
+  # NOTE: Fuel metrics are deprecated for TSC integration. TSC trains use infinite fuel.
+  # The configuration option `fuel_capacity_gallons` is no longer required for TSC.
+  # If you integrate with a system that reports fuel in % or raw gallons, configure the integration accordingly in that environment.
 
   ```
 
-Fuel capacity: Add `fuel_capacity_gallons` into the `[TSC_INTEGRATION]` section in `config.ini` to make the dashboard show literal gallons instead of percentage when `FuelLevel` is a fraction (value 0..1). Example:
+Fuel capacity: `FuelLevel` is not used for TSC (trains have infinite fuel). The dashboard still accepts `fuel_capacity_gallons` configuration only for non-TSC integrations when appropriate.
 
 ```
 
@@ -117,6 +119,17 @@ If not set, the dashboard will show percentage when `FuelLevel` is 0..1; if `Fue
    - Visualizaciones Bokeh: `http://localhost:5006`
 
 ---
+
+## Migración: Eliminación de FuelLevel y limpieza de datos
+
+En la versión actual, `FuelLevel` y métricas de combustible han sido marcadas como no implementadas para integraciones TSC (Train Simulator Classic) y no se usan en el piloto automático. Si tu `alerts.json` o `data/telemetry_history.json` contienen entradas históricas relacionadas con combustible, ejecuta el script de limpieza:
+
+```powershell
+& .\.venv\Scripts\Activate.ps1
+C:/Users/doski/TrainSimulatorAutopilot/.venv/Scripts/python.exe scripts/cleanup_persisted_fuel.py
+```
+
+Este script crea respaldos y elimina entradas/keys de combustible históricas.
 
 ## 🎮 Uso del Sistema
 

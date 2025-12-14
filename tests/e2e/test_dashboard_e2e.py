@@ -79,11 +79,10 @@ class TestDashboardE2E:
             "engineTemp": 210.0,
             "oilPressure": 55.0,
             "amps": 1200.0,
-            "fuelConsumption": 4.2,
             "efficiency": 145.0,
             "runtime": 3.5,
             "brakePressure": 25.0,
-            "fuelLevel": 75.0,
+            # fuel metrics removed
             "sandLevel": 80.0,
             "waterLevel": 90.0,
             "rpm": 950.0,
@@ -95,7 +94,6 @@ class TestDashboardE2E:
             "engineTemp",
             "oilPressure",
             "amps",
-            "fuelConsumption",
         ]
         for metric in critical_metrics:
             assert metric in realistic_data
@@ -107,7 +105,8 @@ class TestDashboardE2E:
         assert 100 <= realistic_data["engineTemp"] <= 300  # °F
         assert 20 <= realistic_data["oilPressure"] <= 100  # psi
         assert 500 <= realistic_data["amps"] <= 2000  # amperes
-        assert 0 <= realistic_data["fuelConsumption"] <= 10  # gal/h
+        # Fuel metrics removed; verify efficiency instead
+        assert 50 <= realistic_data["efficiency"] <= 200
 
     def test_alert_system_integration(self):
         """Test de integración del sistema de alertas."""
@@ -115,8 +114,7 @@ class TestDashboardE2E:
         alert_triggering_data = {
             "engineTemp": 290.0,  # Sobrecalentamiento
             "oilPressure": 15.0,  # Baja presión aceite
-            "fuelLevel": 5.0,  # Combustible crítico
-            "fuelConsumption": 7.0,  # Alto consumo
+            # Fuel-related metrics removed
             "efficiency": 70.0,  # Baja eficiencia
             "runtime": 12.0,  # Tiempo prolongado
             "brakePressure": 95.0,  # Alta presión freno
@@ -129,10 +127,7 @@ class TestDashboardE2E:
             alerts_expected.append("overheat")
         if alert_triggering_data["oilPressure"] < 30:
             alerts_expected.append("low_oil")
-        if alert_triggering_data["fuelLevel"] < 15:
-            alerts_expected.append("low_fuel")
-        if alert_triggering_data["fuelConsumption"] > 5.0:
-            alerts_expected.append("high_consumption")
+        # Fuel-related alerts removed
         if alert_triggering_data["efficiency"] < 100:
             alerts_expected.append("low_efficiency")
         if alert_triggering_data["runtime"] > 8.0:

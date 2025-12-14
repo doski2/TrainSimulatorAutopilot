@@ -296,16 +296,7 @@ def initialize_system():
                 except Exception:
                     # Ignore if autopilot doesn't have the attribute
                     pass
-                try:
-                    fuel_capacity = config.getfloat("TSC_INTEGRATION", "fuel_capacity_gallons", fallback=None)
-                except Exception:
-                    fuel_capacity = None
-                # If TSC integration already exists and is an instance, set fuel capacity so convertir_datos_ia can compute gallons
-                if tsc_integration is not None and hasattr(tsc_integration, 'fuel_capacity_gallons'):
-                    try:
-                        tsc_integration.fuel_capacity_gallons = fuel_capacity
-                    except Exception:
-                        pass
+                # Fuel capacity configuration removed (feature deprecated)
         except Exception:
             pass
 

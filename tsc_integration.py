@@ -65,7 +65,7 @@ class TSCIntegration:
             "SpeedoType": "tipo_velocimetro",
             "Acceleration": "aceleracion",
             "Gradient": "pendiente",
-            "FuelLevel": "combustible",
+            # FuelLevel removed from mapping (TSC uses infinite fuel in scenarios)
             "CurrentSpeedLimit": "limite_velocidad",
             "NextSpeedLimitSpeed": "limite_velocidad_siguiente",
             "NextSpeedLimitDistance": "distancia_limite_siguiente",
@@ -118,16 +118,12 @@ class TSCIntegration:
 
         # Valores anteriores de comandos para evitar envíos innecesarios
         self.comandos_anteriores = {}
-        # Fuel capacity for converting fraction to gallons (optional)
+        # Fuel capacity handling removed; keep placeholder for compatibility
         self.fuel_capacity_gallons = None
         # Maximum RPM used for inferring RPM when direct RPM control isn't provided
         # Default matches common locomotive max RPM (configurable via API/back-end)
         self.max_engine_rpm = 5000.0
-        if fuel_capacity_gallons is not None:
-            try:
-                self.fuel_capacity_gallons = float(fuel_capacity_gallons)
-            except Exception:
-                self.fuel_capacity_gallons = None
+        # Fuel capacity option ignored by integration; configuration removed
 
     def _to_float(self, val: Any, default: float = 0.0) -> float:
         """Safely convert a value to float, returning default on failure."""
@@ -445,50 +441,10 @@ class TSCIntegration:
         datos_ia.setdefault("posicion_freno_tren", 0.0)
         datos_ia.setdefault("fecha_hora", datetime.now().isoformat())
 
-        # Normalizar y convertir combustible a % y galones cuando sea posible
-        try:
-            raw_fuel = datos_ia.get("combustible", None)
-            if raw_fuel is not None:
-                try:
-                    raw_fuel = self._parse_optional_float(raw_fuel)
-                except Exception:
-                    raw_fuel = None
-            if raw_fuel is None:
-                datos_ia.setdefault("combustible_porcentaje", None)
-                datos_ia.setdefault("combustible_galones", None)
-            else:
-                # If capacity configured, use it to compute gallons/percentage
-                if self.fuel_capacity_gallons:
-                    if raw_fuel <= 1.0:
-                        # Fraction 0..1
-                        pct = raw_fuel * 100.0
-                        gal = raw_fuel * self.fuel_capacity_gallons
-                    else:
-                        # Treat as gallons
-                        gal = raw_fuel
-                        pct = (float(gal) / self.fuel_capacity_gallons) * 100.0
-                    datos_ia["combustible_porcentaje"] = round(pct, 1)
-                    datos_ia["combustible_galones"] = round(gal, 2)
-                    datos_ia["combustible"] = datos_ia["combustible_porcentaje"]
-                else:
-                    # No capacity: infer whether it's a fraction or percent or gallons
-                    if raw_fuel <= 1.0:
-                        datos_ia["combustible_porcentaje"] = round(raw_fuel * 100.0, 1)
-                        datos_ia["combustible_galones"] = None
-                        datos_ia["combustible"] = datos_ia["combustible_porcentaje"]
-                    elif raw_fuel <= 100.0:
-                        # Likely already percentage
-                        datos_ia["combustible_porcentaje"] = round(raw_fuel, 1)
-                        datos_ia["combustible_galones"] = None
-                        datos_ia["combustible"] = datos_ia["combustible_porcentaje"]
-                    else:
-                        # Big number: likely gallons; keep combustible percent unknown
-                        datos_ia["combustible_porcentaje"] = None
-                        datos_ia["combustible_galones"] = round(raw_fuel, 2)
-        except Exception:
-            # Keep defaults if conversion fails
-            datos_ia.setdefault("combustible_porcentaje", None)
-            datos_ia.setdefault("combustible_galones", None)
+        # Fuel telemetry removed: keep compatibility keys but filled with None
+        datos_ia.setdefault("combustible_porcentaje", None)
+        datos_ia.setdefault("combustible_galones", None)
+        datos_ia.setdefault("combustible", None)
 
         # Presencia de campos: indicar si el archivo GetData.txt contenía ciertos controles
         datos_ia["presion_tubo_freno_presente"] = "AirBrakePipePressurePSI" in datos_archivo

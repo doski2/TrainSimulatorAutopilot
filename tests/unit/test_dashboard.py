@@ -48,7 +48,7 @@ class TestDashboardSD40:
             "engineTemp": 180.0,
             "oilPressure": 50.0,
             "amps": 800.0,
-            "fuelConsumption": 3.5,
+            # fuel metrics removed
             "efficiency": 120.0,
             "runtime": 2.5,
             "brakePressure": 60.0,
@@ -60,7 +60,6 @@ class TestDashboardSD40:
             "engineTemp",
             "oilPressure",
             "amps",
-            "fuelConsumption",
             "efficiency",
             "runtime",
             "brakePressure",
@@ -76,8 +75,7 @@ class TestDashboardSD40:
         alert_data = {
             "engineTemp": 280.0,  # Sobrecalentamiento
             "oilPressure": 20.0,  # Baja presión aceite
-            "fuelLevel": 10.0,  # Combustible bajo
-            "fuelConsumption": 6.0,  # Alto consumo
+            # fuel metrics removed
             "efficiency": 80.0,  # Baja eficiencia
             "runtime": 10.0,  # Tiempo prolongado
             "brakePressure": 90.0,  # Alta presión freno
@@ -86,8 +84,7 @@ class TestDashboardSD40:
         # Verificar condiciones de alerta
         assert alert_data["engineTemp"] > 250  # Sobrecalentamiento
         assert alert_data["oilPressure"] < 30  # Baja presión
-        assert alert_data["fuelLevel"] < 15  # Combustible bajo
-        assert alert_data["fuelConsumption"] > 5.0  # Alto consumo
+        # Fuel metrics removed, no assertions here
         assert alert_data["efficiency"] < 100  # Baja eficiencia
         assert alert_data["runtime"] > 8.0  # Tiempo prolongado
         assert alert_data["brakePressure"] > 80  # Alta presión freno

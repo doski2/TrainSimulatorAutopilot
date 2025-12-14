@@ -170,11 +170,12 @@ function checkAlerts()
                 string.format("⚠️ DESLIZAMIENTO RUEDAS: %.2f", wheelslip), 3, 2)
     end
 
-    local fuelLevel = Call("GetFuelLevel") or 1.0
-    if fuelLevel < alertThresholds.fuel then
-        SysCall("ScenarioManager:ShowMessage",
-                string.format("⛽ COMBUSTIBLE BAJO: %.1f%%", fuelLevel * 100), 5, 3)
-    end
+    -- FuelLevel removed for TSC (infinite fuel). Example kept for reference only.
+    -- local fuelLevel = Call("GetFuelLevel") or 1.0
+    -- if fuelLevel < alertThresholds.fuel then
+    --     SysCall("ScenarioManager:ShowMessage",
+    --             string.format("⛽ COMBUSTIBLE BAJO: %.1f%%", fuelLevel * 100), 5, 3)
+    -- end
 end
 
 -- Funciones de control externas (llamadas desde Python)
@@ -218,7 +219,7 @@ function GetTelemetryData()
         rpm = Call("GetControlValue", "RPM", 0) or 0,
         ammeter = Call("GetControlValue", "Ammeter", 0) or 0,
         tractiveEffort = Call("GetControlValue", "TractiveEffort", 0) or 0,
-        fuelLevel = Call("GetFuelLevel") or 1.0,
+        -- fuelLevel = Call("GetFuelLevel") or 1.0, -- Removed for TSC (infinite fuel)
         brakePipePressure = Call("GetControlValue", "AirBrakePipePressurePSI", 0) or 0,
         locoBrakeCylinderPressure = Call("GetControlValue", "LocoBrakeCylinderPressurePSI", 0) or 0,
         trainBrakeCylinderPressure = Call("GetControlValue", "TrainBrakeCylinderPressurePSI", 0) or 0,
@@ -284,7 +285,7 @@ function getdata()
         Call("GetControlValue", "AuxReservoirPressure", 0) or 0,
         Call("GetControlValue", "BrakePipePressureTailEnd", 0) or 0,
         Call("GetControlValue", "LocoBrakeCylinderPressurePSIDisplayed", 0) or 0,
-        Call("GetFuelLevel") or 0,
+        -- Call("GetFuelLevel") or 0, -- Removed for TSC (infinite fuel)
         Call("GetCurrentSpeedLimit") or 0,
         Call("GetNextSpeedLimit") or 0,
         Call("GetNextSpeedLimitDistance") or 0,
