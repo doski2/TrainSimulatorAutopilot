@@ -386,9 +386,7 @@ class TSCIntegration:
                 intensity = max(0.0, min(1.0, (raw_ws - 1.0) / max(1.0, raw_ws)))
                 interpretation = "unknown-large-scale"
             datos_ia["deslizamiento_ruedas_intensidad"] = round(float(intensity), 3)
-        except Exception:
-            datos_ia.setdefault("deslizamiento_ruedas_intensidad", 0.0)
-            datos_ia.setdefault("deslizamiento_ruedas_raw", datos_ia.get("deslizamiento_ruedas", 0.0))
+        # duplicate except removed (defaults are already set earlier)
 
         # If wheelslip control not present or raw is zero, try to infer from other telemetry
         try:
