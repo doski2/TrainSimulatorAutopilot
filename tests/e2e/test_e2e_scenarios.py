@@ -343,7 +343,6 @@ class TestEndToEndScenarios:
                 "acceleration": 0.1,
                 "gradient": 1.0,
                 # fuel metrics removed
-                    # fuel metrics removed
                 "tractive_effort": 100.0,
                 "rpm": 950,
                 "amperage": 150.0,
