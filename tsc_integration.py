@@ -347,7 +347,7 @@ class TSCIntegration:
                         datos_ia["rpm"] = vt * self.max_engine_rpm
                         datos_ia["rpm_inferida"] = True
             except Exception:
-                print(f"[WARN] RPM inference failed (secondary block): unknown error")
+                print("[WARN] RPM inference failed (secondary block): unknown error")
                 import traceback
 
                 traceback.print_exc()
