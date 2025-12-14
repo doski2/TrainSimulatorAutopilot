@@ -110,3 +110,17 @@ def test_wheelslip_inference_from_tractive():
     datos_archivo = {"Wheelslip": 3.0}
     datos_ia = integ.convertir_datos_ia(datos_archivo)
     assert datos_ia["deslizamiento_ruedas_intensidad"] == 1.0
+
+
+def test_wheelslip_one_point_zero_treated_as_normal_unless_evidence():
+    integ = TSCIntegration(ruta_archivo=None)
+
+    # Case 1: Wheelslip == 1.0 but no tractive/speed evidence -> treat as no slip
+    datos_archivo = {"Wheelslip": 1.0, "TractiveEffort": 100.0, "CurrentSpeed": 10.0, "RPM": 500}
+    datos_ia = integ.convertir_datos_ia(datos_archivo)
+    assert datos_ia["deslizamiento_ruedas_intensidad"] == 0.0
+
+    # Case 2: Wheelslip == 1.0 with tractive high and low speed -> infer slip
+    datos_archivo = {"Wheelslip": 1.0, "TractiveEffort": 800.0, "CurrentSpeed": 0.5, "RPM": 1200}
+    datos_ia = integ.convertir_datos_ia(datos_archivo)
+    assert datos_ia["deslizamiento_ruedas_intensidad"] == 1.0

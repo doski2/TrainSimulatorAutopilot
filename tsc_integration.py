@@ -397,9 +397,28 @@ class TSCIntegration:
             # Heurística de normalización:
             # - Si el valor está en 0..1 => es normalizado por asset (0=bueno, 1=máx deslizamiento)
             # - Si el valor tiene base 1 (1 = normal, >1 = deslizamiento) mapear 1..2 -> 0..1 y 1..3 -> 0..1
-            if raw_ws <= 1.0:
+            # - El valor EXACTO 1.0 es ambiguo (puede ser "normal" en assets base-1 o "máx" en assets normalizados)
+            #   Por defecto lo tratamos como "no deslizamiento" (0.0) salvo que otros telemetría sugiera patinamiento.
+            if raw_ws is None:
+                intensity = 0.0
+                interpretation = "missing"
+            elif raw_ws < 1.0:
                 intensity = raw_ws
                 interpretation = "0-1"
+            elif raw_ws == 1.0:
+                # Ambiguo: inferir a partir de otros indicadores conservadores
+                tractive = self._to_float(datos_ia.get("esfuerzo_traccion", 0.0))
+                speed_kmh = self._to_float(datos_ia.get("velocidad_actual", 0.0))
+                rpm_val = self._to_float(datos_ia.get("rpm", 0.0))
+                # Heurísticas que indican posible patinamiento
+                if (speed_kmh < 5.0 and tractive > 300.0) or (
+                    rpm_val > 2000.0 and speed_kmh < 10.0 and tractive > 300.0
+                ):
+                    intensity = 1.0
+                    interpretation = "1.0-inferred-slip"
+                else:
+                    intensity = 0.0
+                    interpretation = "1.0-assumed-normal"
             elif raw_ws <= 2.0:
                 # Base 1, max 2
                 intensity = max(0.0, min(1.0, raw_ws - 1.0))
