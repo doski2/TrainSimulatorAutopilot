@@ -125,6 +125,8 @@ class TSCIntegration:
                 self.fuel_capacity_gallons = float(fuel_capacity_gallons)
             except Exception:
                 self.fuel_capacity_gallons = None
+        # Default maximum engine RPM used to infer RPM from regulator when RPM not provided
+        self.max_engine_rpm = 5000.0
 
     def _to_float(self, val: Any, default: float = 0.0) -> float:
         """Safely convert a value to float, returning default on failure."""
@@ -319,6 +321,18 @@ class TSCIntegration:
                 datos_ia["rpm"] = 5000.0
         except Exception:
             datos_ia["rpm"] = 0.0
+
+        # Infer RPM from regulator (Regulator -> acelerador) when RPM not provided
+        try:
+            if datos_ia.get("rpm", 0.0) == 0.0:
+                reg = self._to_float(datos_ia.get("acelerador", 0.0))
+                if reg and reg > 0.0:
+                    datos_ia["rpm"] = reg * float(self.max_engine_rpm)
+                    datos_ia["rpm_inferida"] = True
+                else:
+                    datos_ia.setdefault("rpm_inferida", False)
+        except Exception:
+            datos_ia.setdefault("rpm_inferida", False)
 
         try:
             datos_ia["amperaje"] = self._to_float(datos_ia.get("amperaje", 0.0))
