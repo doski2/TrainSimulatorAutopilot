@@ -393,7 +393,9 @@ actualizaciones OTA
 
 ### 🛠️ Correcciones y mejoras de telemetría y UI
 
-- **Nueva visualización**: Badge de presencia para `BrakePipePressureTailEnd` (Tubo Freno Cola) en la UI, indicando `PRESENTE`, `INFERIDO`, o `NO`.
+ - **Nueva visualización**: Badge de presencia para
+   `BrakePipePressureTailEnd` (Tubo Freno Cola) en la UI, indicando
+   `PRESENTE`, `INFERIDO`, o `NO`.
 - **Nueva visualización**: Badge de presencia para
   `BrakePipePressureTailEnd` (Tubo Freno Cola) en la UI, indicando
   `PRESENTE`, `INFERIDO`, o `NO`.
