@@ -229,10 +229,27 @@ function checkAlerts()
         SysCall("ScenarioManager:ShowMessage", string.format("LOCO BRAKE LOW: %.1f PSI", locoBrakePressure), 5, 3)
     end
 
-    -- Wheelslip alert
+    -- Wheelslip alert (adaptive threshold based on asset scale)
     local wheelslip = Call("GetControlValue", "Wheelslip", 0) or 0
-    if wheelslip > 0.1 then  -- Significant wheelslip
+    local slip_detected = false
+    -- If asset reports values in 0..1, use threshold from config; else, treat base~1 assets
+    if wheelslip <= 1.0 then
+        if wheelslip > alertThresholds.wheelslip then
+            slip_detected = true
+        end
+    else
+        -- Most assets that use base=1 report 1 as normal, >1 indicates slip
+        -- use a small margin over 1.0 to detect slip
+        if wheelslip > 1.05 then
+            slip_detected = true
+        end
+    end
+    if slip_detected then
         SysCall("ScenarioManager:ShowMessage", string.format("WHEELSLIP DETECTED: %.2f", wheelslip), 3, 2)
+        -- Reduce throttle to recover from slip (basic mitigation)
+        local current_throttle = Call("GetControlValue", "Regulator", 0) or 0
+        local reduced_throttle = current_throttle * 0.5
+        SysCall("PlayerEngineSetControlValue", "Regulator", reduced_throttle, 0)
     end
 
     -- Fuel level alert

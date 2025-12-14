@@ -376,6 +376,7 @@ def telemetry_update_loop():
                             "rpm": 0.0,
                             "amperaje": 0.0,
                             "deslizamiento_ruedas": 0.0,
+                                    "deslizamiento_ruedas_intensidad": 0.0,
                             "presion_tubo_freno": 0.0,
                             "presion_freno_loco": 0.0,
                             "presion_freno_tren": 0.0,
@@ -451,9 +452,22 @@ def telemetry_update_loop():
                     if ws_latency > 50:  # Más de 50ms
                         latency_optimizer.apply_optimization("websocket_batching")
 
-                    print(
-                        f"[DEBUG] WebSocket emit exitoso - predictive_running={predictive_analyzer.is_running if predictive_analyzer else False} - compressed={compressed_telemetry.get('_compressed', False)}"
-                    )
+                    # Debug: show wheelslip raw and intensity for diagnostic
+                    try:
+                        ws_debug = f"[DEBUG] Wheelslip raw={compressed_telemetry.get('deslizamiento_ruedas_raw')} intensity={compressed_telemetry.get('deslizamiento_ruedas_intensidad')}"
+                        print(ws_debug)
+                    except Exception:
+                        pass
+                    # Debug: active alerts payload
+                    try:
+                        active_list = active_alerts.get('alerts') if isinstance(active_alerts, dict) else active_alerts
+                        if isinstance(active_list, list):
+                            print(f"[DEBUG] Active alerts (count) = {len(active_list)}")
+                            print(f"[DEBUG] Active alerts (types) = {[a.get('alert_type') for a in active_list[:10]]}")
+                        else:
+                            print(f"[DEBUG] Active alerts: {active_alerts}")
+                    except Exception:
+                        pass
                 except Exception as emit_error:
                     print(f"[WS] Error en emit: {emit_error}")
                     print(

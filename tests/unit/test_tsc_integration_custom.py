@@ -87,3 +87,48 @@ def test_tractive_effort_presence_flag():
     datos_archivo = {"TractiveEffort": 123.0}
     datos_ia = integ.convertir_datos_ia(datos_archivo)
     assert datos_ia.get("esfuerzo_traccion") == 123.0
+
+
+def test_rpm_inferred_from_regulator():
+    integ = TSCIntegration(ruta_archivo=None)
+    datos_archivo = {"Regulator": 0.5}
+    datos_ia = integ.convertir_datos_ia(datos_archivo)
+    # Default max_engine_rpm is 5000.0, so expected inferred RPM is 2500
+    assert datos_ia.get("rpm_inferida") is True
+    assert pytest.approx(datos_ia.get("rpm", 0), abs=1.0) == 2500.0
+
+
+def test_wheelslip_normalization_cases():
+    integ = TSCIntegration(ruta_archivo=None)
+    # Normalized 0..1
+    datos_archivo = {"Wheelslip": 0.5}
+    datos_ia = integ.convertir_datos_ia(datos_archivo)
+    assert pytest.approx(datos_ia["deslizamiento_ruedas_intensidad"], abs=0.001) == 0.5
+
+    # Base-1 asset (1..2) mapping
+    datos_archivo = {"Wheelslip": 1.5}
+    datos_ia = integ.convertir_datos_ia(datos_archivo)
+    assert pytest.approx(datos_ia["deslizamiento_ruedas_intensidad"], abs=0.001) == 0.5
+
+    # Max values map to 1.0
+    datos_archivo = {"Wheelslip": 2.0}
+    datos_ia = integ.convertir_datos_ia(datos_archivo)
+    assert datos_ia["deslizamiento_ruedas_intensidad"] == 1.0
+
+
+def test_wheelslip_inference_from_tractive():
+    integ = TSCIntegration(ruta_archivo=None)
+    # Asset doesn't provide Wheelslip, but provides high tractive effort and low speed
+    datos_archivo = {
+        "TractiveEffort": 800.0,  # high effort
+        "CurrentSpeed": 0.5,  # m/s -> 1.8 km/h (low)
+        "RPM": 1200,
+    }
+    datos_ia = integ.convertir_datos_ia(datos_archivo)
+    # Expect inference to set intensity > 0
+    assert datos_ia["deslizamiento_ruedas_intensidad"] > 0.0
+    assert datos_ia.get("deslizamiento_ruedas_inferida") is True
+
+    datos_archivo = {"Wheelslip": 3.0}
+    datos_ia = integ.convertir_datos_ia(datos_archivo)
+    assert datos_ia["deslizamiento_ruedas_intensidad"] == 1.0

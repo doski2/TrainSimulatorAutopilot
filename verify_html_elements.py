@@ -27,6 +27,7 @@ main_elements = [
     "rpm-value",
     "amperage-value",
     "wheelslip-value",
+    "wheelslip-raw-value",
     "tractive-effort-value",
     "next-speed-limit-value",
     "next-speed-distance-value",
