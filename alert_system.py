@@ -186,8 +186,8 @@ class AlertSystem:
                             with open(self.alerts_file, "w", encoding="utf-8") as wf:
                                 json.dump(filtered, wf, indent=2, ensure_ascii=False)
                             print("[INFO] Removed legacy fuel_low alerts from alerts.json")
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            print(f"[ERROR] Could not update alerts file after pruning legacy fuel_low alerts: {e}")
                     return [Alert.from_dict(alert_data) for alert_data in filtered]
             except Exception as e:
                 print(f"Error cargando alertas: {e}")

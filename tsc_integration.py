@@ -242,8 +242,11 @@ class TSCIntegration:
                     rpm_alt = self._to_float(datos_archivo.get("RPMDelta", 0.0))
                     if rpm_alt != 0.0:
                         datos_ia["rpm"] = rpm_alt
-                except Exception:
-                    pass
+                except Exception as e:
+                    print(f"[WARN] Failed to parse RPMDelta for rpm inference: {e}")
+                    import traceback
+
+                    traceback.print_exc()
 
             # Si RPM aún es 0, inferir desde Regulator o VirtualThrottle (si están presentes)
             if datos_ia.get("rpm", 0.0) == 0.0:
@@ -258,8 +261,11 @@ class TSCIntegration:
                         if vt > 0.0:
                             datos_ia["rpm"] = vt * self.max_engine_rpm
                             datos_ia["rpm_inferida"] = True
-                except Exception:
-                    pass
+                except Exception as e:
+                    print(f"[WARN] RPM inference failed: {e}")
+                    import traceback
+
+                    traceback.print_exc()
 
             # Mapear RPMSource (depuración) si existe en el archivo
             if "RPMSource" in datos_archivo:
@@ -280,11 +286,17 @@ class TSCIntegration:
                 try:
                     vb = self._to_float(datos_archivo.get("VirtualBrake", 0.0))
                     datos_ia["freno_tren"] = max(0.0, min(1.0, vb))
-                except Exception:
-                    pass
-        except Exception:
-            # No bloquear si hay error
-            pass
+                except Exception as e:
+                    print(f"[WARN] VirtualBrake parsing failed: {e}")
+                    import traceback
+
+                    traceback.print_exc()
+        except Exception as e:
+            # No bloquear si hay error; registrar para diagnóstico
+            print(f"[WARN] Error processing brake/virtual brake fields: {e}")
+            import traceback
+
+            traceback.print_exc()
 
         # Agregar campos que la IA necesita pero que pueden no estar en el archivo
         datos_ia.setdefault("acelerador", 0.0)
@@ -335,7 +347,10 @@ class TSCIntegration:
                         datos_ia["rpm"] = vt * self.max_engine_rpm
                         datos_ia["rpm_inferida"] = True
             except Exception:
-                pass
+                print(f"[WARN] RPM inference failed (secondary block): unknown error")
+                import traceback
+
+                traceback.print_exc()
         # Mapear RPMSource (depuración) si existe en el archivo
         if "RPMSource" in datos_archivo:
             datos_ia["rpm_fuente"] = datos_archivo.get("RPMSource")
@@ -533,8 +548,11 @@ class TSCIntegration:
                 datos_ia["presion_freno_tren_inferida"] = True
             else:
                 datos_ia.setdefault("presion_freno_tren_inferida", False)
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"[WARN] Error inferring brake pressure: {e}")
+            import traceback
+
+            traceback.print_exc()
 
         return datos_ia
 

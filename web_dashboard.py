@@ -447,8 +447,11 @@ def telemetry_update_loop():
                     try:
                         ws_debug = f"[DEBUG] Wheelslip raw={compressed_telemetry.get('deslizamiento_ruedas_raw')} intensity={compressed_telemetry.get('deslizamiento_ruedas_intensidad')}"
                         print(ws_debug)
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        print(f"[ERROR] Failed to print wheelslip debug info: {e}")
+                        import traceback
+
+                        traceback.print_exc()
                     # Debug: active alerts payload
                     try:
                         active_list = active_alerts.get('alerts') if isinstance(active_alerts, dict) else active_alerts
@@ -457,8 +460,11 @@ def telemetry_update_loop():
                             print(f"[DEBUG] Active alerts (types) = {[a.get('alert_type') for a in active_list[:10]]}")
                         else:
                             print(f"[DEBUG] Active alerts: {active_alerts}")
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        print(f"[ERROR] Failed to print active alerts debug info: {e}")
+                        import traceback
+
+                        traceback.print_exc()
                 except Exception as emit_error:
                     print(f"[WS] Error en emit: {emit_error}")
                     print(
