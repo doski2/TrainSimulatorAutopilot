@@ -88,8 +88,8 @@ python configurator.py
 
   ```ini
    [TSC_INTEGRATION]
-   data_file_path = C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins\GetData.txt
-   command_file_path = C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins\SendCommand.txt
+  data_file_path = C:\...\GetData.txt
+  command_file_path = C:\...\SendCommand.txt
    update_frequency_hz = 10
     ```
 

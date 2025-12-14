@@ -85,48 +85,47 @@ python configurator.py
 1. **Editar `config.ini`**:
 
    <!-- markdownlint-disable MD013 -->
-   ```ini
-   [TSC_INTEGRATION]
-   data_file_path = C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins\GetData.txt
-   command_file_path = C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins\SendCommand.txt
-   update_frequency_hz = 10
-
-  # NOTE: Fuel metrics are deprecated for TSC integration. TSC trains use infinite fuel.
-  # The configuration option `fuel_capacity_gallons` is no longer required for TSC.
-  # If you integrate with a system that reports fuel in % or raw gallons, configure the integration accordingly in that environment.
-
-  ```
-
-Fuel capacity: `FuelLevel` is not used for TSC (trains have infinite fuel). The dashboard still accepts `fuel_capacity_gallons` configuration only for non-TSC integrations when appropriate.
-
-```
-
+```ini
 [TSC_INTEGRATION]
+data_file_path = C:\...\GetData.txt
+command_file_path = C:\...\SendCommand.txt
+update_frequency_hz = 10
 fuel_capacity_gallons = 300.0
-
 ```
 
-If not set, the dashboard will show percentage when `FuelLevel` is 0..1; if `FuelLevel` is a large number (e.g., 4000), it will try to display as gallons.
-   ```
-   <!-- markdownlint-enable MD013 -->
+Nota: Las métricas de combustible para integraciones TSC están deprecadas.
+TSC usa combustible "infinito", por lo que `FuelLevel` no se utiliza en
+el piloto automático.
 
-2. **Verificar rutas de TSC**:
+La opción `fuel_capacity_gallons` se mantiene solo para integraciones que usen
+valores de combustible externos (no TSC).
+
+Si no se configura `fuel_capacity_gallons`, el dashboard mostrará porcentaje
+cuando `FuelLevel` esté en 0..1. Si `FuelLevel` es un número grande (por ejemplo
+4000), el dashboard intentará interpretarlo como galones.
+<!-- markdownlint-enable MD013 -->
+
+1. **Verificar rutas de TSC**:
    - Asegurarse de que los archivos `GetData.txt` y `SendCommand.txt` existan
    - Verificar permisos de escritura en la carpeta plugins
 
-3. **Configurar puertos**:
-   - Dashboard principal: `http://localhost:5000`
-   - Visualizaciones Bokeh: `http://localhost:5006`
+2. **Configurar puertos**:
+  - Dashboard principal: `http://localhost:5000`
+  - Visualizaciones Bokeh: `http://localhost:5006`
 
 ---
 
 ## Migración: Eliminación de FuelLevel y limpieza de datos
 
-En la versión actual, `FuelLevel` y métricas de combustible han sido marcadas como no implementadas para integraciones TSC (Train Simulator Classic) y no se usan en el piloto automático. Si tu `alerts.json` o `data/telemetry_history.json` contienen entradas históricas relacionadas con combustible, ejecuta el script de limpieza:
+En la versión actual, `FuelLevel` y métricas de combustible han sido marcadas
+como no implementadas para integraciones TSC (Train Simulator Classic) y
+no se usan en el piloto automático. Si tu `alerts.json` o
+`data/telemetry_history.json` contienen entradas históricas relacionadas con
+combustible, ejecuta el script de limpieza:
 
 ```powershell
 & .\.venv\Scripts\Activate.ps1
-C:/Users/doski/TrainSimulatorAutopilot/.venv/Scripts/python.exe scripts/cleanup_persisted_fuel.py
+python scripts/cleanup_persisted_fuel.py
 ```
 
 Este script crea respaldos y elimina entradas/keys de combustible históricas.
@@ -189,22 +188,48 @@ El sistema incluye controles avanzados para operar la locomotora:
 
 #### Comportamiento de Freno y Autopilot (actualizado)
 
-- **Señales y reacciones**: El autopilot prioriza `KVB_SignalAspect` (señal avanzada) sobre `SignalAspect`. La señal resultante se expone en la variable `senal_procesada` y los valores son: `-1` = DESCONOCIDO, `0` = ROJA, `1` = AMARILLA, `2` = VERDE.
-- **Frenada por señal**: Si `autobrake_by_signal` está activado en `config.ini`, el autopilot reacciona a la señal procesada como sigue:
-  - ROJA (0): Frenada completa — aplica `TrainBrakeControl = 1.0` (o `VirtualBrake` si `TrainBrakeControl` no está disponible).
-  - AMARILLA (1): Frenada suave — aplica `TrainBrakeControl = 0.5` (valor heurístico configurable en `autopilot_system.py`).
-  - VERDE (2): No frenar — permitir progreso normal.
-- **Prioridad de controles**: El sistema prioriza el control físico/real de freno (`TrainBrakeControl`) si está presente; si no, usa `VirtualBrake` como fallback. En caso de ausencia de estos, se infiere la presión de freno por `freno_tren` calculado (derivado de `Acceleration` o fallbacks).
-- **Flags de presencia e inferencia**: En la telemetría la integración expone flags como `posicion_freno_tren_presente`, `presion_tubo_freno_presente`, `presion_freno_tren_presente` y sus equivalentes con sufijo `_inferida` (ej. `presion_freno_tren_inferida`). Estos flags se pueden consultar en `/api/status` o recibir en `telemetry_update` para decidir visualización o lógica de autopilot.
-- **Comandos y fallbacks**: Cuando se envían comandos de freno (por ejemplo, autopilot), la integración usará heurísticas y fallback controls — por ejemplo, si `DynamicBrake` no existe, puede mapear `DynamicBrake` a `VirtualEngineBrakeControl`.
-- **Recomendaciones**: Para que el autopilot actúe como esperado en modos automáticos y predictivos:
-  - Asegúrate de que `TrainBrakeControl` o `VirtualBrake` aparecen en `GetData.txt`, o que `posicion_freno_tren_presente` sea True.
-  - Si el mod/locomotora solo reporta `presion_tubo_freno_mostrada` y no `AirBrakePipePressurePSI`, la integración usa `presion_tubo_freno_mostrada` como fallback y marca `presion_tubo_freno_inferida`.
+- **Señales y reacciones**: El autopilot prioriza `KVB_SignalAspect`
+  (señal avanzada) sobre `SignalAspect`.
+  La señal resultante se expone en la variable `senal_procesada`.
+  Los valores son: `-1` = DESCONOCIDO, `0` = ROJA, `1` = AMARILLA, `2` = VERDE.
 
-// Ejemplo: comportamiento sobre señal
-//  - KVB_SignalAspect = 0 (ROJA) -> autopilot envía TrainBrakeControl:1.0
-//  - KVB_SignalAspect = 1 (AMARILLA) -> autopilot envía TrainBrakeControl:0.5
+- **Frenada por señal**: Si `autobrake_by_signal` está activado en `config.ini`,
+  el autopilot reacciona a la señal procesada como sigue:
+  - ROJA (0): Frenada completa — aplica `TrainBrakeControl = 1.0`.
+    Si `TrainBrakeControl` no está disponible, se usa `VirtualBrake`.
+  - AMARILLA (1): Frenada suave — aplica `TrainBrakeControl = 0.5` (valor
+    heurístico configurable en `autopilot_system.py`).
 
+-- **Prioridad de controles**: El sistema prioriza
+  el control físico/real de freno (`TrainBrakeControl`) si está presente.
+  Si no, usa `VirtualBrake` como fallback.
+  En ausencia de ambos, se infiere la presión de freno por
+  `freno_tren` calculado (derivado de `Acceleration` o fallbacks).
+
+-- **Flags de presencia e inferencia**: En la telemetría la integración
+  expone flags como `posicion_freno_tren_presente`,
+  `presion_tubo_freno_presente` y `presion_freno_tren_presente`.
+  Hay equivalentes con sufijo `_inferida` (ej. `presion_freno_tren_inferida`).
+  Estos flags se pueden consultar en `/api/status` o recibir en
+  `telemetry_update` para decidir visualización o la lógica del autopilot.
+
+-- **Comandos y fallbacks**: Cuando se envían
+  comandos de freno (por ejemplo, autopilot), la integración usará
+  heurísticas y fallback controls — por ejemplo, si
+  `DynamicBrake` no existe, puede mapear `DynamicBrake` a
+  `VirtualEngineBrakeControl`.
+  - Asegúrate de que `TrainBrakeControl` o `VirtualBrake` aparecen en
+    `GetData.txt`, o que `posicion_freno_tren_presente` sea True.
+  - Si el mod/locomotora solo reporta `presion_tubo_freno_mostrada` y no
+    `AirBrakePipePressurePSI`, la integración usa
+    `presion_tubo_freno_mostrada` como fallback y marca
+    `presion_tubo_freno_inferida`.
+ 
+
+**Ejemplo — comportamiento sobre señal:**
+
+- `KVB_SignalAspect = 0` (ROJA) → autopilot envía `TrainBrakeControl: 1.0`.
+- `KVB_SignalAspect = 1` (AMARILLA) → autopilot envía `TrainBrakeControl: 0.5`.
 
 ---
 
@@ -230,7 +255,8 @@ El sistema incluye controles avanzados para operar la locomotora:
 }
 ```
 
-Nota: El endpoint `/api/status` incluye además indicadores de presencia de telemetría y flags de inferencia relacionados con frenos. Ejemplo:
+Nota: El endpoint `/api/status` incluye además indicadores de presencia de
+telemetría y flags de inferencia relacionados con frenos. Ejemplo:
 
 ```json
 {
@@ -240,12 +266,15 @@ Nota: El endpoint `/api/status` incluye además indicadores de presencia de tele
   "presion_freno_loco_presente": true,
   "presion_freno_tren_presente": true,
   "posicion_freno_tren_presente": true,
-  "presion_freno_tren_inferida": false
+  "presion_freno_tren_inferida": false,
   "brake_pipe_discrepancy_alert": { "active": true, "threshold_psi": 20 }
 }
 ```
 
-Estos flags facilitan la detección de si datos específicos están poblados desde `GetData.txt` o si la integración los está infiriendo (ej. valores calculados o estimados). El dashboard también expone estos campos vía `telemetry_update`.
+Estos flags facilitan la detección de si datos específicos están poblados desde
+`GetData.txt` o si la integración los está infiriendo (ej. valores
+calculados o estimados).
+El dashboard también expone estos campos vía `telemetry_update`.
 
 #### `/api/alerts`
 
@@ -334,8 +363,8 @@ log_level = INFO
 max_log_size_mb = 10
 
 [TSC_INTEGRATION]
-data_file_path = C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins\GetData.txt
-command_file_path = C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins\SendCommand.txt
+data_file_path = C:\...\GetData.txt
+command_file_path = C:\...\SendCommand.txt
 update_frequency_hz = 10
 max_read_attempts = 5
 read_timeout_seconds = 1.0
@@ -543,8 +572,8 @@ detalles.
 
 - **Email**: <support@trainsimulator-autopilot.com>
 - **Discord**: [Train Simulator Autopilot](https://discord.gg/train-simulator)
-- **GitHub**: [Issues](<https://github.com/tu-usuario/train-simulator->
-  autopilot/issues)
+- **GitHub**: Issues —
+  https://github.com/tu-usuario/train-simulator-autopilot/issues
 
 ---
 
