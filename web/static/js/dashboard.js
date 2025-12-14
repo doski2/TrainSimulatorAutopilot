@@ -299,12 +299,10 @@ function updateTelemetry(data) {
         safeSetText('tractive-effort-value', '--');
     }
     
-    // Mostrar RPM del motor (indicar si fue inferida)
+    // Mostrar RPM del motor
     const rpm = telemetry.rpm;
     if (rpm !== undefined && rpm !== null) {
-        let rpmText = rpm.toFixed(0) + ' RPM';
-        if (telemetry.rpm_inferida) rpmText += ' (inf)';
-        safeSetText('rpm-value', rpmText);
+        safeSetText('rpm-value', rpm.toFixed(0) + ' RPM');
     } else {
         safeSetText('rpm-value', '--');
     }
