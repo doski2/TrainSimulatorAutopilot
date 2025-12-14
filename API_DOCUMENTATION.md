@@ -464,7 +464,13 @@ Actualización de telemetría cada 100ms.
 }
 ```
 
-Note: `active_alerts_list` contains a full array of active alert objects (prefer this over the numeric `active_alerts` count). Alerts may be deduped on the client to avoid repeated sticky notifications. Fuel-related metrics (e.g. `fuelLevel`, `fuelConsumption`) are deprecated for TSC integration; use efficiency metrics instead.
+Note: `active_alerts_list` contains a full array of active alert objects (prefer
+this over the numeric `active_alerts` count). Alerts may be deduped on the
+client to avoid repeated sticky notifications.
+
+Fuel-related metrics (e.g. `fuelLevel`, `fuelConsumption`) are deprecated for
+TSC integration; use efficiency metrics instead.
+
 #### `system_message`
 
 Mensajes del sistema.
