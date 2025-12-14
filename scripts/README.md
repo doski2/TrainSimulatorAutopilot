@@ -1,11 +1,10 @@
 # README - scripts/cleanup_persisted_fuel.py
 
-
 Propósito:
 
-- El script `cleanup_persisted_fuel.py` elimina las entradas históricas de alertas y
-  los campos de combustible (`fuel*`) de los archivos persistentes
-  `alerts.json` y `data/telemetry_history.json`.
+- El script `cleanup_persisted_fuel.py` elimina las entradas históricas
+  de alertas y los campos de combustible (`fuel*`) de los archivos
+  persistentes `alerts.json` y `data/telemetry_history.json`.
 - Crea respaldos con sufijo `.bak.YYYYMMDDTHHMMSSZ` antes de sobrescribir los
   archivos.
 
@@ -17,7 +16,7 @@ Uso:
 & .\.venv\Scripts\Activate.ps1
 ```
 
-2. Ejecutar el script:
+1. Ejecutar el script:
 
 ```powershell
 # Usar el Python del virtualenv activo
