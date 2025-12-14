@@ -24,21 +24,23 @@ Pruebas realizadas:
 
 Acciones sugeridas (manuales / operativas):
 
- - Revisar `alerts.json.bak.*` y
+- Revisar `alerts.json.bak.*` y
    `data/telemetry_history.json.bak.*` si se desea conservar historial;
    eliminar backups solo si está seguro
- - Revisar las plantillas del plugin RailDriver/SD40 si desea mantener
+- Revisar las plantillas del plugin RailDriver/SD40 si desea mantener
    compatibilidad con otros simuladores que usen `FuelLevel`
- - Si todo está listo, crear una rama y PR desde `master` hacia `main` con
+- Si todo está listo, crear una rama y PR desde `master` hacia `main` con
    los cambios y la documentación
 
 Tareas opcionales:
 
- - Añadir tests E2E que verifiquen la deduplicación y la auto-resolución en
+- Añadir tests E2E que verifiquen la deduplicación y la auto-resolución en
    un entorno de integración
- - Añadir script o migración para eliminar referencias a `FuelLevel` de
+- Añadir script o migración para eliminar referencias a `FuelLevel` de
    repositorios y plugins externos si se desea centralizar la compatibilidad
 
 Contacto:
 
-- Para ajustes adicionales, indícame si quieres que realice: commit + PR, limpieza de backups, o añadir migración automatizada de datos históricos.
+- Para ajustes adicionales, indícame si quieres que realice alguna de las siguientes
+   acciones: `commit + PR`, limpieza de backups, o añadir migración automatizada
+   de datos históricos.
