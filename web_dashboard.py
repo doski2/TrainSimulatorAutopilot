@@ -183,7 +183,7 @@ def validate_dashboard_config(config):
         interval = config["updateInterval"]
         if not isinstance(interval, (int, float)) or interval < 100 or interval > 10000:
             errors.append("Intervalo de actualización debe estar entre 100ms y 10000ms")
-        elif interval < 500:
+        elif isinstance(interval, (int, float)) and interval < 500:
             warnings.append("Intervalo muy bajo puede afectar el rendimiento")
 
     # Validar puntos de historial

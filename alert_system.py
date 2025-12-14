@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 
 from seaborn_analysis import SeabornAnalysis
+import traceback
 
 # Importar módulos del proyecto
 from tsc_integration import TSCIntegration
@@ -470,7 +471,14 @@ class AlertSystem:
             self.tsc_integration.leer_datos_archivo()
             response_time = (time.time() - start_time) * 1000  # ms
 
-            threshold = self.config["performance_degradation"]["response_time_threshold_ms"]
+            threshold = self.config["performance_degradation"].get("response_time_threshold_ms")
+            try:
+                if threshold is None:
+                    return None
+                threshold = float(threshold)
+            except Exception:
+                # Configured threshold invalid, skip this check but report nothing
+                return None
 
             if response_time > threshold:
                 severity = AlertSeverity(self.config["performance_degradation"]["severity"])
@@ -539,7 +547,8 @@ class AlertSystem:
                 alerts.append(perf_alert)
 
         except Exception as e:
-            print(f"Error en health check: {e}")
+            tb = traceback.format_exc()
+            print(f"Error en health check: {e}\n{tb}")
             alerts.append(
                 Alert(
                     alert_id=f"health_check_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
@@ -548,7 +557,7 @@ class AlertSystem:
                     title="Error en Health Check",
                     message=f"Fallo en verificación de salud: {str(e)}",
                     timestamp=datetime.now(),
-                    data={"error": str(e)},
+                    data={"error": str(e), "traceback": tb},
                 )
             )
 
