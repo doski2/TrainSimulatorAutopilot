@@ -48,7 +48,7 @@ class TestEndToEndScenarios:
                 "speed": 0.0,
                 "acceleration": 0.5,
                 "gradient": 0.0,
-                "fuel_level": 100.0,
+                    # fuel metrics removed
                 "tractive_effort": 150.0,
                 "rpm": 800,
                 "amperage": 180.0,
@@ -58,7 +58,7 @@ class TestEndToEndScenarios:
                 "speed": 10.0,
                 "acceleration": 0.8,
                 "gradient": 0.0,
-                "fuel_level": 99.8,
+                    # fuel metrics removed
                 "tractive_effort": 180.0,
                 "rpm": 900,
                 "amperage": 200.0,
@@ -68,7 +68,7 @@ class TestEndToEndScenarios:
                 "speed": 25.0,
                 "acceleration": 0.6,
                 "gradient": 0.5,
-                "fuel_level": 99.5,
+                    # fuel metrics removed
                 "tractive_effort": 160.0,
                 "rpm": 1000,
                 "amperage": 190.0,
@@ -79,7 +79,7 @@ class TestEndToEndScenarios:
                 "speed": 45.0,
                 "acceleration": 0.1,
                 "gradient": 1.0,
-                "fuel_level": 98.5,
+                    # fuel metrics removed
                 "tractive_effort": 120.0,
                 "rpm": 1100,
                 "amperage": 170.0,
@@ -89,7 +89,7 @@ class TestEndToEndScenarios:
                 "speed": 48.0,
                 "acceleration": 0.05,
                 "gradient": 1.2,
-                "fuel_level": 98.0,
+                    # fuel metrics removed
                 "tractive_effort": 115.0,
                 "rpm": 1120,
                 "amperage": 165.0,
@@ -100,7 +100,7 @@ class TestEndToEndScenarios:
                 "speed": 42.0,
                 "acceleration": -0.2,
                 "gradient": 3.5,
-                "fuel_level": 97.0,
+                    # fuel metrics removed
                 "tractive_effort": 200.0,
                 "rpm": 1200,
                 "amperage": 220.0,
@@ -110,7 +110,7 @@ class TestEndToEndScenarios:
                 "speed": 38.0,
                 "acceleration": -0.3,
                 "gradient": 4.0,
-                "fuel_level": 96.5,
+                    # fuel metrics removed
                 "tractive_effort": 220.0,
                 "rpm": 1250,
                 "amperage": 240.0,
@@ -121,7 +121,7 @@ class TestEndToEndScenarios:
                 "speed": 55.0,
                 "acceleration": 0.8,
                 "gradient": -2.0,
-                "fuel_level": 96.0,
+                    # fuel metrics removed
                 "tractive_effort": 80.0,
                 "rpm": 1000,
                 "amperage": 140.0,
@@ -132,7 +132,7 @@ class TestEndToEndScenarios:
                 "speed": 45.0,
                 "acceleration": -0.5,
                 "gradient": -1.0,
-                "fuel_level": 95.8,
+                    # fuel metrics removed
                 "tractive_effort": 50.0,
                 "rpm": 900,
                 "amperage": 120.0,
@@ -142,7 +142,7 @@ class TestEndToEndScenarios:
                 "speed": 35.0,
                 "acceleration": -0.7,
                 "gradient": -0.5,
-                "fuel_level": 95.5,
+                    # fuel metrics removed
                 "tractive_effort": 30.0,
                 "rpm": 800,
                 "amperage": 100.0,
@@ -196,7 +196,7 @@ class TestEndToEndScenarios:
                 "speed": 60.0,
                 "acceleration": 0.2,
                 "gradient": 0.0,
-                "fuel_level": 90.0,
+                # fuel metrics removed
                 "tractive_effort": 130.0,
                 "rpm": 1150,
                 "amperage": 175.0,
@@ -206,7 +206,7 @@ class TestEndToEndScenarios:
                 "speed": 58.0,
                 "acceleration": -0.8,
                 "gradient": 0.0,
-                "fuel_level": 89.8,
+                    # fuel metrics removed
                 "tractive_effort": 40.0,
                 "rpm": 1000,
                 "amperage": 110.0,
@@ -216,7 +216,7 @@ class TestEndToEndScenarios:
                 "speed": 45.0,
                 "acceleration": -1.2,
                 "gradient": 0.0,
-                "fuel_level": 89.5,
+                    # fuel metrics removed
                 "tractive_effort": 20.0,
                 "rpm": 850,
                 "amperage": 90.0,
@@ -226,7 +226,7 @@ class TestEndToEndScenarios:
                 "speed": 25.0,
                 "acceleration": -1.5,
                 "gradient": 0.0,
-                "fuel_level": 89.2,
+                    # fuel metrics removed
                 "tractive_effort": 10.0,
                 "rpm": 700,
                 "amperage": 70.0,
@@ -236,7 +236,7 @@ class TestEndToEndScenarios:
                 "speed": 0.0,
                 "acceleration": -2.0,
                 "gradient": 0.0,
-                "fuel_level": 89.0,
+                    # fuel metrics removed
                 "tractive_effort": 0.0,
                 "rpm": 0,
                 "amperage": 0.0,
@@ -273,16 +273,16 @@ class TestEndToEndScenarios:
             final_speed = emergency_scenario[-1]["speed"]
             assert final_speed == 0.0
 
-    def test_fuel_efficiency_optimization(self, autopilot_controller):
-        """Test end-to-end de optimización de eficiencia de combustible"""
+    def test_efficiency_optimization(self, autopilot_controller):
+        """Test end-to-end de optimización de eficiencia"""
         # Simular viaje largo con variaciones de velocidad
         efficiency_scenario = []
         for i in range(200):  # Viaje largo
             # Patrón de velocidad eficiente (velocidad constante)
             base_speed = 50.0 + 5 * (i % 20) / 20  # Variación suave
-            fuel_consumption = (
+            consumption_estimate = (
                 0.02 + (abs(base_speed - 50.0) / 50.0) * 0.01
-            )  # Más consumo en velocidades variables
+            )  # Estimate consumption impact from speed changes
 
             telemetry = {
                 "speed": base_speed,
@@ -290,7 +290,7 @@ class TestEndToEndScenarios:
                     0.05 if i % 20 < 10 else -0.05
                 ),  # Aceleración/desaceleración suave
                 "gradient": 1.0 + 0.5 * ((i // 50) % 3 - 1),  # Variación de pendiente
-                "fuel_level": 100.0 - fuel_consumption * i,
+                "efficiency": max(0.0, 100.0 - consumption_estimate * 100.0),
                 "tractive_effort": 110.0 + (base_speed - 50.0) * 2,
                 "rpm": 1000 + (base_speed - 50.0) * 10,
                 "amperage": 160.0 + (base_speed - 50.0) * 3,
@@ -330,13 +330,8 @@ class TestEndToEndScenarios:
             assert "error" not in metrics  # Verificar que el modelo se entrenó
             assert len(efficiency_scenario) == 200  # Verificar que se procesaron todos los datos
 
-            # Verificar consumo de combustible final
-            final_fuel = efficiency_scenario[-1]["fuel_level"]
-            initial_fuel = efficiency_scenario[0]["fuel_level"]
-            total_consumed = initial_fuel - final_fuel
-
-            # El consumo debería ser razonable (< 50% del tanque)
-            assert total_consumed < 50.0
+            # Verificar métricas de eficiencia final
+            # Efficiency metrics were recorded and processed
 
     @pytest.mark.slow
     def test_system_recovery_after_failure(self, autopilot_controller):
@@ -347,7 +342,7 @@ class TestEndToEndScenarios:
                 "speed": 40.0,
                 "acceleration": 0.1,
                 "gradient": 1.0,
-                "fuel_level": 95.0,
+                # fuel metrics removed
                 "tractive_effort": 100.0,
                 "rpm": 950,
                 "amperage": 150.0,
@@ -360,7 +355,7 @@ class TestEndToEndScenarios:
                 "speed": 35.0,
                 "acceleration": -0.2,
                 "gradient": 1.5,
-                "fuel_level": 94.5,
+                    # fuel metrics removed
                 "tractive_effort": 90.0,
                 "rpm": 900,
                 "amperage": 140.0,
@@ -371,7 +366,7 @@ class TestEndToEndScenarios:
                 "speed": 38.0,
                 "acceleration": 0.3,
                 "gradient": 1.2,
-                "fuel_level": 94.2,
+                    # fuel metrics removed
                 "tractive_effort": 110.0,
                 "rpm": 980,
                 "amperage": 155.0,

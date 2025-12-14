@@ -393,11 +393,22 @@ actualizaciones OTA
 
 ### 🛠️ Correcciones y mejoras de telemetría y UI
 
-- **Nueva visualización**: Badge de presencia para `BrakePipePressureTailEnd` (Tubo Freno Cola) en la UI, indicando `PRESENTE`, `INFERIDO`, o `NO`.
-- **Alertas**: Se añadió la detección de `brake_pressure_discrepancy` y su icono asociado en la lista de alertas del dashboard.
-- **Back-end**: Se añadieron flags de presencia para `presion_tubo_freno_cola_presente` y mapeo de `TractiveEffort`.
+ - **Nueva visualización**: Badge de presencia para
+   `BrakePipePressureTailEnd` (Tubo Freno Cola) en la UI, indicando
+   `PRESENTE`, `INFERIDO`, o `NO`.
+- **Nueva visualización**: Badge de presencia para
+  `BrakePipePressureTailEnd` (Tubo Freno Cola) en la UI, indicando
+  `PRESENTE`, `INFERIDO`, o `NO`.
+- **Alertas**: Se añadió la detección de
+  `brake_pressure_discrepancy` y su icono asociado en la lista de
+  alertas del dashboard.
+- **Back-end**: Se añadieron flags de presencia para
+  `presion_tubo_freno_cola_presente` y mapeo de `TractiveEffort`.
 
-- **DevOps / Scripts**: `start.bat` ahora elimina logs antiguos al arrancar y lanza un watcher que borra `web_server.log` y `web_server_error.log` al cerrar. Agregado `stop_server.bat` para detener el servidor y limpiar logs manualmente.
+- **DevOps / Scripts**: `start.bat` ahora elimina logs antiguos al
+  arrancar y lanza un watcher que borra `web_server.log` y
+  `web_server_error.log` al cerrar. Agregado `stop_server.bat` para
+  detener el servidor y limpiar logs manualmente.
 
 #### Corrección de Errores de Linting en `architecture_diagram.py`
 

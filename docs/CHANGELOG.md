@@ -437,8 +437,10 @@ combustible infinito)"
 
 - **Simplificación**: IA puede enfocarse en velocidad, seguridad y eficiencia
 energética sin considerar combustible
-- **Compatibilidad**: Variable FuelLevel mantenida disponible para futuras
-expansiones o otros simuladores
+- **Compatibilidad**: Variable `FuelLevel` mantenida disponible para futuras
+  expansiones o otros simuladores. Se agregó el script
+  `scripts/cleanup_persisted_fuel.py` para limpiar datos históricos de
+  `FuelLevel`.
 - **Documentación**: Todas las referencias actualizadas para reflejar
 restricciones específicas de TSC
 

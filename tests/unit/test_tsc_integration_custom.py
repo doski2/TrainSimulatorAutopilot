@@ -59,29 +59,7 @@ def test_brake_pipe_tail_presence_flag():
     assert datos_ia.get("presion_tubo_freno_cola") == 90.0
 
 
-def test_fuel_conversion_with_capacity():
-    integ = TSCIntegration(ruta_archivo=None, fuel_capacity_gallons=300.0)
-    datos_archivo = {"FuelLevel": 0.5}
-    datos_ia = integ.convertir_datos_ia(datos_archivo)
-    assert datos_ia.get("combustible_porcentaje") == 50.0
-    assert datos_ia.get("combustible_galones") == 150.0
-
-
-def test_fuel_raw_gallons_with_capacity():
-    integ = TSCIntegration(ruta_archivo=None, fuel_capacity_gallons=300.0)
-    datos_archivo = {"FuelLevel": 50.0}
-    datos_ia = integ.convertir_datos_ia(datos_archivo)
-    assert datos_ia.get("combustible_galones") == 50.0
-    assert pytest.approx((50.0 / 300.0) * 100.0, abs=0.1) == float(datos_ia.get("combustible_porcentaje", 0.0))
-
-
-def test_fuel_raw_gallons_without_capacity():
-    integ = TSCIntegration(ruta_archivo=None)
-    datos_archivo = {"FuelLevel": 4000.0}
-    datos_ia = integ.convertir_datos_ia(datos_archivo)
-    assert datos_ia.get("combustible_galones") == 4000.0
-
-
+# Fuel conversion tests removed; fuel metrics are deprecated/unused
 def test_tractive_effort_presence_flag():
     integ = TSCIntegration(ruta_archivo=None)
     datos_archivo = {"TractiveEffort": 123.0}

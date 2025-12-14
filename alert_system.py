@@ -6,7 +6,7 @@ import os
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 import pandas as pd
@@ -112,11 +112,6 @@ class AlertSystem:
                 "enabled": True,
                 "severity": "medium",
             },
-            "fuel_low": {
-                "threshold_percentage": 15,  # 15% fuel remaining
-                "enabled": True,
-                "severity": "high",
-            },
             "overheating": {
                 "temperature_threshold": 90,  # °C
                 "enabled": True,
@@ -148,6 +143,7 @@ class AlertSystem:
         # Estado para monitoreo continuo
         self.monitoring_active = False
         self.last_check_time = None
+        self.last_telemetry: Optional[Dict] = None
         self.baseline_data = {}  # Datos baseline para comparación
 
         print("Sistema de alertas inicializado")
@@ -183,7 +179,16 @@ class AlertSystem:
             try:
                 with open(self.alerts_file, encoding="utf-8") as f:
                     alerts_data = json.load(f)
-                    return [Alert.from_dict(alert_data) for alert_data in alerts_data]
+                    # Filter out deprecated fuel_low alerts
+                    filtered = [a for a in alerts_data if a.get("alert_type") != "fuel_low"]
+                    if len(filtered) != len(alerts_data):
+                        try:
+                            with open(self.alerts_file, "w", encoding="utf-8") as wf:
+                                json.dump(filtered, wf, indent=2, ensure_ascii=False)
+                            print("[INFO] Removed legacy fuel_low alerts from alerts.json")
+                        except Exception as e:
+                            print(f"[ERROR] Could not update alerts file after pruning legacy fuel_low alerts: {e}")
+                    return [Alert.from_dict(alert_data) for alert_data in filtered]
             except Exception as e:
                 print(f"Error cargando alertas: {e}")
 
@@ -199,13 +204,30 @@ class AlertSystem:
         except Exception as e:
             print(f"Error guardando alertas: {e}")
 
+    def _to_float(self, x: Any) -> Optional[float]:
+        """Convertir de forma segura a float, devolviendo None si no es posible."""
+        try:
+            if x is None:
+                return None
+            return float(x)
+        except Exception:
+            return None
     def check_speed_violation(self, current_data: Dict) -> Optional[Alert]:
         """Verificar violación de velocidad"""
         if not self.config["speed_violation"]["enabled"]:
             return None
 
         current_speed = current_data.get("velocidad_actual", 0)
-        max_speed = self.config["speed_violation"]["max_speed"]
+        max_speed = self.config["speed_violation"].get("max_speed")
+
+        try:
+            # Asegurarse de que existan valores numéricos válidos
+            if max_speed is None:
+                return None
+            current_speed = float(current_speed)
+            max_speed = float(max_speed)
+        except Exception:
+            return None
 
         if current_speed > max_speed:
             severity = AlertSeverity(self.config["speed_violation"]["severity"])
@@ -325,40 +347,7 @@ class AlertSystem:
 
         return None
 
-    def check_fuel_low(self, current_data: Dict) -> Optional[Alert]:
-        """Verificar nivel bajo de combustible"""
-        if not self.config["fuel_low"]["enabled"]:
-            return None
-
-        # Preferir combustible_porcentaje si está disponible, si no usar combustible (legacy)
-        fuel_level = current_data.get("combustible_porcentaje")
-        if fuel_level is None:
-            fuel_raw = current_data.get("combustible", None)
-            # If combustible was present but None, treat as unknown -> default 100
-            if fuel_raw is None:
-                fuel_level = 100
-            else:
-                try:
-                    fuel_level = float(fuel_raw)
-                except Exception:
-                    fuel_level = 100
-        threshold = self.config["fuel_low"]["threshold_percentage"]
-
-        if fuel_level is None:
-            return None
-        if fuel_level < threshold:
-            severity = AlertSeverity(self.config["fuel_low"]["severity"])
-            return Alert(
-                alert_id=f"fuel_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
-                alert_type=AlertType.FUEL_LOW,
-                severity=severity,
-                title="Nivel Bajo de Combustible",
-                message=f"Nivel de combustible: {fuel_level:.1f}% (umbral: {threshold}%)",
-                timestamp=datetime.now(),
-                data={"fuel_level": fuel_level, "threshold": threshold},
-            )
-
-        return None
+    # Fuel monitoring removed; method deleted
 
     def check_overheating(self, current_data: Dict) -> Optional[Alert]:
         """Verificar sobrecalentamiento"""
@@ -366,7 +355,15 @@ class AlertSystem:
             return None
 
         temperature = current_data.get("temperatura", 0)
-        threshold = self.config["overheating"]["temperature_threshold"]
+        threshold = self.config["overheating"].get("temperature_threshold")
+
+        try:
+            if threshold is None:
+                return None
+            temperature = float(temperature)
+            threshold = float(threshold)
+        except Exception:
+            return None
 
         if temperature > threshold:
             severity = AlertSeverity(self.config["overheating"]["severity"])
@@ -392,8 +389,18 @@ class AlertSystem:
             return None
 
         # Prefer normalized intensity if present
-        wheelslip = current_data.get("deslizamiento_ruedas_intensidad", current_data.get("deslizamiento_ruedas", 0))
-        threshold = self.config["wheelslip"]["threshold"]
+        wheelslip = current_data.get(
+            "deslizamiento_ruedas_intensidad", current_data.get("deslizamiento_ruedas", 0)
+        )
+        threshold = self.config["wheelslip"].get("threshold")
+
+        try:
+            if threshold is None:
+                return None
+            wheelslip = float(wheelslip)
+            threshold = float(threshold)
+        except Exception:
+            return None
 
         if wheelslip > threshold:
             severity = AlertSeverity(self.config["wheelslip"]["severity"])
@@ -502,6 +509,8 @@ class AlertSystem:
             if raw_data:
                 # Convertir datos al formato IA
                 current_data = self.tsc_integration.convertir_datos_ia(raw_data)
+                # Guardar últimas lecturas para re-resolución automática
+                self.last_telemetry = current_data
 
                 # Verificar alertas basadas en datos actuales
                 # Verificar alertas basadas en datos actuales
@@ -509,9 +518,7 @@ class AlertSystem:
                 if speed_alert:
                     alerts.append(speed_alert)
 
-                fuel_alert = self.check_fuel_low(current_data)
-                if fuel_alert:
-                    alerts.append(fuel_alert)
+                # Fuel alerts removed per request - trains are always fueled
 
                 temp_alert = self.check_overheating(current_data)
                 if temp_alert:
@@ -606,6 +613,12 @@ class AlertSystem:
         if filtered_alerts:
             self.save_alerts()
 
+        # Intentar resolver alertas transitorias basadas en última telemetría
+        try:
+            self._resolve_transient_alerts(self.last_telemetry)
+        except Exception as e:
+            print(f"[WARN] Error al intentar resolver alertas transitorias: {e}")
+
         return filtered_alerts
 
     def _filter_duplicate_alerts(
@@ -631,6 +644,72 @@ class AlertSystem:
                 filtered.append(new_alert)
 
         return filtered
+
+    def _resolve_transient_alerts(self, current_data: Optional[Dict] = None) -> None:
+        """Marcar como reconocidas las alertas transitorias cuya condición ya se ha resuelto.
+
+        Actualmente aplica a: speed_violation, wheelslip, overheating.
+        """
+        if current_data is None:
+            current_data = self.last_telemetry
+        if not current_data:
+            return
+
+        changed = False
+        try:
+            # Speed violations
+            current_speed = self._to_float(current_data.get("velocidad_actual"))
+
+            wheelslip_current = None
+            # Prefer intensity normalized
+            if current_data.get("deslizamiento_ruedas_intensidad") is not None:
+                wheelslip_current = self._to_float(current_data.get("deslizamiento_ruedas_intensidad"))
+            else:
+                wheelslip_current = self._to_float(current_data.get("deslizamiento_ruedas"))
+
+            temp_current = self._to_float(current_data.get("temperatura_motor"))
+
+            for alert in self.alerts:
+                if alert.acknowledged:
+                    continue
+                # Resolvemos solo tipo speed_violation / wheelslip / overheating
+                try:
+                    if alert.alert_type == AlertType.SPEED_VIOLATION:
+                        # Obtener umbral del dato de la alerta o del config
+                        max_speed_candidate = alert.data.get("max_speed", self.config["speed_violation"]["max_speed"])
+                        max_speed_val = self._to_float(max_speed_candidate)
+                        max_speed = max_speed_val if max_speed_val is not None else self.config["speed_violation"]["max_speed"]
+                        if current_speed is not None and max_speed is not None and current_speed <= float(max_speed):
+                            alert.acknowledged = True
+                            alert.acknowledged_at = datetime.now()
+                            print(f"[OK] Alerta resuelta automáticamente: {alert.alert_id} (speed)")
+                            changed = True
+                    elif alert.alert_type == AlertType.WHEELSLIP:
+                        thr_candidate = alert.data.get("threshold", self.config["wheelslip"]["threshold"])
+                        thr_val = self._to_float(thr_candidate)
+                        threshold = thr_val if thr_val is not None else self.config["wheelslip"]["threshold"]
+                        if wheelslip_current is not None and threshold is not None and wheelslip_current <= float(threshold):
+                            alert.acknowledged = True
+                            alert.acknowledged_at = datetime.now()
+                            print(f"[OK] Alerta resuelta automáticamente: {alert.alert_id} (wheelslip)")
+                            changed = True
+                    elif alert.alert_type == AlertType.OVERHEATING:
+                        th_candidate = alert.data.get("temperature_threshold", self.config["overheating"]["temperature_threshold"])
+                        th_val = self._to_float(th_candidate)
+                        threshold = th_val if th_val is not None else self.config["overheating"]["temperature_threshold"]
+                        if temp_current is not None and threshold is not None and temp_current <= float(threshold):
+                            alert.acknowledged = True
+                            alert.acknowledged_at = datetime.now()
+                            print(f"[OK] Alerta resuelta automáticamente: {alert.alert_id} (overheating)")
+                            changed = True
+                except Exception as e:
+                    # No romper si hay error en evaluación de una alerta
+                    print(f"[WARN] Error al evaluar resolución para {alert.alert_id}: {e}")
+        except Exception as e:
+            print(f"[WARN] Error evaluando alertas a resolver: {e}")
+
+        if changed:
+            self.save_alerts()
 
     def get_active_alerts(self, severity_filter: Optional[AlertSeverity] = None) -> List[Alert]:
         """Obtener alertas activas (no reconocidas)"""
@@ -729,11 +808,13 @@ def check_alerts() -> Dict:
     """Función para verificar alertas (llamada desde web dashboard)"""
     system = get_alert_system()
     alerts = system.run_monitoring_cycle()
+    active_list = system.get_active_alerts()
 
     return {
         "new_alerts": len(alerts),
-        "active_alerts": len(system.get_active_alerts()),
+        "active_alerts": len(active_list),
         "alerts": [alert.to_dict() for alert in alerts],
+        "active_alerts_list": [a.to_dict() for a in active_list],
     }
 
 

@@ -114,7 +114,7 @@ class SeabornAnalysis:
             "LocoBrakeCylinderPressurePSI": "presion_freno_loco",
             "TrainBrakeCylinderPressurePSI": "presion_freno_tren",
             "MainReservoirPressurePSIDisplayed": "presion_deposito",
-            "FuelLevel": "combustible",
+            # FuelLevel removed from mapping; not used in analysis
             "Gradient": "pendiente",
             "TractiveEffort": "esfuerzo_traccion",
             "Wheelslip": "deslizamiento_ruedas",
@@ -144,7 +144,7 @@ class SeabornAnalysis:
             "presion_freno_loco",
             "presion_freno_tren",
             "presion_deposito",
-            "combustible",
+            # combustible removed from numeric columns
             "pendiente",
             "esfuerzo_traccion",
             "deslizamiento_ruedas",

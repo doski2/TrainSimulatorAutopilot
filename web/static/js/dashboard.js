@@ -2,6 +2,10 @@
 let socket;
 // Conjunto de alert IDs que ya fueron notificadas en el cliente
 let knownAlertIds = new Set();
+// Conjunto de claves para evitar notificaciones repetidas de la misma alerta (tipo+titulo)
+let knownAlertKeys = new Set();
+// Map de alert_id -> clave (alert_type:title) para poder limpiar y gestionar ack
+let knownAlertIdToKey = new Map();
 let speedChart;
 let telemetryHistory = [];
 let maxHistoryPoints = 50;
@@ -140,7 +144,9 @@ function connectWebSocket() {
     socket.on('autobrake_status', function(data) {
         try {
             const enabled = data.autobrake_by_signal;
-            dashboardConfig.autobrakeBySignal = enabled;
+            if (typeof dashboardConfig !== 'undefined' && dashboardConfig !== null) {
+                dashboardConfig.autobrakeBySignal = enabled;
+            }
             const el = document.getElementById('autobrake-by-signal');
             if (el) el.checked = enabled;
             showAlert('Autobrake por señal actualizado: ' + enabled, 'info');
@@ -228,8 +234,11 @@ function controlAction(action) {
 }
 
 function updateTelemetry(data) {
+    data = data || {};
     const telemetry = data.telemetry || {};
     console.debug('[UI] telemetry_update received', telemetry); // Debug log for telemetry updates
+    // Inicializar `activeAlerts` antes de usarlo en cualquier debug o lógica
+    const activeAlerts = data.active_alerts_list || data.active_alerts || [];
     console.debug('[UI] active_alerts payload', activeAlerts); // Debug check for active alerts payload
 
     // Utility: safely set textContent if element exists
@@ -242,7 +251,6 @@ function updateTelemetry(data) {
     const predictions = data.predictions || {};
     const multiLoco = data.multi_loco || {};
     const systemStatus = data.system_status || {};
-    const activeAlerts = data.active_alerts || [];
     const performance = data.performance || {};
     const reports = data.reports || {};
 
@@ -436,20 +444,7 @@ function updateTelemetry(data) {
         safeSetText('aux-reservoir-value', '--');
     }
     
-    // Mostrar combustible
-    const fuelLevel = telemetry.combustible;
-    const fuelPct = telemetry.combustible_porcentaje;
-    const fuelGal = telemetry.combustible_galones;
-    if (fuelGal !== undefined && fuelGal !== null) {
-        safeSetText('fuel-level-value', (fuelGal).toFixed(1) + ' gal');
-    } else if (fuelPct !== undefined && fuelPct !== null) {
-        safeSetText('fuel-level-value', (fuelPct).toFixed(1) + '%');
-    } else if (fuelLevel !== undefined && fuelLevel !== null) {
-        // Legacy fallback: assume fraction 0..1
-        safeSetText('fuel-level-value', (fuelLevel * 100).toFixed(1) + '%');
-    } else {
-        safeSetText('fuel-level-value', '--');
-    }
+    // Fuel metrics removed — trains are assumed fully fueled in this deployment
     
     // Mostrar distancia recorrida
     const distanceTravelled = telemetry.distancia_recorrida;
@@ -1243,38 +1238,70 @@ function updateActiveAlerts(alertsData) {
 
     // Manejar el caso donde alertsData es un objeto con propiedades alerts
     let alerts = [];
+    // Prefer active_alerts_list (complete active alerts) if provided
     if (Array.isArray(alertsData)) {
         alerts = alertsData;
-    } else if (alertsData && typeof alertsData === 'object' && Array.isArray(alertsData.alerts)) {
-        alerts = alertsData.alerts;
+    } else if (alertsData && typeof alertsData === 'object') {
+        if (Array.isArray(alertsData.active_alerts_list)) {
+            alerts = alertsData.active_alerts_list;
+        } else if (Array.isArray(alertsData.alerts)) {
+            alerts = alertsData.alerts; // legacy/new alerts only
+        }
     } else {
         console.warn('⚠️ alertsData no es un array ni un objeto válido:', typeof alertsData, alertsData);
         alerts = [];
     }
 
-    // Detectar alertas nuevas: crear set de ids actuales
+    // Detectar alertas nuevas: crear set de ids actuales y keys (tipo+title)
     const currentIds = new Set(alerts.map(a => a.alert_id));
+    const currentKeys = new Set(alerts.map(a => `${a.alert_type || a.type || ''}:${a.title || a.name || ''}`));
+
+    // Dedupe de alertas para UI: agrupar por tipo+titulo y tomar la más reciente
+    const dedupeMap = alerts.reduce((acc, a) => {
+        const key = `${a.alert_type || a.type || ''}:${a.title || a.name || ''}`;
+        if (!acc.has(key)) {
+            acc.set(key, a);
+        } else {
+            try {
+                const existingTimestamp = new Date(acc.get(key).timestamp || acc.get(key).time);
+                const newTimestamp = new Date(a.timestamp || a.time);
+                if (newTimestamp > existingTimestamp) acc.set(key, a);
+            } catch (e) {
+                // Si hay error comparando, mantener el existente
+            }
+        }
+        return acc;
+    }, new Map());
+    const displayAlerts = Array.from(dedupeMap.values());
+    console.debug(`[UI] alerts received: ${alerts.length}, deduped: ${displayAlerts.length}`);
 
     // Notificar nuevas alertas criticas (persistentes)
     alerts.forEach(alert => {
-        if (!knownAlertIds.has(alert.alert_id)) {
-            // Alerta nueva
+        const key = `${alert.alert_type || alert.type || ''}:${alert.title || alert.name || ''}`;
+        const isNewId = !knownAlertIds.has(alert.alert_id);
+        const isNewKey = !knownAlertKeys.has(key);
+        if (isNewKey) {
+            // Notificar solo una vez por tipo+titulo mientras la alerta siga activa
             if (alert.severity === 'critical') {
-                // Mostrar notificación persistente
                 showAlert(`${alert.title}: ${alert.message}`, 'danger', true);
             } else if (alert.severity === 'high') {
-                // Notificar alto nivel de severidad (no persistente)
                 showAlert(`${alert.title}: ${alert.message}`, 'warning', false);
             }
+            knownAlertKeys.add(key);
+        } else if (isNewId && !isNewKey) {
+            // Si la alerta tiene id nueva pero la clave ya está conocida, no volver a notificar
+        }
+        if (isNewId) {
             knownAlertIds.add(alert.alert_id);
+            knownAlertIdToKey.set(alert.alert_id, key);
         }
     });
 
-    // Actualizar contador
-    countBadge.textContent = alerts.length;
-    countBadge.className = `badge ms-2 ${getAlertBadgeClass(alerts.length)}`;
+    // Actualizar contador con alertas deduplicadas
+    countBadge.textContent = displayAlerts.length;
+    countBadge.className = `badge ms-2 ${getAlertBadgeClass(displayAlerts.length)}`;
 
-    if (alerts.length === 0) {
+    if (displayAlerts.length === 0) {
         container.innerHTML = `
             <div class="text-center text-muted">
                 <i class="fas fa-shield-alt fa-2x mb-3"></i>
@@ -1284,8 +1311,23 @@ function updateActiveAlerts(alertsData) {
         return;
     }
 
-    // Mostrar alertas activas
-    const alertsHtml = alerts.map(alert => `
+    // Limpiar knownAlertIds que ya no están activas para evitar crecimiento indefinido
+    for (const id of Array.from(knownAlertIds)) {
+        if (!currentIds.has(id)) {
+            knownAlertIds.delete(id);
+            knownAlertIdToKey.delete(id);
+        }
+    }
+
+    // Limpiar knownAlertKeys que ya no están activas (si la alerta desaparece, permitir notificación futura)
+    for (const key of Array.from(knownAlertKeys)) {
+        if (!currentKeys.has(key)) {
+            knownAlertKeys.delete(key);
+        }
+    }
+
+    // Mostrar alertas activas (deduplicadas por tipo+titulo)
+    const alertsHtml = displayAlerts.map(alert => `
         <div class="alert alert-${getAlertSeverityClass(alert.severity)} alert-dismissible fade show mb-2" role="alert">
             <div class="d-flex align-items-center">
                 <i class="fas ${getAlertIcon(alert.alert_type)} me-2"></i>
@@ -1305,9 +1347,7 @@ function updateActiveAlerts(alertsData) {
 
     container.innerHTML = alertsHtml;
 
-    // Limpiar IDs conocidos que ya no están activos (permitir futuras notificaciones)
-    const toRemove = [...knownAlertIds].filter(id => !currentIds.has(id));
-    toRemove.forEach(id => knownAlertIds.delete(id));
+    // (Cleanup of known IDs is handled above to avoid duplication)
 }
 
 // Obtener clase CSS para severidad de alerta
@@ -1336,7 +1376,7 @@ function getAlertIcon(alertType) {
         'efficiency_drop': 'fa-chart-line',
         'system_error': 'fa-exclamation-circle',
         'performance_degradation': 'fa-cogs',
-        'fuel_low': 'fa-gas-pump',
+        // fuel_low icon removed
         'overheating': 'fa-thermometer-half'
         ,'brake_pressure_discrepancy': 'fa-exclamation-triangle'
     };
@@ -1355,6 +1395,15 @@ function acknowledgeAlert(alertId) {
     .then(data => {
         if (data.success) {
             showAlert('Alerta reconocida', 'success');
+            // Limpiar caches locales para permitir re-notificación si vuelve a aparecer
+            if (knownAlertIds.has(alertId)) {
+                const key = knownAlertIdToKey.get(alertId);
+                knownAlertIds.delete(alertId);
+                knownAlertIdToKey.delete(alertId);
+                if (key && knownAlertKeys.has(key)) {
+                    knownAlertKeys.delete(key);
+                }
+            }
         } else {
             showAlert('Error al reconocer alerta', 'danger');
         }

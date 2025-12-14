@@ -65,7 +65,7 @@ class TSCIntegration:
             "SpeedoType": "tipo_velocimetro",
             "Acceleration": "aceleracion",
             "Gradient": "pendiente",
-            "FuelLevel": "combustible",
+            # FuelLevel removed from mapping (TSC uses infinite fuel in scenarios)
             "CurrentSpeedLimit": "limite_velocidad",
             "NextSpeedLimitSpeed": "limite_velocidad_siguiente",
             "NextSpeedLimitDistance": "distancia_limite_siguiente",
@@ -118,15 +118,12 @@ class TSCIntegration:
 
         # Valores anteriores de comandos para evitar envíos innecesarios
         self.comandos_anteriores = {}
-        # Fuel capacity for converting fraction to gallons (optional)
+        # Fuel capacity handling removed; keep placeholder for compatibility
         self.fuel_capacity_gallons = None
-        if fuel_capacity_gallons is not None:
-            try:
-                self.fuel_capacity_gallons = float(fuel_capacity_gallons)
-            except Exception:
-                self.fuel_capacity_gallons = None
-        # Default maximum engine RPM used to infer RPM from regulator when RPM not provided
+        # Maximum RPM used for inferring RPM when direct RPM control isn't provided
+        # Default matches common locomotive max RPM (configurable via API/back-end)
         self.max_engine_rpm = 5000.0
+        # Fuel capacity option ignored by integration; configuration removed
 
     def _to_float(self, val: Any, default: float = 0.0) -> float:
         """Safely convert a value to float, returning default on failure."""
@@ -245,8 +242,31 @@ class TSCIntegration:
                     rpm_alt = self._to_float(datos_archivo.get("RPMDelta", 0.0))
                     if rpm_alt != 0.0:
                         datos_ia["rpm"] = rpm_alt
-                except Exception:
-                    pass
+                except Exception as e:
+                    print(f"[WARN] Failed to parse RPMDelta for rpm inference: {e}")
+                    import traceback
+
+                    traceback.print_exc()
+
+            # Si RPM aún es 0, inferir desde Regulator o VirtualThrottle (si están presentes)
+            if datos_ia.get("rpm", 0.0) == 0.0:
+                try:
+                    if "Regulator" in datos_archivo and datos_archivo.get("Regulator", None) is not None:
+                        reg_val = self._to_float(datos_archivo.get("Regulator", 0.0))
+                        if reg_val > 0.0:
+                            datos_ia["rpm"] = reg_val * self.max_engine_rpm
+                            datos_ia["rpm_inferida"] = True
+                    elif "VirtualThrottle" in datos_archivo and datos_archivo.get("VirtualThrottle", None) is not None:
+                        vt = self._to_float(datos_archivo.get("VirtualThrottle", 0.0))
+                        if vt > 0.0:
+                            datos_ia["rpm"] = vt * self.max_engine_rpm
+                            datos_ia["rpm_inferida"] = True
+                except Exception as e:
+                    print(f"[WARN] RPM inference failed: {e}")
+                    import traceback
+
+                    traceback.print_exc()
+
             # Mapear RPMSource (depuración) si existe en el archivo
             if "RPMSource" in datos_archivo:
                 datos_ia["rpm_fuente"] = datos_archivo.get("RPMSource")
@@ -266,11 +286,17 @@ class TSCIntegration:
                 try:
                     vb = self._to_float(datos_archivo.get("VirtualBrake", 0.0))
                     datos_ia["freno_tren"] = max(0.0, min(1.0, vb))
-                except Exception:
-                    pass
-        except Exception:
-            # No bloquear si hay error
-            pass
+                except Exception as e:
+                    print(f"[WARN] VirtualBrake parsing failed: {e}")
+                    import traceback
+
+                    traceback.print_exc()
+        except Exception as e:
+            # No bloquear si hay error; registrar para diagnóstico
+            print(f"[WARN] Error processing brake/virtual brake fields: {e}")
+            import traceback
+
+            traceback.print_exc()
 
         # Agregar campos que la IA necesita pero que pueden no estar en el archivo
         datos_ia.setdefault("acelerador", 0.0)
@@ -307,6 +333,27 @@ class TSCIntegration:
             pass
         datos_ia.setdefault("velocimetro_mph", 0.0)
         datos_ia.setdefault("tipo_velocimetro", 1)
+        # If RPM still zero here, try inferring from Regulator or VirtualThrottle and set flags
+        if datos_ia.get("rpm", 0.0) == 0.0:
+            try:
+                if "Regulator" in datos_archivo and datos_archivo.get("Regulator", 0) is not None:
+                    reg_val = self._to_float(datos_archivo.get("Regulator", 0.0))
+                    if reg_val > 0.0:
+                        datos_ia["rpm"] = reg_val * self.max_engine_rpm
+                        datos_ia["rpm_inferida"] = True
+                elif "VirtualThrottle" in datos_archivo and datos_archivo.get("VirtualThrottle", 0) is not None:
+                    vt = self._to_float(datos_archivo.get("VirtualThrottle", 0.0))
+                    if vt > 0.0:
+                        datos_ia["rpm"] = vt * self.max_engine_rpm
+                        datos_ia["rpm_inferida"] = True
+            except Exception:
+                print("[WARN] RPM inference failed (secondary block): unknown error")
+                import traceback
+
+                traceback.print_exc()
+        # Mapear RPMSource (depuración) si existe en el archivo
+        if "RPMSource" in datos_archivo:
+            datos_ia["rpm_fuente"] = datos_archivo.get("RPMSource")
         datos_ia.setdefault("distancia_recorrida", 0.0)
         datos_ia.setdefault("esfuerzo_traccion", 0.0)
         # Amperaje (A) is the primary metric name; keep 'corriente' and 'amps' as aliases
@@ -393,9 +440,11 @@ class TSCIntegration:
                     )
                     datos_ia.setdefault("deslizamiento_ruedas_inferida", True)
         except Exception:
-            pass
-            datos_ia["deslizamiento_ruedas_interpretacion"] = interpretation
-        except Exception:
+            # On any error during wheelslip inference, record interpretation if available
+            try:
+                datos_ia["deslizamiento_ruedas_interpretacion"] = interpretation
+            except NameError:
+                datos_ia.setdefault("deslizamiento_ruedas_interpretacion", "unknown")
             datos_ia.setdefault("deslizamiento_ruedas_intensidad", 0.0)
             datos_ia.setdefault("deslizamiento_ruedas_raw", datos_ia.get("deslizamiento_ruedas", 0.0))
         # Brake Pressure Defaults
@@ -418,50 +467,10 @@ class TSCIntegration:
         datos_ia.setdefault("posicion_freno_tren", 0.0)
         datos_ia.setdefault("fecha_hora", datetime.now().isoformat())
 
-        # Normalizar y convertir combustible a % y galones cuando sea posible
-        try:
-            raw_fuel = datos_ia.get("combustible", None)
-            if raw_fuel is not None:
-                try:
-                    raw_fuel = self._parse_optional_float(raw_fuel)
-                except Exception:
-                    raw_fuel = None
-            if raw_fuel is None:
-                datos_ia.setdefault("combustible_porcentaje", None)
-                datos_ia.setdefault("combustible_galones", None)
-            else:
-                # If capacity configured, use it to compute gallons/percentage
-                if self.fuel_capacity_gallons:
-                    if raw_fuel <= 1.0:
-                        # Fraction 0..1
-                        pct = raw_fuel * 100.0
-                        gal = raw_fuel * self.fuel_capacity_gallons
-                    else:
-                        # Treat as gallons
-                        gal = raw_fuel
-                        pct = (float(gal) / self.fuel_capacity_gallons) * 100.0
-                    datos_ia["combustible_porcentaje"] = round(pct, 1)
-                    datos_ia["combustible_galones"] = round(gal, 2)
-                    datos_ia["combustible"] = datos_ia["combustible_porcentaje"]
-                else:
-                    # No capacity: infer whether it's a fraction or percent or gallons
-                    if raw_fuel <= 1.0:
-                        datos_ia["combustible_porcentaje"] = round(raw_fuel * 100.0, 1)
-                        datos_ia["combustible_galones"] = None
-                        datos_ia["combustible"] = datos_ia["combustible_porcentaje"]
-                    elif raw_fuel <= 100.0:
-                        # Likely already percentage
-                        datos_ia["combustible_porcentaje"] = round(raw_fuel, 1)
-                        datos_ia["combustible_galones"] = None
-                        datos_ia["combustible"] = datos_ia["combustible_porcentaje"]
-                    else:
-                        # Big number: likely gallons; keep combustible percent unknown
-                        datos_ia["combustible_porcentaje"] = None
-                        datos_ia["combustible_galones"] = round(raw_fuel, 2)
-        except Exception:
-            # Keep defaults if conversion fails
-            datos_ia.setdefault("combustible_porcentaje", None)
-            datos_ia.setdefault("combustible_galones", None)
+        # Fuel telemetry removed: keep compatibility keys but filled with None
+        datos_ia.setdefault("combustible_porcentaje", None)
+        datos_ia.setdefault("combustible_galones", None)
+        datos_ia.setdefault("combustible", None)
 
         # Presencia de campos: indicar si el archivo GetData.txt contenía ciertos controles
         datos_ia["presion_tubo_freno_presente"] = "AirBrakePipePressurePSI" in datos_archivo
@@ -548,8 +557,11 @@ class TSCIntegration:
                 datos_ia["presion_freno_tren_inferida"] = True
             else:
                 datos_ia.setdefault("presion_freno_tren_inferida", False)
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"[WARN] Error inferring brake pressure: {e}")
+            import traceback
+
+            traceback.print_exc()
 
         return datos_ia
 

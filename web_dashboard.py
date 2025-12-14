@@ -296,16 +296,7 @@ def initialize_system():
                 except Exception:
                     # Ignore if autopilot doesn't have the attribute
                     pass
-                try:
-                    fuel_capacity = config.getfloat("TSC_INTEGRATION", "fuel_capacity_gallons", fallback=None)
-                except Exception:
-                    fuel_capacity = None
-                # If TSC integration already exists and is an instance, set fuel capacity so convertir_datos_ia can compute gallons
-                if tsc_integration is not None and hasattr(tsc_integration, 'fuel_capacity_gallons'):
-                    try:
-                        tsc_integration.fuel_capacity_gallons = fuel_capacity
-                    except Exception:
-                        pass
+                # Fuel capacity configuration removed (feature deprecated)
         except Exception:
             pass
 
@@ -456,8 +447,11 @@ def telemetry_update_loop():
                     try:
                         ws_debug = f"[DEBUG] Wheelslip raw={compressed_telemetry.get('deslizamiento_ruedas_raw')} intensity={compressed_telemetry.get('deslizamiento_ruedas_intensidad')}"
                         print(ws_debug)
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        print(f"[ERROR] Failed to print wheelslip debug info: {e}")
+                        import traceback
+
+                        traceback.print_exc()
                     # Debug: active alerts payload
                     try:
                         active_list = active_alerts.get('alerts') if isinstance(active_alerts, dict) else active_alerts
@@ -466,8 +460,11 @@ def telemetry_update_loop():
                             print(f"[DEBUG] Active alerts (types) = {[a.get('alert_type') for a in active_list[:10]]}")
                         else:
                             print(f"[DEBUG] Active alerts: {active_alerts}")
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        print(f"[ERROR] Failed to print active alerts debug info: {e}")
+                        import traceback
+
+                        traceback.print_exc()
                 except Exception as emit_error:
                     print(f"[WS] Error en emit: {emit_error}")
                     print(

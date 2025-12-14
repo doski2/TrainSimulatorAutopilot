@@ -56,7 +56,7 @@ class TSCIntegrationOptimized:
             "SpeedoType": "tipo_velocimetro",
             "Acceleration": "aceleracion",
             "Gradient": "pendiente",
-            "FuelLevel": "combustible",
+            # FuelLevel removed - TSC simulation trains use infinite fuel
             "CurrentSpeedLimit": "limite_velocidad_actual",
             "NextSpeedLimitSpeed": "limite_velocidad_siguiente",
             "NextSpeedLimitDistance": "distancia_limite_siguiente",
@@ -240,7 +240,7 @@ class TSCIntegrationOptimized:
             "tipo_velocimetro": 0,
             "aceleracion": 0.0,
             "pendiente": 0.0,
-            "combustible": 1.0,
+            # combustible field removed for this integration
             "limite_velocidad_actual": 160.0,
             "limite_velocidad_siguiente": 160.0,
             "distancia_limite_siguiente": 1000.0,

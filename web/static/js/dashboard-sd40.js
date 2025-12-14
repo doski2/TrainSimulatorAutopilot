@@ -21,7 +21,6 @@ let sd40Config = {
     alerts: {
         overheat: true,
         lowOil: true,
-        lowFuel: true,
         emergency: true
     }
 };
@@ -237,20 +236,14 @@ function updateSD40Metrics(data) {
     document.getElementById('amps-value').textContent = formatNumber(data.amps || 0, 0);
 
     // Actualizar métricas adicionales
-    document.getElementById('fuel-consumption-value').textContent = formatNumber(data.fuelConsumption || 0, 1);
+    // Fuel consumption display removed
     document.getElementById('efficiency-value').textContent = formatNumber(data.efficiency || 0, 1);
     document.getElementById('runtime-value').textContent = formatNumber(data.runtime || 0, 1);
     document.getElementById('brake-pressure-value').textContent = formatNumber(data.brakePressure || 0, 1);
     document.getElementById('main-reservoir-pressure-value').textContent = formatNumber(data.presion_deposito_principal || 0, 1);
 
     // Actualizar estado del sistema
-    const fuelPct = data.combustible_porcentaje !== undefined && data.combustible_porcentaje !== null ? data.combustible_porcentaje : null;
-    const fuelGal = data.combustible_galones !== undefined && data.combustible_galones !== null ? data.combustible_galones : null;
-    if (fuelGal !== null) {
-        document.getElementById('fuel-level').textContent = formatNumber(fuelGal || 0, 1) + ' gal';
-    } else {
-        document.getElementById('fuel-level').textContent = formatNumber(fuelPct || 0, 1) + '%';
-    }
+    // Fuel level display removed
     document.getElementById('sand-level').textContent = formatNumber(data.sandLevel || 0, 1) + '%';
     document.getElementById('water-level').textContent = formatNumber(data.waterLevel || 0, 1) + '%';
 
@@ -262,7 +255,6 @@ function updateSD40Metrics(data) {
         oilPressure: data.oilPressure || 0,
         amps: data.amps || 0,
         rpm: data.rpm || 0,
-        fuelConsumption: data.fuelConsumption || 0,
         efficiency: data.efficiency || 0,
         runtime: data.runtime || 0,
         brakePressure: data.brakePressure || 0,
@@ -343,17 +335,7 @@ function checkSD40Alerts(data) {
         addEventLog(`Alerta: Baja presión de aceite - ${data.oilPressure} psi`, 'warning');
     }
 
-    if (sd40Config.alerts.lowFuel && (fuelPct !== null ? fuelPct : 100) < 15) {
-        const fuelDisplayText = (fuelPct !== null ? `${fuelPct}%` : (fuelGal !== null ? `${fuelGal} gal` : 'N/A'));
-        showAlert(`¡ADVERTENCIA! Nivel de combustible bajo: ${fuelDisplayText}`, 'warning');
-        addEventLog(`Alerta: Combustible bajo - ${data.fuelLevel}%`, 'warning');
-    }
-
-    // Nuevas alertas para métricas adicionales
-    if (data.fuelConsumption > 5.0) {  // Consumo alto > 5 gal/h
-        showAlert(`¡ADVERTENCIA! Consumo de combustible alto: ${data.fuelConsumption} gal/h`, 'warning');
-        addEventLog(`Alerta: Alto consumo de combustible - ${data.fuelConsumption} gal/h`, 'warning');
-    }
+    // Fuel-related alerts removed (feature deprecated)
 
     if (data.efficiency < 100 && data.speed > 10) {  // Eficiencia baja < 100 mpg cuando en movimiento
         showAlert(`¡ADVERTENCIA! Eficiencia baja: ${data.efficiency} mpg`, 'warning');
@@ -498,14 +480,14 @@ function loadSettingsToUI() {
     document.getElementById('control-mode').value = sd40Config.controlMode;
     document.getElementById('alert-overheat').checked = sd40Config.alerts.overheat;
     document.getElementById('alert-low-oil').checked = sd40Config.alerts.lowOil;
-    document.getElementById('alert-low-fuel').checked = sd40Config.alerts.lowFuel;
+    // Low fuel alert removed
     document.getElementById('alert-emergency').checked = sd40Config.alerts.emergency;
 }
 
 function saveSD40Settings() {
     sd40Config.alerts.overheat = document.getElementById('alert-overheat').checked;
     sd40Config.alerts.lowOil = document.getElementById('alert-low-oil').checked;
-    sd40Config.alerts.lowFuel = document.getElementById('alert-low-fuel').checked;
+    // Low fuel alert removed
     sd40Config.alerts.emergency = document.getElementById('alert-emergency').checked;
 
     localStorage.setItem('sd40DashboardConfig', JSON.stringify(sd40Config));
@@ -525,7 +507,6 @@ function resetSD40Settings() {
             alerts: {
                 overheat: true,
                 lowOil: true,
-                lowFuel: true,
                 emergency: true
             }
         };

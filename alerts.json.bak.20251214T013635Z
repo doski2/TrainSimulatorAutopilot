@@ -885,6 +885,20 @@
     "acknowledged_at": null
   },
   {
+    "alert_id": "fuel_20251204_233121",
+    "alert_type": "fuel_low",
+    "severity": "high",
+    "title": "Nivel Bajo de Combustible",
+    "message": "Nivel de combustible: 0.0% (umbral: 15%)",
+    "timestamp": "2025-12-04T23:31:21.693788",
+    "data": {
+      "fuel_level": 0.0,
+      "threshold": 15
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
     "alert_id": "wheelslip_20251204_233122",
     "alert_type": "wheelslip",
     "severity": "high",
@@ -2595,6 +2609,20 @@
     "acknowledged_at": "2025-12-14T02:04:52.758735"
   },
   {
+    "alert_id": "fuel_20251209_234539",
+    "alert_type": "fuel_low",
+    "severity": "high",
+    "title": "Nivel Bajo de Combustible",
+    "message": "Nivel de combustible: 0.0% (umbral: 15%)",
+    "timestamp": "2025-12-09T23:45:39.360754",
+    "data": {
+      "fuel_level": 0.0,
+      "threshold": 15
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
     "alert_id": "speed_20251209_234639",
     "alert_type": "speed_violation",
     "severity": "high",
@@ -2608,6 +2636,216 @@
     },
     "acknowledged": true,
     "acknowledged_at": "2025-12-14T02:04:52.758739"
+  },
+  {
+    "alert_id": "fuel_20251209_234639",
+    "alert_type": "fuel_low",
+    "severity": "high",
+    "title": "Nivel Bajo de Combustible",
+    "message": "Nivel de combustible: 0.0% (umbral: 15%)",
+    "timestamp": "2025-12-09T23:46:39.367608",
+    "data": {
+      "fuel_level": 0.0,
+      "threshold": 15
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "fuel_20251212_180413",
+    "alert_type": "fuel_low",
+    "severity": "high",
+    "title": "Nivel Bajo de Combustible",
+    "message": "Nivel de combustible: 0.0% (umbral: 15%)",
+    "timestamp": "2025-12-12T18:04:13.207440",
+    "data": {
+      "fuel_level": 0.0,
+      "threshold": 15
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "fuel_20251212_180513",
+    "alert_type": "fuel_low",
+    "severity": "high",
+    "title": "Nivel Bajo de Combustible",
+    "message": "Nivel de combustible: 0.0% (umbral: 15%)",
+    "timestamp": "2025-12-12T18:05:13.276965",
+    "data": {
+      "fuel_level": 0.0,
+      "threshold": 15
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "fuel_20251212_180805",
+    "alert_type": "fuel_low",
+    "severity": "high",
+    "title": "Nivel Bajo de Combustible",
+    "message": "Nivel de combustible: 0.0% (umbral: 15%)",
+    "timestamp": "2025-12-12T18:08:05.656623",
+    "data": {
+      "fuel_level": 0.0,
+      "threshold": 15
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "fuel_20251212_180905",
+    "alert_type": "fuel_low",
+    "severity": "high",
+    "title": "Nivel Bajo de Combustible",
+    "message": "Nivel de combustible: 0.0% (umbral: 15%)",
+    "timestamp": "2025-12-12T18:09:05.664124",
+    "data": {
+      "fuel_level": 0.0,
+      "threshold": 15
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "fuel_20251212_181005",
+    "alert_type": "fuel_low",
+    "severity": "high",
+    "title": "Nivel Bajo de Combustible",
+    "message": "Nivel de combustible: 0.0% (umbral: 15%)",
+    "timestamp": "2025-12-12T18:10:05.673483",
+    "data": {
+      "fuel_level": 0.0,
+      "threshold": 15
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "fuel_20251212_181105",
+    "alert_type": "fuel_low",
+    "severity": "high",
+    "title": "Nivel Bajo de Combustible",
+    "message": "Nivel de combustible: 0.0% (umbral: 15%)",
+    "timestamp": "2025-12-12T18:11:05.717158",
+    "data": {
+      "fuel_level": 0.0,
+      "threshold": 15
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "fuel_20251212_181205",
+    "alert_type": "fuel_low",
+    "severity": "high",
+    "title": "Nivel Bajo de Combustible",
+    "message": "Nivel de combustible: 0.0% (umbral: 15%)",
+    "timestamp": "2025-12-12T18:12:05.796752",
+    "data": {
+      "fuel_level": 0.0,
+      "threshold": 15
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "fuel_20251212_181305",
+    "alert_type": "fuel_low",
+    "severity": "high",
+    "title": "Nivel Bajo de Combustible",
+    "message": "Nivel de combustible: 0.0% (umbral: 15%)",
+    "timestamp": "2025-12-12T18:13:05.802416",
+    "data": {
+      "fuel_level": 0.0,
+      "threshold": 15
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "fuel_20251212_181405",
+    "alert_type": "fuel_low",
+    "severity": "high",
+    "title": "Nivel Bajo de Combustible",
+    "message": "Nivel de combustible: 0.0% (umbral: 15%)",
+    "timestamp": "2025-12-12T18:14:05.883563",
+    "data": {
+      "fuel_level": 0.0,
+      "threshold": 15
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "fuel_20251212_181505",
+    "alert_type": "fuel_low",
+    "severity": "high",
+    "title": "Nivel Bajo de Combustible",
+    "message": "Nivel de combustible: 0.0% (umbral: 15%)",
+    "timestamp": "2025-12-12T18:15:05.961436",
+    "data": {
+      "fuel_level": 0.0,
+      "threshold": 15
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "fuel_20251212_181810",
+    "alert_type": "fuel_low",
+    "severity": "high",
+    "title": "Nivel Bajo de Combustible",
+    "message": "Nivel de combustible: 0.0% (umbral: 15%)",
+    "timestamp": "2025-12-12T18:18:10.213128",
+    "data": {
+      "fuel_level": 0.0,
+      "threshold": 15
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "fuel_20251212_182025",
+    "alert_type": "fuel_low",
+    "severity": "high",
+    "title": "Nivel Bajo de Combustible",
+    "message": "Nivel de combustible: 0.0% (umbral: 15%)",
+    "timestamp": "2025-12-12T18:20:25.324487",
+    "data": {
+      "fuel_level": 0.0,
+      "threshold": 15
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "fuel_20251212_182125",
+    "alert_type": "fuel_low",
+    "severity": "high",
+    "title": "Nivel Bajo de Combustible",
+    "message": "Nivel de combustible: 0.0% (umbral: 15%)",
+    "timestamp": "2025-12-12T18:21:25.329989",
+    "data": {
+      "fuel_level": 0.0,
+      "threshold": 15
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "fuel_20251212_182225",
+    "alert_type": "fuel_low",
+    "severity": "high",
+    "title": "Nivel Bajo de Combustible",
+    "message": "Nivel de combustible: 0.0% (umbral: 15%)",
+    "timestamp": "2025-12-12T18:22:25.338287",
+    "data": {
+      "fuel_level": 0.0,
+      "threshold": 15
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
   },
   {
     "alert_id": "health_check_20251213_032413",
@@ -4070,21 +4308,6 @@
     "title": "Deslizamiento de Ruedas Detectado",
     "message": "Deslizamiento: 1.00 (umbral: 0.5)",
     "timestamp": "2025-12-14T02:17:00.918390",
-    "data": {
-      "wheelslip": 1.0,
-      "threshold": 0.5,
-      "slip_amount": 0.5
-    },
-    "acknowledged": false,
-    "acknowledged_at": null
-  },
-  {
-    "alert_id": "wheelslip_20251214_024435",
-    "alert_type": "wheelslip",
-    "severity": "high",
-    "title": "Deslizamiento de Ruedas Detectado",
-    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
-    "timestamp": "2025-12-14T02:44:35.214282",
     "data": {
       "wheelslip": 1.0,
       "threshold": 0.5,
