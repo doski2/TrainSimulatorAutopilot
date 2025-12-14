@@ -386,7 +386,9 @@ class TSCIntegration:
                 intensity = max(0.0, min(1.0, (raw_ws - 1.0) / max(1.0, raw_ws)))
                 interpretation = "unknown-large-scale"
             datos_ia["deslizamiento_ruedas_intensidad"] = round(float(intensity), 3)
-        # duplicate except removed (defaults are already set earlier)
+        except Exception:
+            datos_ia.setdefault("deslizamiento_ruedas_intensidad", 0.0)
+            datos_ia.setdefault("deslizamiento_ruedas_raw", datos_ia.get("deslizamiento_ruedas", 0.0))
 
         # If wheelslip control not present or raw is zero, try to infer from other telemetry
         try:
@@ -411,9 +413,11 @@ class TSCIntegration:
                     )
                     datos_ia.setdefault("deslizamiento_ruedas_inferida", True)
         except Exception:
-            pass
-            datos_ia["deslizamiento_ruedas_interpretacion"] = interpretation
-        except Exception:
+            # On any error during wheelslip inference, record interpretation if available
+            try:
+                datos_ia["deslizamiento_ruedas_interpretacion"] = interpretation
+            except NameError:
+                datos_ia.setdefault("deslizamiento_ruedas_interpretacion", "unknown")
             datos_ia.setdefault("deslizamiento_ruedas_intensidad", 0.0)
             datos_ia.setdefault("deslizamiento_ruedas_raw", datos_ia.get("deslizamiento_ruedas", 0.0))
         # Brake Pressure Defaults
