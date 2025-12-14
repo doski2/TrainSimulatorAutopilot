@@ -452,9 +452,12 @@ def telemetry_update_loop():
                     if ws_latency > 50:  # Más de 50ms
                         latency_optimizer.apply_optimization("websocket_batching")
 
-                    print(
-                        f"[DEBUG] WebSocket emit exitoso - predictive_running={predictive_analyzer.is_running if predictive_analyzer else False} - compressed={compressed_telemetry.get('_compressed', False)}"
-                    )
+                    # Debug: show wheelslip raw and intensity for diagnostic
+                    try:
+                        ws_debug = f"[DEBUG] Wheelslip raw={compressed_telemetry.get('deslizamiento_ruedas_raw')} intensity={compressed_telemetry.get('deslizamiento_ruedas_intensidad')}"
+                        print(ws_debug)
+                    except Exception:
+                        pass
                 except Exception as emit_error:
                     print(f"[WS] Error en emit: {emit_error}")
                     print(

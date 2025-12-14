@@ -317,11 +317,23 @@ function updateTelemetry(data) {
         safeSetText('amperage-value', '--');
     }
     
-    // Mostrar deslizamiento de ruedas (usar valor normalizado si está disponible)
+    // Mostrar deslizamiento de ruedas (usar valor normalizado si está disponible), y mostrar raw
     const deslizamiento = telemetry.deslizamiento_ruedas_intensidad !== undefined ? telemetry.deslizamiento_ruedas_intensidad : telemetry.deslizamiento_ruedas;
+    const deslizamiento_raw = telemetry.deslizamiento_ruedas_raw !== undefined ? telemetry.deslizamiento_ruedas_raw : telemetry.deslizamiento_ruedas;
     if (deslizamiento !== undefined && deslizamiento !== null) {
         // Mostrar intensidad 0..1 con dos decimales
         safeSetText('wheelslip-value', deslizamiento.toFixed(2));
+        // Mostrar valor raw si existe
+        if (deslizamiento_raw !== undefined && deslizamiento_raw !== null) {
+            safeSetText('wheelslip-raw-value', deslizamiento_raw.toFixed(1));
+        }
+        // Estado visual: considerar patinaje si raw > 1.05 o intensity > 0.5
+        const statusEl = document.getElementById('wheelslip-status');
+        const slipFlag = (deslizamiento_raw > 1.05) || (deslizamiento > 0.5);
+        if (statusEl) {
+            statusEl.className = slipFlag ? 'badge bg-warning ms-2' : 'badge bg-success ms-2';
+            statusEl.textContent = slipFlag ? 'PATINA' : 'OK';
+        }
     } else {
         safeSetText('wheelslip-value', '--');
     }
