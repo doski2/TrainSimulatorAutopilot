@@ -130,6 +130,25 @@ python scripts/cleanup_persisted_fuel.py
 
 Este script crea respaldos y elimina entradas/keys de combustible históricas.
 
+## Política de Datos de Telemetría y Alertas
+
+**Resumen:** No subir datos de telemetría en ejecución o logs de pruebas al control de versiones. Los archivos generados durante el desarrollo/ejecución (por ejemplo `data/telemetry_history.json` o grandes series de alertas) deben mantenerse fuera del repositorio y, si es necesario, archivarse en `tests/fixtures` como muestras reducidas y documentadas.
+
+Buenas prácticas:
+
+- Evita commitear archivos de telemetría en tiempo de ejecución o dumps de alertas completos.
+- Usa `tests/fixtures/` para almacenar muestras pequeñas y reproducibles útiles para debugging o tests (no datasets completos generados en CI / local runs).
+- Si necesitas limpiar datos históricos de telemetría o combustible, usa `scripts/cleanup_persisted_fuel.py` o `scripts/trim_alerts.py` para generar versiones reducidas apropiadas para el repositorio.
+- Añade archivos temporales y scripts de depuración a `.gitignore` (p. ej. `tmp_*.py`, `data/telemetry_history.json`). Ya se han añadido estas reglas; por favor no remuevas estas entradas.
+
+Procedimiento recomendado para archivar alertas de prueba:
+
+1. Ejecuta `scripts/trim_alerts.py` para reemplazar `alerts.json` por una versión reducida de ejemplo.
+2. Mueve o guarda el archivo completo en `tests/fixtures/alerts_wheelslip_full.json` (o similar) para referencia futura.
+3. Añade una nota en el commit explicando que los datos completos se archivaron y por qué fueron removidos.
+
+Razón: mantener el repositorio legible, reducir ruido en las revisiones y evitar fugas accidentales de datos de entorno de ejecución.
+
 ## 🎮 Uso del Sistema
 
 ### Inicio del Dashboard
