@@ -401,7 +401,11 @@ class TSCIntegration:
             # - Si el valor está en 0..1 => es normalizado por asset (0=bueno, 1=máx deslizamiento)
             # - Si el valor tiene base 1 (1 = normal, >1 = deslizamiento) mapear 1..2 -> 0..1 y 1..3 -> 0..1
             # - El valor EXACTO 1.0 es ambiguo (puede ser "normal" en assets base-1 o "máx" en assets normalizados)
-            #   Por defecto lo tratamos como "no deslizamiento" (0.0) salvo que otros telemetría sugiera patinamiento.
+            #   Si el valor es exactamente 1.0, se considera ambiguo y la presencia de
+            #   deslizamiento (intensidad = 1.0) se infiere usando heurísticas basadas
+            #   en otros indicadores de telemetría (esfuerzo de tracción, RPM, velocidad).
+            #   Solo si estas heurísticas no sugieren patinamiento, se asume
+            #   conservadoramente "no deslizamiento" (0.0) por defecto.
             if raw_ws is None:
                 intensity = 0.0
                 interpretation = "missing"
