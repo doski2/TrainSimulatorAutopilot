@@ -137,3 +137,20 @@ def test_enviar_comandos_escribe_archivo_lua(tsc_integration, tmp_path):
     assert lua_file.exists()
     contenido = lua_file.read_text(encoding="utf-8").strip()
     assert "start_autopilot" in contenido
+
+
+def test_enviar_comandos_no_duplicate_when_same_file(tsc_integration, tmp_path):
+    """If `ruta_archivo_comandos` already points to the Lua commands file, only that file should be written once."""
+    lua_cmd = tmp_path / "autopilot_commands.txt"
+    # Configure ruta_archivo_comandos to point to the same filename Lua reads
+    tsc_integration.ruta_archivo_comandos = str(lua_cmd)
+
+    # Ensure the flag to write lua commands is enabled (default)
+    tsc_integration.write_lua_commands = True
+
+    tsc_integration.enviar_comandos({"autopilot": True})
+
+    # The alamacenado file should exist and contain the command
+    assert lua_cmd.exists()
+    contenido = lua_cmd.read_text(encoding="utf-8")
+    assert "start_autopilot" in contenido

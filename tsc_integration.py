@@ -40,6 +40,9 @@ class TSCIntegration:
         self.ruta_archivo_comandos = (
             r"C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins\SendCommand.txt"
         )
+        # If True, also write the file that the Lua plugin reads (autopilot_commands.txt).
+        # Can be disabled for environments where only the SendCommand file is desired.
+        self.write_lua_commands = True
         self.datos_anteriores = {}
         self.timestamp_ultima_lectura = 0
         self.intervalo_lectura = 0.1  # 100ms entre lecturas
@@ -746,14 +749,24 @@ class TSCIntegration:
             print(f"[TSC] Comandos enviados al Lua: {len(comandos_texto)} comandos")
             for linea in comandos_texto:
                 print(f"   {linea}")
-            # Además, escribir un archivo que el script Lua realmente lee
+            # Además, escribir un archivo que el script Lua realmente lee (autopilot_commands.txt).
+            # Evitar escribir dos veces en el mismo archivo cuando `ruta_archivo_comandos`
+            # ya apunta al archivo que Lua consume.
             try:
-                directorio = os.path.dirname(self.ruta_archivo_comandos)
-                lua_commands_file = os.path.join(directorio, "autopilot_commands.txt")
-                with open(lua_commands_file, "w", encoding="utf-8") as lf:
-                    for linea in comandos_texto:
-                        lf.write(linea + "\n")
-                logger.info(f"[TSC] También escrito archivo de comandos Lua: {lua_commands_file}")
+                if self.write_lua_commands:
+                    directorio = os.path.dirname(self.ruta_archivo_comandos)
+                    lua_commands_file = os.path.join(directorio, "autopilot_commands.txt")
+                    # If the configured commands file and the Lua file are the same path,
+                    # skip the second write to avoid duplicate writes.
+                    if os.path.abspath(lua_commands_file) != os.path.abspath(self.ruta_archivo_comandos):
+                        with open(lua_commands_file, "w", encoding="utf-8") as lf:
+                            for linea in comandos_texto:
+                                lf.write(linea + "\n")
+                        logger.info(f"[TSC] También escrito archivo de comandos Lua: {lua_commands_file}")
+                    else:
+                        logger.debug(
+                            f"[TSC] Ruta de comandos configurada ya es el archivo Lua ({lua_commands_file}); omitida escritura duplicada"
+                        )
             except Exception as e:
                 logger.warning(f"[TSC] No se pudo escribir archivo de comandos Lua: {e}")
             return True
