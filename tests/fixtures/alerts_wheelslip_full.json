@@ -1,0 +1,7 @@
+{
+  "note": "Full runtime wheelslip alert data was trimmed from top-level alerts.json and archived here. If you need the original full list, retrieve it from Git history or contact the maintainers.",
+  "summary": {
+    "original_count_estimate": 800,
+    "kept_in_alerts_json": 2
+  }
+}
