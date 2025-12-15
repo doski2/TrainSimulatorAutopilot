@@ -257,3 +257,7 @@ test_*.json
 
 # Telemetry history (large, keep local only)
 data/telemetry_history.json
+
+# Temporary debug/test helper scripts
+tmp_*.py
+tests/tmp_*.py
