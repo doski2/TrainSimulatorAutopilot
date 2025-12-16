@@ -239,6 +239,26 @@ function controlAction(action) {
                     }
                 }
             }
+
+            // If server returned an ack from the autopilot plugin, update badge
+            if (typeof data.autopilot_plugin_state !== 'undefined') {
+                const pluginBadge = document.getElementById('autopilot-plugin-state');
+                if (pluginBadge) {
+                    if (data.autopilot_plugin_state === 'on') {
+                        pluginBadge.className = 'badge bg-success';
+                        pluginBadge.textContent = 'EN MODO AUTO';
+                        showAlert('Autopilot: comando ACK recibido (EN MODO AUTO)', 'success');
+                    } else if (data.autopilot_plugin_state === 'off') {
+                        pluginBadge.className = 'badge bg-warning text-dark';
+                        pluginBadge.textContent = 'APAGADO';
+                        showAlert('Autopilot: comando ACK recibido (APAGADO)', 'info');
+                    } else if (data.autopilot_plugin_state === null) {
+                        pluginBadge.className = 'badge bg-secondary';
+                        pluginBadge.textContent = 'PENDIENTE';
+                        showAlert('Autopilot: comando enviado, pendiente de confirmación por el juego', 'info');
+                    }
+                }
+            }
         } else {
             showAlert(`Error en acción ${action}: ${data.error}`, 'danger');
         }
@@ -555,6 +575,24 @@ function updateSystemStatus(status) {
         autopilotBadge.textContent = 'INACTIVO';
         startBtn.disabled = false;
         stopBtn.disabled = true;
+    }
+
+    // Plugin Lua state (ack)
+    const pluginBadge = document.getElementById('autopilot-plugin-state');
+    if (pluginBadge) {
+        if (!status.autopilot_plugin_loaded) {
+            pluginBadge.className = 'badge bg-secondary';
+            pluginBadge.textContent = 'NO CARGADO';
+        } else if (status.autopilot_plugin_state === 'on') {
+            pluginBadge.className = 'badge bg-success';
+            pluginBadge.textContent = 'EN MODO AUTO';
+        } else if (status.autopilot_plugin_state === 'off') {
+            pluginBadge.className = 'badge bg-warning text-dark';
+            pluginBadge.textContent = 'APAGADO';
+        } else {
+            pluginBadge.className = 'badge bg-secondary';
+            pluginBadge.textContent = 'DESCONOCIDO';
+        }
     }
 
     // Estado predictivo

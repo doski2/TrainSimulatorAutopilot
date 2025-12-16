@@ -154,3 +154,23 @@ def test_enviar_comandos_no_duplicate_when_same_file(tsc_integration, tmp_path):
     assert lua_cmd.exists()
     contenido = lua_cmd.read_text(encoding="utf-8")
     assert "start_autopilot" in contenido
+
+
+    def test_sendcommand_lowercase_written(tmp_path, monkeypatch):
+        # Ensure that enviar_comandos writes sendcommand.txt (lowercase) when numeric commands present
+        plugins = tmp_path / "plugins"
+        plugins.mkdir()
+        send_cmd = plugins / "SendCommand.txt"
+        send_cmd.write_text("", encoding="utf-8")
+
+        from tsc_integration import TSCIntegration
+
+        tsc = TSCIntegration()
+        tsc.ruta_archivo_comandos = str(send_cmd)
+
+        assert tsc.enviar_comandos({"acelerador": 0.5}) is True
+
+        lower = plugins / "sendcommand.txt"
+        assert lower.exists()
+        txt = lower.read_text(encoding="utf-8")
+        assert "Regulator:0.500" in txt

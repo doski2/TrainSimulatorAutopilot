@@ -150,6 +150,53 @@ class TSCIntegration:
         """Verificar si el archivo GetData.txt existe."""
         return os.path.exists(self.ruta_archivo)
 
+    def get_autopilot_plugin_state(self) -> Optional[str]:
+        """Leer el archivo de estado escrito por el plugin Lua (on/off).
+
+        Returns:
+            'on'|'off' si el plugin informó estado, None si no hay información.
+        """
+        try:
+            plugins_dir = os.path.dirname(self.ruta_archivo_comandos)
+            state_file = os.path.join(plugins_dir, "autopilot_state.txt")
+            if os.path.exists(state_file):
+                with open(state_file, "r", encoding="utf-8") as f:
+                    val = f.read().strip().lower()
+                    if val in ("on", "off"):
+                        return val
+            return None
+        except Exception:
+            return None
+
+    def is_autopilot_plugin_loaded(self) -> bool:
+        """Comprobar si el plugin Lua ha marcado que está cargado."""
+        try:
+            plugins_dir = os.path.dirname(self.ruta_archivo_comandos)
+            loaded_file = os.path.join(plugins_dir, "autopilot_plugin_loaded.txt")
+            return os.path.exists(loaded_file)
+        except Exception:
+            return False
+
+    def wait_for_autopilot_state(self, expected: str, timeout: float = 2.0) -> bool:
+        """Esperar hasta que el plugin reporte el estado esperado o timeout.
+
+        Args:
+            expected: 'on' or 'off'
+            timeout: segundos a esperar
+
+        Returns:
+            True si se alcanza el estado esperado, False si timeout.
+        """
+        import time
+
+        start = time.time()
+        while time.time() - start < timeout:
+            cur = self.get_autopilot_plugin_state()
+            if cur == expected:
+                return True
+            time.sleep(0.1)
+        return False
+
     def leer_datos_archivo(self) -> Optional[Dict[str, Any]]:
         """
         Leer datos del archivo GetData.txt.
@@ -753,6 +800,7 @@ class TSCIntegration:
             print(f"[TSC] Comandos enviados al Lua: {len(comandos_texto)} comandos")
             for linea in comandos_texto:
                 print(f"   {linea}")
+
             # Además, escribir un archivo que el script Lua realmente lee (autopilot_commands.txt).
             # Evitar escribir dos veces en el mismo archivo cuando `ruta_archivo_comandos`
             # ya apunta al archivo que Lua consume.
@@ -773,6 +821,21 @@ class TSCIntegration:
                         )
             except Exception as e:
                 logger.warning(f"[TSC] No se pudo escribir archivo de comandos Lua: {e}")
+
+            # Also write the lowercase 'sendcommand.txt' to mirror what some controllers (RailDriver)
+            # and third-party tools use. Some systems observe this exact filename.
+            try:
+                directorio = os.path.dirname(self.ruta_archivo_comandos)
+                lower_send_file = os.path.join(directorio, "sendcommand.txt")
+                with open(lower_send_file, "w", encoding="utf-8") as sf:
+                    for linea in comandos_texto:
+                        # For sendcommand.txt keep only control:value lines - filter out raw text commands like 'start_autopilot'
+                        if ":" in linea:
+                            sf.write(linea + "\n")
+                logger.info(f"[TSC] También escrito archivo legacy sendcommand: {lower_send_file}")
+            except Exception as e:
+                logger.warning(f"[TSC] No se pudo escribir archivo legacy sendcommand: {e}")
+
             return True
 
         except Exception as e:
