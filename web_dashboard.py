@@ -458,6 +458,18 @@ def telemetry_update_loop():
                     except Exception:
                         system_status["performance_monitoring"] = False
 
+                    # Ensure system_status reflects autopilot Lua plugin state (if TSC integration available)
+                    try:
+                        if tsc_integration:
+                            system_status["autopilot_plugin_loaded"] = tsc_integration.is_autopilot_plugin_loaded()
+                            system_status["autopilot_plugin_state"] = tsc_integration.get_autopilot_plugin_state()
+                        else:
+                            system_status["autopilot_plugin_loaded"] = False
+                            system_status["autopilot_plugin_state"] = None
+                    except Exception:
+                        system_status["autopilot_plugin_loaded"] = False
+                        system_status["autopilot_plugin_state"] = None
+
                     # Debug: active alerts payload
                     try:
                         active_list = active_alerts.get('alerts') if isinstance(active_alerts, dict) else active_alerts
@@ -730,6 +742,9 @@ def get_system_status():
                 "eq_reservoir_presente": last_telemetry.get("eq_reservoir_presente", False) if last_telemetry else False,
                 "presion_deposito_auxiliar_presente": last_telemetry.get("presion_deposito_auxiliar_presente", False) if last_telemetry else False,
                 "presion_tubo_freno_cola_presente": last_telemetry.get("presion_tubo_freno_cola_presente", False) if last_telemetry else False,
+                # Información del plugin Lua (si está disponible)
+                "autopilot_plugin_loaded": tsc_integration.is_autopilot_plugin_loaded() if tsc_integration else False,
+                "autopilot_plugin_state": tsc_integration.get_autopilot_plugin_state() if tsc_integration else None,
             }
         )
     except Exception as e:
@@ -778,6 +793,19 @@ def control_action(action):
                         "system_message",
                         {"message": "Piloto automático iniciado", "type": "success"},
                     )
+                    # Intentar confirmar estado desde el plugin Lua
+                    plugin_state = None
+                    try:
+                        if tsc_integration:
+                            # Primer intento: comprobar estado actual
+                            plugin_state = tsc_integration.get_autopilot_plugin_state()
+                            # Si no hay ack inmediato, esperar brevemente por la confirmación
+                            if plugin_state is None and tsc_integration.wait_for_autopilot_state("on", timeout=2.0):
+                                plugin_state = "on"
+                    except Exception:
+                        plugin_state = None
+
+                    return jsonify({"success": True, "action": action, "autopilot_plugin_state": plugin_state})
                 except Exception as e:
                     return (
                         jsonify(
@@ -801,6 +829,17 @@ def control_action(action):
                         "system_message",
                         {"message": "Piloto automático detenido", "type": "info"},
                     )
+                    # Intentar confirmar estado desde el plugin Lua
+                    plugin_state = None
+                    try:
+                        if tsc_integration:
+                            plugin_state = tsc_integration.get_autopilot_plugin_state()
+                            if plugin_state is None and tsc_integration.wait_for_autopilot_state("off", timeout=2.0):
+                                plugin_state = "off"
+                    except Exception:
+                        plugin_state = None
+
+                    return jsonify({"success": True, "action": action, "autopilot_plugin_state": plugin_state})
                 except Exception as e:
                     return (
                         jsonify(

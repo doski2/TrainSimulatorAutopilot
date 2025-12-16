@@ -34,6 +34,15 @@ controlMappings = {
     ["freno_emergencia"] = "EmergencyBrake"
 }
 
+-- Probe: write a file immediately when the script is loaded (helps detect whether Lua is being loaded at all)
+pcall(function()
+    local f = io.open("plugins/autopilot_probe_loaded.txt", "w")
+    if f then
+        f:write(os.date("%Y-%m-%d %H:%M:%S") .. " - probe: script file loaded by game\n")
+        f:close()
+    end
+end)
+
 -- Initialize system
 function Initialise()
     -- Initialize all controls to safe state
@@ -49,12 +58,21 @@ function Initialise()
     end
 
     SysCall("ScenarioManager:ShowMessage", "Train Simulator Autopilot Initialized", 5, 1)
+    -- Create a file to indicate the Lua autopilot plugin is loaded (for external systems)
+    local loaded_file = io.open("plugins/autopilot_plugin_loaded.txt", "w")
+    if loaded_file then
+        loaded_file:write("loaded")
+        loaded_file:close()
+    end
+    -- Initialize debug log (best effort)
+    pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - Initialise: plugin loaded\n"); f:close() end end)
 end
 
 -- Main update loop (called every frame)
 function Update(time)
     if Call("GetIsEngineWithKey") == 1 then
         -- Read commands from Python system
+        pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - Update: engine key ON - attempting to read Python commands\n"); f:close() end end)
         readPythonCommands()
 
         -- Update telemetry
@@ -76,6 +94,8 @@ function Update(time)
 
         -- Check for alerts
         checkAlerts()
+    else
+        pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - Update: engine key NOT ON - skipping command processing\n"); f:close() end end)
     end
 end
 
@@ -322,6 +342,7 @@ end
 -- Custom functions for external control (called from Python if needed)
 function SetAutopilotState(state)
     autopilotActive = state
+    pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - SetAutopilotState called -> "..tostring(state).."\n"); f:close() end end)
     if state then
         SysCall("ScenarioManager:ShowMessage", "Autopilot ENGAGED", 5, 1)
     else
@@ -485,27 +506,66 @@ end
 function readPythonCommands()
     local commandFile = io.open("plugins/autopilot_commands.txt", "r")
     if commandFile then
+        pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: found autopilot_commands.txt - reading lines\n"); f:close() end end)
         for line in commandFile:lines() do
             line = line:match("^%s*(.-)%s*$")
+            pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: line -> "..tostring(line).."\n"); f:close() end end)
             if line == "start_autopilot" then
+                pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: processing start_autopilot\n"); f:close() end end)
                 SetAutopilotState(true)
+                -- Acknowledge state to external system
+                local statef = io.open("plugins/autopilot_state.txt", "w")
+                if statef then
+                    statef:write("on")
+                    statef:close()
+                    pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: wrote autopilot_state.txt = on\n"); f:close() end end)
+                end
             elseif line == "stop_autopilot" then
+                pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: processing stop_autopilot\n"); f:close() end end)
                 SetAutopilotState(false)
+                local statef = io.open("plugins/autopilot_state.txt", "w")
+                if statef then
+                    statef:write("off")
+                    statef:close()
+                    pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: wrote autopilot_state.txt = off\n"); f:close() end end)
+                end
             elseif line == "start_predictive" then
+                pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: processing start_predictive\n"); f:close() end end)
                 SetPredictiveState(true)
+                -- also acknowledge predictive state
+                local statef2 = io.open("plugins/predictive_state.txt", "w")
+                if statef2 then
+                    statef2:write("on")
+                    statef2:close()
+                    pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: wrote predictive_state.txt = on\n"); f:close() end end)
+                end
             elseif line == "stop_predictive" then
+                pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: processing stop_predictive\n"); f:close() end end)
                 SetPredictiveState(false)
+                local statef2 = io.open("plugins/predictive_state.txt", "w")
+                if statef2 then
+                    statef2:write("off")
+                    statef2:close()
+                    pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: wrote predictive_state.txt = off\n"); f:close() end end)
+                end
             elseif line == "emergency_brake" then
+                pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: processing emergency_brake\n"); f:close() end end)
                 EmergencyBrake()
             -- Door commands removed: handled by AI in future
             elseif line == "lights_on" then
+                pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: processing lights_on\n"); f:close() end end)
                 SetLightsState(true)
             elseif line == "lights_off" then
+                pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: processing lights_off\n"); f:close() end end)
                 SetLightsState(false)
+            else
+                -- Unrecognized command - write to debug
+                pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: unrecognized command -> "..tostring(line).."\n"); f:close() end end)
             end
         end
         commandFile:close()
         -- Delete the file after processing
         os.remove("plugins/autopilot_commands.txt")
+        pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: finished processing and removed file\n"); f:close() end end)
     end
 end
