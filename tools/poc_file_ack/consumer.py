@@ -8,16 +8,40 @@ class Consumer(threading.Thread):
     """Simple consumer that polls a directory for cmd-*.json files
     and writes ack-{id}.json after 'processing'."""
 
-    def __init__(self, dirpath, poll_interval=0.1, process_time=0.05):
+    def __init__(self, dirpath, poll_interval=0.1, process_time=0.05, processed_ids_file='processed_ids.json'):
         super().__init__(daemon=True)
         self.dirpath = dirpath
         self.poll_interval = poll_interval
         self.process_time = process_time
         self._stop = threading.Event()
         self.processed = set()
+        self.processed_ids_file = os.path.join(self.dirpath, processed_ids_file)
         os.makedirs(self.dirpath, exist_ok=True)
+        # load persisted processed ids (if present)
+        self._load_processed_ids()
         # write a probe file to indicate the consumer/plugin is loaded
         self.write_probe_file()
+
+    def _load_processed_ids(self):
+        try:
+            if os.path.exists(self.processed_ids_file):
+                with open(self.processed_ids_file, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    if isinstance(data, list):
+                        self.processed.update(data)
+        except Exception:
+            # best effort; ignore errors to keep consumer alive
+            pass
+
+    def _persist_processed_ids(self):
+        """Persist the processed ids set to disk atomically."""
+        try:
+            tmp = self.processed_ids_file + '.tmp'
+            with open(tmp, 'w', encoding='utf-8') as f:
+                json.dump(list(self.processed), f, ensure_ascii=False)
+            os.replace(tmp, self.processed_ids_file)
+        except Exception:
+            pass
 
     def write_probe_file(self):
         """Write a probe file 'plugin_loaded.txt' atomically to indicate readiness."""
@@ -30,7 +54,6 @@ class Consumer(threading.Thread):
         except Exception:
             # best effort; don't raise to keep consumer alive
             pass
-
     def stop(self):
         self._stop.set()
 
@@ -67,8 +90,10 @@ class Consumer(threading.Thread):
                     with open(ack_path + '.tmp', 'w', encoding='utf-8') as af:
                         af.write(json.dumps(ack, ensure_ascii=False) + '\n')
                     os.replace(ack_path + '.tmp', ack_path)
-                    # mark processed and remove the command file
+                    # mark processed and persist
                     self.processed.add(cmd_id)
+                    self._persist_processed_ids()
+                    # remove the command file
                     try:
                         os.remove(path)
                     except Exception:
