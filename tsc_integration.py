@@ -40,6 +40,9 @@ class TSCIntegration:
         self.ruta_archivo_comandos = (
             r"C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins\SendCommand.txt"
         )
+        # If True, also write the file that the Lua plugin reads (autopilot_commands.txt).
+        # Can be disabled for environments where only the SendCommand file is desired.
+        self.write_lua_commands = True
         self.datos_anteriores = {}
         self.timestamp_ultima_lectura = 0
         self.intervalo_lectura = 0.1  # 100ms entre lecturas
@@ -111,7 +114,7 @@ class TSCIntegration:
             "freno_dinamico": "DynamicBrake",
             "reverser": "Reverser",  # Changed to Reverser
             # Nuevos controles de locomotora
-            "puertas": "DoorSwitch",  # May not exist
+            # Doors handled by AI in future; remove direct DoorSwitch mapping
             "luces": "Headlights",  # Changed to Headlights
             "freno_emergencia": "EmergencyBrake",  # Changed to EmergencyBrake,
         }
@@ -397,9 +400,32 @@ class TSCIntegration:
             # Heurística de normalización:
             # - Si el valor está en 0..1 => es normalizado por asset (0=bueno, 1=máx deslizamiento)
             # - Si el valor tiene base 1 (1 = normal, >1 = deslizamiento) mapear 1..2 -> 0..1 y 1..3 -> 0..1
-            if raw_ws <= 1.0:
+            # - El valor EXACTO 1.0 es ambiguo (puede ser "normal" en assets base-1 o "máx" en assets normalizados)
+            #   Si el valor es exactamente 1.0, se considera ambiguo y la presencia de
+            #   deslizamiento (intensidad = 1.0) se infiere usando heurísticas basadas
+            #   en otros indicadores de telemetría (esfuerzo de tracción, RPM, velocidad).
+            #   Solo si estas heurísticas no sugieren patinamiento, se asume
+            #   conservadoramente "no deslizamiento" (0.0) por defecto.
+            if raw_ws is None:
+                intensity = 0.0
+                interpretation = "missing"
+            elif raw_ws < 1.0:
                 intensity = raw_ws
                 interpretation = "0-1"
+            elif raw_ws == 1.0:
+                # Ambiguo: inferir a partir de otros indicadores conservadores
+                tractive = self._to_float(datos_ia.get("esfuerzo_traccion", 0.0))
+                speed_kmh = self._to_float(datos_ia.get("velocidad_actual", 0.0))
+                rpm_val = self._to_float(datos_ia.get("rpm", 0.0))
+                # Heurísticas que indican posible patinamiento
+                if (speed_kmh < 5.0 and tractive > 300.0) or (
+                    rpm_val > 2000.0 and speed_kmh < 10.0 and tractive > 300.0
+                ):
+                    intensity = 1.0
+                    interpretation = "1.0-inferred-slip"
+                else:
+                    intensity = 0.0
+                    interpretation = "1.0-assumed-normal"
             elif raw_ws <= 2.0:
                 # Base 1, max 2
                 intensity = max(0.0, min(1.0, raw_ws - 1.0))
@@ -727,7 +753,26 @@ class TSCIntegration:
             print(f"[TSC] Comandos enviados al Lua: {len(comandos_texto)} comandos")
             for linea in comandos_texto:
                 print(f"   {linea}")
-
+            # Además, escribir un archivo que el script Lua realmente lee (autopilot_commands.txt).
+            # Evitar escribir dos veces en el mismo archivo cuando `ruta_archivo_comandos`
+            # ya apunta al archivo que Lua consume.
+            try:
+                if self.write_lua_commands:
+                    directorio = os.path.dirname(self.ruta_archivo_comandos)
+                    lua_commands_file = os.path.join(directorio, "autopilot_commands.txt")
+                    # If the configured commands file and the Lua file are the same path,
+                    # skip the second write to avoid duplicate writes.
+                    if os.path.abspath(lua_commands_file) != os.path.abspath(self.ruta_archivo_comandos):
+                        with open(lua_commands_file, "w", encoding="utf-8") as lf:
+                            for linea in comandos_texto:
+                                lf.write(linea + "\n")
+                        logger.info(f"[TSC] También escrito archivo de comandos Lua: {lua_commands_file}")
+                    else:
+                        logger.debug(
+                            f"[TSC] Ruta de comandos configurada ya es el archivo Lua ({lua_commands_file}); omitida escritura duplicada"
+                        )
+            except Exception as e:
+                logger.warning(f"[TSC] No se pudo escribir archivo de comandos Lua: {e}")
             return True
 
         except Exception as e:

@@ -420,13 +420,20 @@
                             </div>
                         </div>
 
+                        <!-- Control Monitor Rendimiento -->
+                        <div class="control-section mb-4">
+                            <h6>Monitor Rendimiento</h6>
+                            <div class="d-grid gap-2">
+                                <button id="toggle-performance-monitor" class="btn btn-secondary">
+                                    <i class="fas fa-tachometer-alt me-2"></i>Iniciar Monitor Rendimiento
+                                </button>
+                            </div>
+                        </div>
+
                         <!-- Control de Locomotora -->
                         <div class="control-section mb-4">
                             <h6>Control de Locomotora</h6>
                             <div class="d-grid gap-2">
-                                <button id="toggle-doors" class="btn btn-secondary">
-                                    <i class="fas fa-door-open me-2"></i>Abrir/Cerrar Puertas
-                                </button>
                                 <button id="toggle-lights" class="btn btn-warning">
                                     <i class="fas fa-lightbulb me-2"></i>Encender/Apagar Luces
                                 </button>
@@ -451,6 +458,10 @@
                                 <div class="mb-1">
                                     <strong>Modelo Entrenado:</strong>
                                     <span id="model-trained" class="badge bg-danger">NO</span>
+                                </div>
+                                <div class="mb-1">
+                                    <strong>Monitor Rendimiento:</strong>
+                                    <span id="performance-monitor-status" class="badge bg-danger">NO</span>
                                 </div>
                             </div>
                         </div>

@@ -12,7 +12,7 @@
 gData = ""
 autopilotActive = false
 predictiveActive = false
-doorsAutoMode = true
+doorsAutoMode = false  -- Disabled in examples: door control handled by AI in future
 lastSpeed = 0
 lastAcceleration = 0
 speedHistory = {}
@@ -36,14 +36,14 @@ controlMappings = {
     ["freno_motor"] = "EngineBrakeControl",
     ["freno_dinamico"] = "VirtualEngineBrakeControl",
     ["reverser"] = "VirtualReverser",
-    ["puertas"] = "DoorSwitch",
+    -- Door control removed from examples: AI will manage doors in future
     ["luces"] = "LightSwitch",
     ["freno_emergencia"] = "BrakeControl"
 }
 
 -- Inicialización mejorada
 function Initialise()
-    SysCall("PlayerEngineSetControlValue", "DoorSwitch", 0, 0)
+    -- Door initialization removed in examples
     SysCall("PlayerEngineSetControlValue", "LightSwitch", 0, 0)
     SysCall("PlayerEngineSetControlValue", "VirtualThrottle", 0, 0)
     SysCall("PlayerEngineSetControlValue", "TrainBrakeControl", 0, 0)
@@ -71,9 +71,7 @@ function Update(time)
             handlePredictiveAnalysis()
         end
 
-        if doorsAutoMode then
-            handleAutomaticDoors()
-        end
+        -- Door automation disabled in examples
 
         checkAlerts()
     end

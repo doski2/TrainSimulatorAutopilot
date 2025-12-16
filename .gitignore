@@ -254,3 +254,10 @@ test_*.json
 # Package files
 *.tar.gz
 *.zip
+
+# Telemetry history (large, keep local only)
+data/telemetry_history.json
+
+# Temporary debug/test helper scripts
+tmp_*.py
+tests/tmp_*.py

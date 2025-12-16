@@ -184,11 +184,6 @@ function setupEventListeners() {
         controlAction('train_model');
     });
 
-    // Controles de locomotora
-    document.getElementById('toggle-doors').addEventListener('click', () => {
-        controlAction('toggle_doors');
-    });
-
     document.getElementById('toggle-lights').addEventListener('click', () => {
         controlAction('toggle_lights');
     });
@@ -196,6 +191,14 @@ function setupEventListeners() {
     document.getElementById('emergency-brake').addEventListener('click', () => {
         controlAction('emergency_brake');
     });
+
+    // Performance monitor toggle (single button on Control tab)
+    const perfBtn = document.getElementById('toggle-performance-monitor');
+    if (perfBtn) {
+        perfBtn.addEventListener('click', () => {
+            controlAction('toggle_performance');
+        });
+    }
 
     // Controles de reportes
     document.getElementById('generate-report').addEventListener('click', () => {
@@ -223,6 +226,19 @@ function controlAction(action) {
     .then(data => {
         if (data.success) {
             // Action executed successfully
+            if (action === 'toggle_performance' && typeof data.performance_monitoring !== 'undefined') {
+                const perfBtn = document.getElementById('toggle-performance-monitor');
+                updateStatusBadge('performance-monitor-status', data.performance_monitoring);
+                if (perfBtn) {
+                    if (data.performance_monitoring) {
+                        perfBtn.className = 'btn btn-danger';
+                        perfBtn.innerHTML = '<i class="fas fa-tachometer-alt me-2"></i>Detener Monitor Rendimiento';
+                    } else {
+                        perfBtn.className = 'btn btn-secondary';
+                        perfBtn.innerHTML = '<i class="fas fa-tachometer-alt me-2"></i>Iniciar Monitor Rendimiento';
+                    }
+                }
+            }
         } else {
             showAlert(`Error en acción ${action}: ${data.error}`, 'danger');
         }
@@ -562,6 +578,19 @@ function updateSystemStatus(status) {
     updateStatusBadge('tsc-connected', status.tsc_connected);
     updateStatusBadge('multi-loco-status', status.multi_loco_active);
     updateStatusBadge('model-trained', status.predictive_active);
+    updateStatusBadge('performance-monitor-status', status.performance_monitoring);
+    // Ensure toggle button text and style reflect current state
+    const perfBtn = document.getElementById('toggle-performance-monitor');
+    if (perfBtn) {
+        if (status.performance_monitoring) {
+            perfBtn.className = 'btn btn-danger';
+            perfBtn.innerHTML = '<i class="fas fa-tachometer-alt me-2"></i>Detener Monitor Rendimiento';
+        } else {
+            perfBtn.className = 'btn btn-secondary';
+            perfBtn.innerHTML = '<i class="fas fa-tachometer-alt me-2"></i>Iniciar Monitor Rendimiento';
+        }
+    }
+
     updateStatusBadge('brake-pressure-status', status.brake_pressure_present);
 
     // Contador de actualizaciones
@@ -1416,16 +1445,20 @@ function acknowledgeAlert(alertId) {
 
 // Actualizar métricas de rendimiento
 function updatePerformanceMetrics(performance) {
+    // Normalizar estructura: algunos backends envían un objeto completo con
+    // `current_metrics` -> { current_metrics: { websocket_latency: ... } }
+    const perf = (performance && performance.current_metrics) ? performance.current_metrics : performance || {};
+
     // Latencia
     const latencyValue = document.getElementById('latency-value');
-    if (latencyValue && performance.websocket_latency !== undefined) {
-        latencyValue.textContent = performance.websocket_latency.toFixed(1) + ' ms';
+    if (latencyValue && perf.websocket_latency !== undefined) {
+        latencyValue.textContent = perf.websocket_latency.toFixed(1) + ' ms';
     }
 
     // Ratio de compresión
     const compressionValue = document.getElementById('compression-ratio');
-    if (compressionValue && performance.compression_ratio !== undefined) {
-        compressionValue.textContent = (performance.compression_ratio * 100).toFixed(1) + '%';
+    if (compressionValue && (perf.compression_ratio !== undefined)) {
+        compressionValue.textContent = (perf.compression_ratio * 100).toFixed(1) + '%';
     }
 
     // Cache hit rate
@@ -1436,8 +1469,10 @@ function updatePerformanceMetrics(performance) {
 
     // Frecuencia de actualización
     const updateFreqValue = document.getElementById('update-frequency');
-    if (updateFreqValue && performance.update_frequency !== undefined) {
-        updateFreqValue.textContent = performance.update_frequency.toFixed(1);
+    // Compatibilidad con distintos nombres: `update_frequency` o `metrics_update_frequency`
+    const updateFreq = (perf.update_frequency !== undefined) ? perf.update_frequency : perf.metrics_update_frequency;
+    if (updateFreqValue && updateFreq !== undefined) {
+        updateFreqValue.textContent = updateFreq.toFixed(1);
     }
 }
 

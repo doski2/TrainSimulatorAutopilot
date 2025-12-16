@@ -122,3 +122,35 @@ def test_enviar_comandos_fallback_dinamico(tsc_integration, tmp_path):
     tsc_integration.enviar_comandos({"freno_dinamico": 0.5})
     contenido = open(tsc_integration.ruta_archivo_comandos, encoding="utf-8").read()
     assert "VirtualEngineBrakeControl:0.500" in contenido
+
+
+def test_enviar_comandos_escribe_archivo_lua(tsc_integration, tmp_path):
+    """Verificar que enviar_comandos escriba también plugins/autopilot_commands.txt"""
+    # Preparar ruta de SendCommand en tmp dir
+    cmd_file = tmp_path / "SendCommand.txt"
+    tsc_integration.ruta_archivo_comandos = str(cmd_file)
+
+    # Enviar comando para iniciar autopilot
+    tsc_integration.enviar_comandos({"autopilot": True})
+
+    lua_file = tmp_path / "autopilot_commands.txt"
+    assert lua_file.exists()
+    contenido = lua_file.read_text(encoding="utf-8").strip()
+    assert "start_autopilot" in contenido
+
+
+def test_enviar_comandos_no_duplicate_when_same_file(tsc_integration, tmp_path):
+    """If `ruta_archivo_comandos` already points to the Lua commands file, only that file should be written once."""
+    lua_cmd = tmp_path / "autopilot_commands.txt"
+    # Configure ruta_archivo_comandos to point to the same filename Lua reads
+    tsc_integration.ruta_archivo_comandos = str(lua_cmd)
+
+    # Ensure the flag to write lua commands is enabled (default)
+    tsc_integration.write_lua_commands = True
+
+    tsc_integration.enviar_comandos({"autopilot": True})
+
+    # The alamacenado file should exist and contain the command
+    assert lua_cmd.exists()
+    contenido = lua_cmd.read_text(encoding="utf-8")
+    assert "start_autopilot" in contenido

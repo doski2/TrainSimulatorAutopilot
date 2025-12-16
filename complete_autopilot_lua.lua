@@ -6,7 +6,7 @@
 gData = ""
 autopilotActive = false
 predictiveActive = false
-doorsAutoMode = true
+doorsAutoMode = false  -- Disabled: door control will be handled by AI in future
 lastSpeed = 0
 lastAcceleration = 0
 speedHistory = {}
@@ -29,7 +29,7 @@ controlMappings = {
     ["freno_motor"] = "EngineBrakeControl",
     ["freno_dinamico"] = "VirtualEngineBrakeControl",
     ["reverser"] = "Reverser",
-    ["puertas"] = "DoorSwitch",  -- May not be available in diesel locos
+    -- Door control removed from Lua; AI will manage doors in future
     ["luces"] = "Headlights",  -- Changed to Headlights
     ["freno_emergencia"] = "EmergencyBrake"
 }
@@ -37,7 +37,7 @@ controlMappings = {
 -- Initialize system
 function Initialise()
     -- Initialize all controls to safe state
-    SysCall("PlayerEngineSetControlValue", "DoorSwitch", 0, 0)  -- Doors closed
+    -- Door control removed: AI will manage doors in future
     SysCall("PlayerEngineSetControlValue", "Headlights", 0, 0) -- Lights off
     SysCall("PlayerEngineSetControlValue", "Regulator", 0, 0) -- Throttle off
     SysCall("PlayerEngineSetControlValue", "TrainBrakeControl", 0, 0) -- Brakes off
@@ -72,10 +72,7 @@ function Update(time)
             handlePredictiveAnalysis()
         end
 
-        -- Handle automatic doors
-        if doorsAutoMode then
-            handleAutomaticDoors()
-        end
+        -- Door automation disabled here; doors will be handled by AI when implemented
 
         -- Check for alerts
         checkAlerts()
@@ -192,13 +189,8 @@ end
 
 -- Handle automatic doors
 function handleAutomaticDoors()
-    local currentSpeed = lastSpeed
-
-    if currentSpeed > 8 then  -- Moving
-        SysCall("PlayerEngineSetControlValue", "DoorSwitch", 0, 1)  -- Open doors
-    elseif currentSpeed < 2 then  -- Stopped
-        SysCall("PlayerEngineSetControlValue", "DoorSwitch", 0, 0)  -- Close doors
-    end
+    -- Disabled: automatic door control removed. AI will manage doors when available.
+    return
 end
 
 -- Check for alerts and safety conditions
@@ -349,13 +341,9 @@ function SetPredictiveState(state)
 end
 
 function SetDoorsState(state)
-    doorsAutoMode = state
-    SysCall("PlayerEngineSetControlValue", "DoorSwitch", 0, state and 1 or 0)
-    if state then
-        SysCall("ScenarioManager:ShowMessage", "Automatic doors ENABLED", 3, 1)
-    else
-        SysCall("ScenarioManager:ShowMessage", "Automatic doors DISABLED", 3, 1)
-    end
+    -- Disabled: door control removed. AI will manage door state when implemented.
+    doorsAutoMode = false
+    SysCall("ScenarioManager:ShowMessage", "Door control disabled; managed by AI", 3, 1)
 end
 
 function SetLightsState(state)
@@ -509,10 +497,7 @@ function readPythonCommands()
                 SetPredictiveState(false)
             elseif line == "emergency_brake" then
                 EmergencyBrake()
-            elseif line == "doors_open" then
-                SetDoorsState(true)
-            elseif line == "doors_close" then
-                SetDoorsState(false)
+            -- Door commands removed: handled by AI in future
             elseif line == "lights_on" then
                 SetLightsState(true)
             elseif line == "lights_off" then

@@ -9,7 +9,7 @@ hacer eso
 .revisar porque no acciona el tren con sendcommand  el ts- problema lua archivo
 .revisar tema semaforos
 .arrancar IA
-.la alertar se muestran muy rapido-probar
+.la alertartas revisar si funcionan bien 
 
 
 
