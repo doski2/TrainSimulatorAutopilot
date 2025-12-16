@@ -16,6 +16,20 @@ class Consumer(threading.Thread):
         self._stop = threading.Event()
         self.processed = set()
         os.makedirs(self.dirpath, exist_ok=True)
+        # write a probe file to indicate the consumer/plugin is loaded
+        self.write_probe_file()
+
+    def write_probe_file(self):
+        """Write a probe file 'plugin_loaded.txt' atomically to indicate readiness."""
+        try:
+            probe_path = os.path.join(self.dirpath, 'plugin_loaded.txt')
+            tmp = probe_path + '.tmp'
+            with open(tmp, 'w', encoding='utf-8') as f:
+                f.write('loaded: ' + str(int(time.time())) + '\n')
+            os.replace(tmp, probe_path)
+        except Exception:
+            # best effort; don't raise to keep consumer alive
+            pass
 
     def stop(self):
         self._stop.set()

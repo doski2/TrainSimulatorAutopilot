@@ -72,8 +72,8 @@ Pruebas y resultados
 
 Checklist de mejoras pendientes (próximos pasos)
 
-- [ ] Implementar probe file en el consumer (`plugin_loaded.txt`) y listar
-  comportamiento de readiness.
+- [x] Implementar probe file en el consumer (`plugin_loaded.txt`) y listar
+  comportamiento de readiness. (Implementado, test `tests/e2e/test_probe_file.py`)
 - [ ] Añadir retries/backoff al `enqueue` y tests relacionados.
 - [ ] Persistir IDs procesados por el consumer para idempotencia.
 - [ ] Integrar el adapter con el Orchestrator (exponer POST /api/commands).
