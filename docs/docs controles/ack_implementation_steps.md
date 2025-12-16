@@ -74,7 +74,7 @@ Checklist de mejoras pendientes (próximos pasos)
 
 - [x] Implementar probe file en el consumer (`plugin_loaded.txt`) y listar
   comportamiento de readiness. (Implementado, test `tests/e2e/test_probe_file.py`)
-- [ ] Añadir retries/backoff al `enqueue` y tests relacionados.
+- [x] Añadir retries/backoff al `enqueue` y tests relacionados. (Implementado: `send_command_with_retries`, tests `tests/e2e/test_retries.py`)
 - [ ] Persistir IDs procesados por el consumer para idempotencia.
 - [ ] Integrar el adapter con el Orchestrator (exponer POST /api/commands).
 - [ ] Añadir job en CI (GitHub Actions) que ejecute pruebas E2E del POC.
