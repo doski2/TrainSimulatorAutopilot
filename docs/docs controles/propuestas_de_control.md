@@ -7,6 +7,7 @@ ventajas y desventajas.
 ---
 
 ## 1) Protocolo basado en archivos con ACK
+
 (archivos: `autopilot_commands.txt` + `autopilot_state.txt`)
 
 - Descripción: Python escribe comandos en un archivo. El plugin Lua los consume
@@ -19,7 +20,8 @@ ventajas y desventajas.
   - Funciona en plataformas con acceso a sistema de archivos (Windows).
   - Buena trazabilidad (archivos persistentes para depuración).
   - No requiere drivers ni permisos especiales.
-    (Solo escritura/lectura de archivos en carpeta de plugins o carpeta compartida).
+    (Solo escritura/lectura de archivos en carpeta de plugins
+    o en una carpeta compartida).
 - Desventajas:
   - Latencia/buffering depende del polling del script en el juego.
   - Requiere que el script Lua esté cargado y tenga permisos de I/O.
@@ -44,7 +46,8 @@ ventajas y desventajas.
   - Limitado al conjunto de comandos que el juego reconoce.
   - Sin semántica rica.
     (Difícil de confirmar que el comando fue aplicado: falta ACK nativo).
-- Recomendación: Usar en combinación con el método 1 (archivo+ACK) para confirmar ejecución.
+- Recomendación: Usar en combinación con el método 1 (archivo+ACK)
+  para confirmar ejecución.
 
 ---
 
@@ -60,13 +63,17 @@ ventajas y desventajas.
 - Desventajas:
   - Requiere instalar drivers (vJoy) y permisos de admin en algunos casos.
   - Más difícil de mapear a acciones de alto nivel.
-    (Ej.: una maniobra de frenado controlada requiere control fino y lógica adicional).
+    (Ej.: una maniobra de frenado controlada requiere
+    control fino y lógica adicional).
   - Más difícil de probar en CI / automatización.
-- Recomendación: Buena segunda opción si los plugins no pueden ser modificados; añadir una capa que traduzca comandos de alto nivel a eventos de ejes/botones.
+- Recomendación: Buena segunda opción si los plugins no pueden ser
+  modificados; añadir una capa que traduzca comandos de alto nivel a
+  eventos de ejes/botones.
 
 ---
 
 ## 4) Puente vía feeder para vJoy
+
 (vJoySerialFeeder / feeder por puerto serial)
 
 - Descripción: Usar un «feeder» que reciba comandos por TCP/Serial
@@ -94,7 +101,8 @@ ventajas y desventajas.
     (Puede requerir módulos extra, compilación en C o uso de FFI, y por
     tanto un plugin nativo.)
   - Riesgos de seguridad (abrir puertos en la máquina del cliente).
-- Recomendación: Evaluar si el motor soporta sockets; si no, esta opción puede ser compleja.
+- Recomendación: Evaluar si el motor soporta sockets; si no,
+  esta opción puede ser compleja.
 
 ---
 
@@ -113,16 +121,18 @@ ventajas y desventajas.
 
 ---
 
-## 7) Instrumentación de la capa GetData / plugin de telemetría (fallback de lectura)
+## 7) Instrumentación GetData (fallback de lectura)
 
 - Descripción: Añadir código al GetData.lua existente para detectar
   comandos en `autopilot_commands.txt` y aplicarlos.
 - Ventajas:
-  - Permite que la integración exista incluso si el plugin principal de autopilot no se carga.
+  - Permite que la integración exista incluso si el plugin
+    principal de autopilot no se carga.
   - Fácil de desplegar como parche de escenario.
 - Desventajas:
   - Puede no cubrir todos los casos y requiere pruebas en múltiples escenarios.
-- Recomendación: Útil como mecanismo de resilencia mientras se estabiliza el plugin principal.
+- Recomendación: Útil como mecanismo de resilencia mientras se
+  estabiliza el plugin principal.
 
 ---
 
