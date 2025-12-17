@@ -35,7 +35,17 @@ python tools/poc_file_ack/run_poc.py
 python tools/poc_file_ack/run_poc.py --dir C:\ruta\a\mi\poc_dir
 ```
 
-**Nota**: el script usa ahora un `TemporaryDirectory` por defecto para evitar crear carpetas en ubicaciones inesperadas; use `--dir` para pasar una ruta persistente si necesita inspeccionar archivos después de la ejecución.
+Ejecutar el demo de `enqueue` (envío con reintentos) desde la raíz del repo:
+
+```powershell
+# por defecto usa un directorio temporal para la demostración
+python -m tools.poc_file_ack.enqueue
+
+# o especificar un directorio persistente para inspección manual
+python -m tools.poc_file_ack.enqueue --dir C:\ruta\a\mi\poc_dir
+```
+
+**Nota**: ambos demos usan un `TemporaryDirectory` por defecto para evitar crear carpetas en ubicaciones inesperadas; use `--dir` para pasar una ruta persistente si necesita inspeccionar archivos después de la ejecución.
 
 3. Ejecutar test E2E individual:
 
