@@ -3,6 +3,10 @@ import os
 import time
 import uuid
 
+# Defaults for wait_for_ack behavior
+DEFAULT_ACK_TIMEOUT = 5.0
+DEFAULT_ACK_POLL = 0.1
+
 
 def atomic_write_cmd(dirpath, payload):
     """Write a command atomically as cmd-{id}.json and return the id.
@@ -24,7 +28,21 @@ def atomic_write_cmd(dirpath, payload):
     return cmd_id
 
 
-def wait_for_ack(dirpath, cmd_id, timeout=5.0, poll=0.1):
+def wait_for_ack(dirpath, cmd_id, timeout: float = DEFAULT_ACK_TIMEOUT, poll: float = DEFAULT_ACK_POLL):
+    """Wait for an ACK file for a given command id in `dirpath`.
+
+    Parameters:
+        dirpath (str): Directory where ack files are written.
+        cmd_id (str): Command id to look for (ack-{cmd_id}.json).
+        timeout (float): Maximum number of seconds to wait for the ack. Defaults
+            to DEFAULT_ACK_TIMEOUT (5.0 seconds).
+        poll (float): Interval in seconds between checks for the ack file.
+            Defaults to DEFAULT_ACK_POLL (0.1 seconds).
+
+    Returns:
+        dict or None: Parsed JSON content of the ack file if found within
+        timeout, otherwise None.
+    """
     ack = os.path.join(dirpath, f"ack-{cmd_id}.json")
     end = time.time() + timeout
     while time.time() < end:
