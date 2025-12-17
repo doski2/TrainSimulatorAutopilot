@@ -212,6 +212,27 @@ python -m pytest --cache-clear
 python -m pytest --collect-only --quiet
 ```
 
+### Importación y configuración del path para tests 🔧
+
+- Evita modificar `sys.path` dentro de módulos de test individuales: esto puede introducir efectos secundarios y causar fallos de importación inesperados.
+- Esta base de código centraliza la configuración mediante `tests/conftest.py`, que añade la raíz del repositorio a `sys.path` para permitir la ejecución local y en CI sin modificar cada archivo de test.
+- Recomendación de colaboración/CI:
+  - Preferible instalar el proyecto en modo editable en entornos de desarrollo y CI: `pip install -e .` para que las importaciones funcionen de forma natural.
+  - Alternativamente, se puede configurar `pythonpath` en `pytest.ini` o `pyproject.toml` si se prefiere no usar `conftest.py` para este propósito.
+
+#### Cambios recientes relacionados
+- Se eliminaron inserciones manuales de `sys.path` de los archivos de tests y se añadió `tests/conftest.py` que centraliza esta lógica.
+- Beneficios: menor duplicación, menos sorpresas al ejecutar tests desde IDE/CI y mayor coherencia entre entornos.
+
+### Cambios de implementación y pruebas relacionados ✅
+
+- `tools/poc_file_ack/consumer.py` ahora **registra** excepciones con `logging.exception(...)` en lugar de silenciarlas, para facilitar el diagnóstico sin detener el bucle del consumidor.
+- Se añadió `tests/unit/test_consumer_exceptions.py` que valida que las excepciones inesperadas se registran y que el consumidor continúa su ejecución (resiliencia).
+- Se añadió `tmp_poc_dir/` a `.gitignore` para evitar commits accidentales de artefactos temporales generados en ejecuciones manuales del consumidor.
+
+> Nota: Si prefieres que en entornos de desarrollo las excepciones se re-lancen para detectarlas tempranamente, podemos añadir una configuración `TESTS_STRICT_ERRORS=true` o similar que active ese comportamiento. Esto es útil para detectar regresiones durante el desarrollo.
+
+
 ## 📈 Reportes de Cobertura
 
 ### Generación de Reportes

@@ -1,7 +1,4 @@
 import os
-import sys
-# Ensure project root on path for test runner
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 from tsc_integration import TSCIntegration
 

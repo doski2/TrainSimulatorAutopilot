@@ -1,0 +1,46 @@
+name: POC E2E Tests (File+ACK)
+
+on:
+  push:
+    branches: [ 'wip/ack-implementation' ]
+  pull_request:
+    branches: [ 'master' ]
+
+jobs:
+  test-poc:
+    name: Run POC E2E and related unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install test requirements
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest
+
+      - name: CI diagnostic - print repo and consumer.py head
+        run: |
+          echo "==== GIT HEAD ===="
+          git rev-parse HEAD || true
+          git log -n1 --oneline || true
+          echo "\n==== REPO LISTING (top) ===="
+          ls -la | sed -n '1,120p' || true
+          echo "\n==== consumer.py head ===="
+          sed -n '1,160p' tools/poc_file_ack/consumer.py || true
+          echo "\n==== runtime Consumer source (first 400 chars) ===="
+          python -c "import inspect, tools.poc_file_ack.consumer as c; import sys; src=inspect.getsource(c.Consumer); sys.stdout.write(src[:400])"
+
+      - name: Run POC E2E tests (file+ACK subset)
+        run: |
+          pytest tests/e2e/test_file_ack.py tests/e2e/test_probe_file.py \
+                 tests/e2e/test_retries.py tests/e2e/test_persist_ids.py -q
+
+      - name: Run unit tests for API endpoint
+        run: |
+          pytest tests/unit/test_api_commands.py -q
