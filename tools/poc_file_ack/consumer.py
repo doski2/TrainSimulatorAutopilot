@@ -107,7 +107,40 @@ class Consumer(threading.Thread):
             # Be extremely defensive: don't let introspection issues prevent joining
             logger.exception("Unexpected error while defensively checking '_stop' in join")
         # Delegate to Thread.join
-        return super().join(timeout)
+        try:
+            return super().join(timeout)
+        except TypeError as e:
+            # Defensive: in some CI environments a non-callable `_stop` may still be
+            # present (e.g., as a class attribute) leading to Thread.join calling
+            # a non-callable and raising TypeError. Attempt to repair the attribute
+            # by setting a bound method to the instance and retrying once.
+            logger.warning("Thread.join raised TypeError (likely due to non-callable _stop); attempting to repair and retry: %s", e)
+            try:
+                # remove instance attribute if present
+                if hasattr(self, '_stop') and not callable(getattr(self, '_stop')):
+                    try:
+                        delattr(self, '_stop')
+                    except Exception:
+                        logger.exception("Failed to delete instance '_stop' during join recovery")
+                # if class attribute is non-callable, bind threading.Thread._stop to instance
+                cls_stop = getattr(type(self), '_stop', None)
+                if cls_stop is not None and not callable(cls_stop):
+                    try:
+                        bound = threading.Thread._stop.__get__(self, threading.Thread)
+                        setattr(self, '_stop', bound)
+                    except Exception:
+                        logger.exception("Failed to bind Thread._stop to instance during join recovery")
+                # As a final attempt, ensure instance has a callable _stop attribute
+                if not callable(getattr(self, '_stop', None)):
+                    try:
+                        setattr(self, '_stop', threading.Thread._stop.__get__(self, threading.Thread))
+                    except Exception:
+                        logger.exception("Failed to set fallback _stop bound method on instance")
+                # Retry join
+                return super().join(timeout)
+            except Exception:
+                logger.exception("Retrying join failed; proceeding to raise the original TypeError")
+                raise
 
     def run(self):
         while not self._stop_event.is_set():
