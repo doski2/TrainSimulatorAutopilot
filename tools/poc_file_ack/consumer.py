@@ -3,25 +3,34 @@ import os
 import time
 import threading
 import logging
+from collections import OrderedDict
 
 logger = logging.getLogger(__name__)
 
 
 class Consumer(threading.Thread):
     """Simple consumer that polls a directory for cmd-*.json files
-    and writes ack-{id}.json after 'processing'."""
+    and writes ack-{id}.json after 'processing'.
 
-    def __init__(self, dirpath, poll_interval=0.1, process_time=0.05, processed_ids_file='processed_ids.json', removal_failure_threshold: int = 5):
+    The consumer maintains a bounded LRU-like cache of processed ids to
+    avoid unbounded memory growth on long-running processes. The maximum
+    number of stored ids is configurable via `processed_ids_max`.
+    """
+
+    def __init__(self, dirpath, poll_interval=0.1, process_time=0.05, processed_ids_file='processed_ids.json', removal_failure_threshold: int = 5, processed_ids_max: int = 10000):
         super().__init__(daemon=True)
         self.dirpath = dirpath
         self.poll_interval = poll_interval
         self.process_time = process_time
         self._stop = threading.Event()
-        self.processed = set()
+        # Use OrderedDict as an LRU-like structure: keys are cmd_ids, values are timestamps
+        self.processed = OrderedDict()
         self.processed_ids_file = os.path.join(self.dirpath, processed_ids_file)
         # track repeated failures to remove files so we can alert if persistent
         self.removal_failure_threshold = removal_failure_threshold
         self.removal_failure_counts: dict[str, int] = {}
+        # max number of processed ids to retain in memory/persistence
+        self.processed_ids_max = processed_ids_max
         os.makedirs(self.dirpath, exist_ok=True)
         # load persisted processed ids (if present)
         self._load_processed_ids()
@@ -34,7 +43,12 @@ class Consumer(threading.Thread):
                 with open(self.processed_ids_file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
                     if isinstance(data, list):
-                        self.processed.update(data)
+                        # preserve order from file; values store timestamp
+                        for cid in data:
+                            self.processed[cid] = int(time.time())
+                        # trim if persisted file is larger than allowed
+                        while len(self.processed) > self.processed_ids_max:
+                            self.processed.popitem(last=False)
         except Exception:
             logger.exception("Failed to load processed_ids from %s", self.processed_ids_file)
 
@@ -42,8 +56,9 @@ class Consumer(threading.Thread):
         """Persist the processed ids set to disk atomically."""
         try:
             tmp = self.processed_ids_file + '.tmp'
+            # write only the keys in insertion order (most recent at the end)
             with open(tmp, 'w', encoding='utf-8') as f:
-                json.dump(list(self.processed), f, ensure_ascii=False)
+                json.dump(list(self.processed.keys()), f, ensure_ascii=False)
             os.replace(tmp, self.processed_ids_file)
         except Exception:
             logger.exception("Failed to persist processed ids to %s", self.processed_ids_file)
@@ -99,7 +114,12 @@ class Consumer(threading.Thread):
                     # simulate processing
                     time.sleep(self.process_time)
                     # mark processed and persist BEFORE writing ack to avoid race conditions
-                    self.processed.add(cmd_id)
+                    # Use OrderedDict to maintain insertion order and support bounded size
+                    self.processed[cmd_id] = int(time.time())
+                    # evict oldest if we exceed configured maximum
+                    if len(self.processed) > self.processed_ids_max:
+                        evicted, _ = self.processed.popitem(last=False)
+                        logger.info("Evicted old processed id %s to keep max=%d", evicted, self.processed_ids_max)
                     try:
                         self._persist_processed_ids()
                     except Exception:

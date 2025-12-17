@@ -120,6 +120,8 @@ Operación y manejo de errores (consideraciones operativas)
 
 - Manejo de archivos malformados/duplicados: cuando el consumer encuentra un archivo de comando que carece del campo `id` o cuyo `id` ya está marcado como procesado, el proceso ahora **registra una advertencia** y elimina el archivo para evitar confusión y facilitar el diagnóstico. Esto está probado en `tests/unit/test_consumer_ignore_malformed_or_duplicate.py`.
 
+- Bounded processed-ids cache: para evitar crecimiento ilimitado en memoria, el consumer mantiene una caché LRU-like de IDs procesados con un tamaño configurable (`processed_ids_max`, por defecto 10000). Las entradas más antiguas se evictan cuando se supera el límite. Implementado y probado en `tests/unit/test_consumer_bounded_processed_set.py`.
+
 Pruebas y CI (qué está presente hoy)
 
 - Tests añadidos:

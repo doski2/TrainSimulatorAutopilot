@@ -9,6 +9,7 @@
 - **docs**: Documentación actualizada sobre la opción Archivo+ACK y la configuración de tests (`docs/docs controles/opcion1_archivo_ack.md`, `docs/testing-framework.md`).
 - **ci**: `.gitignore` actualizado para ignorar `tmp_poc_dir/` y job POC E2E (`.github/workflows/poc-e2e.yml`) añadido previamente.
 - **consumer**: Marcar y persistir IDs procesados antes de escribir ACK para evitar reprocesos (test: `tests/unit/test_consumer_race_condition.py`).
+- **consumer**: Mantener una caché de `processed_ids` con tamaño limitado (`processed_ids_max`) para evitar crecimiento ilimitado de memoria en consumidores de larga duración (test: `tests/unit/test_consumer_bounded_processed_set.py`).
 
 
 # Train Simulator Autopilot - Registro de Cambios

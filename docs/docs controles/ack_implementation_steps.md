@@ -97,6 +97,7 @@ Checklist de mejoras pendientes (próximos pasos)
 - [x] Añadir UI mínima para disparar comandos y mostrar estado/ACK. (Implementado: botón en `index.html` + JS en `web/static/js/dashboard.js`)
 - [x] Robustecer manejo de errores del consumer: ahora **registra** excepciones en vez de silenciarlas (test: `tests/unit/test_consumer_exceptions.py`).
 - [x] Marcar y persistir IDs procesados antes de escribir el ACK para evitar reprocesos (implementado y probado: `tests/unit/test_consumer_race_condition.py`).
+- [x] Mantener una caché de `processed_ids` con tamaño limitado para evitar crecimiento ilimitado de memoria (`processed_ids_max`), probado en `tests/unit/test_consumer_bounded_processed_set.py`.
 - [x] Centralizar la configuración de `sys.path` para pytest en `tests/conftest.py`.
 - [x] Añadir `tmp_poc_dir/` a `.gitignore` para evitar commits accidentales de artefactos temporales.
 
