@@ -96,8 +96,24 @@ class Consumer(threading.Thread):
                         try:
                             with open(path, 'r', encoding='utf-8') as fh:
                                 payload = json.load(fh)
-                        except (FileNotFoundError, json.JSONDecodeError, PermissionError) as e:
-                            # file might be partial, deleted or malformed; skip with a debug log
+                        except json.JSONDecodeError as e:
+                            # malformed JSON: remove file and log warning
+                            logger.warning("Malformed command file %s; removing file. Error: %s", path, e)
+                            try:
+                                os.remove(path)
+                                if path in self.removal_failure_counts:
+                                    del self.removal_failure_counts[path]
+                            except FileNotFoundError:
+                                pass
+                            except Exception:
+                                cnt = self.removal_failure_counts.get(path, 0) + 1
+                                self.removal_failure_counts[path] = cnt
+                                logger.exception("Failed to remove malformed command file %s (attempt %d)", path, cnt)
+                                if cnt >= self.removal_failure_threshold:
+                                    logger.error("Persistent failure removing malformed command file %s after %d attempts", path, cnt)
+                            continue
+                        except (FileNotFoundError, PermissionError) as e:
+                            # file might be partial or deleted or permission denied; skip with a debug log
                             logger.debug("Skipping file %s due to read/parse error: %s", path, e)
                             continue
                         except Exception:
