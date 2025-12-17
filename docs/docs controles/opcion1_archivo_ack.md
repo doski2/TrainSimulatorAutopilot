@@ -116,6 +116,8 @@ Operación y manejo de errores (consideraciones operativas)
 - Probe & readiness: el plugin escribe `plugin_loaded.txt` al iniciarse (contiene timestamp); el orquestador puede comprobar la existencia de este fichero antes de confiar en la recepción de comandos en caliente.
 - Archivos temporales: use `tmp` + `os.replace` para escrituras atómicas y evitar lecturas parciales.
 
+- Orden seguro de procesamiento: **Importante** — para evitar condiciones de carrera el consumer debe **marcar el id como procesado y persistirlo antes de escribir el ACK**. De esta forma, si la eliminación del archivo de comando falla o el proceso se interrumpe justo después de escribir el ACK, el reinicio del consumer no reprocesará el comando duplicadamente. Esta práctica está implementada en el POC y cubierta por tests (`tests/unit/test_consumer_race_condition.py`).
+
 Pruebas y CI (qué está presente hoy)
 
 - Tests añadidos:

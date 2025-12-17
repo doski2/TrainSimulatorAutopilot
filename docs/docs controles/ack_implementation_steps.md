@@ -86,6 +86,7 @@ Checklist de mejoras pendientes (próximos pasos)
 - [x] Añadir job en CI (GitHub Actions) que ejecute pruebas E2E del POC (subset de tests POC). (Implementado: `.github/workflows/poc-e2e.yml`)
 - [x] Añadir UI mínima para disparar comandos y mostrar estado/ACK. (Implementado: botón en `index.html` + JS en `web/static/js/dashboard.js`)
 - [x] Robustecer manejo de errores del consumer: ahora **registra** excepciones en vez de silenciarlas (test: `tests/unit/test_consumer_exceptions.py`).
+- [x] Marcar y persistir IDs procesados antes de escribir el ACK para evitar reprocesos (implementado y probado: `tests/unit/test_consumer_race_condition.py`).
 - [x] Centralizar la configuración de `sys.path` para pytest en `tests/conftest.py`.
 - [x] Añadir `tmp_poc_dir/` a `.gitignore` para evitar commits accidentales de artefactos temporales.
 

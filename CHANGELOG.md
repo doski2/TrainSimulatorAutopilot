@@ -8,6 +8,7 @@
 - **tests**: Centralizada la configuración de `sys.path` en `tests/conftest.py` (se removieron inserciones manuales desde tests individuales).
 - **docs**: Documentación actualizada sobre la opción Archivo+ACK y la configuración de tests (`docs/docs controles/opcion1_archivo_ack.md`, `docs/testing-framework.md`).
 - **ci**: `.gitignore` actualizado para ignorar `tmp_poc_dir/` y job POC E2E (`.github/workflows/poc-e2e.yml`) añadido previamente.
+- **consumer**: Marcar y persistir IDs procesados antes de escribir ACK para evitar reprocesos (test: `tests/unit/test_consumer_race_condition.py`).
 
 
 # Train Simulator Autopilot - Registro de Cambios
