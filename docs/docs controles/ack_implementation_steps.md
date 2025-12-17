@@ -28,9 +28,14 @@ git checkout -b wip/ack-implementation
 2. Ejecutar demo local (daemon consumer + enqueue + wait for ack):
 
 ```powershell
-# desde la raíz del repositorio
+# desde la raíz del repositorio; por defecto se usa un directorio temporal que se limpia al terminar
 python tools/poc_file_ack/run_poc.py
+
+# o especificar un directorio explícito (no será eliminado automáticamente):
+python tools/poc_file_ack/run_poc.py --dir C:\ruta\a\mi\poc_dir
 ```
+
+**Nota**: el script usa ahora un `TemporaryDirectory` por defecto para evitar crear carpetas en ubicaciones inesperadas; use `--dir` para pasar una ruta persistente si necesita inspeccionar archivos después de la ejecución.
 
 3. Ejecutar test E2E individual:
 
