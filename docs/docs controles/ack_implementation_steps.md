@@ -76,7 +76,7 @@ Checklist de mejoras pendientes (próximos pasos)
   comportamiento de readiness. (Implementado, test `tests/e2e/test_probe_file.py`)
 - [x] Añadir retries/backoff al `enqueue` y tests relacionados. (Implementado: `send_command_with_retries`, tests `tests/e2e/test_retries.py`)
 - [x] Persistir IDs procesados por el consumer para idempotencia. (Implementado: `processed_ids.json`, test `tests/e2e/test_persist_ids.py`)
-- [ ] Integrar el adapter con el Orchestrator (exponer POST /api/commands).
+- [x] Integrar el adapter con el Orchestrator (exponer POST /api/commands). (Implementado en `web_dashboard.py`, tests `tests/unit/test_api_commands.py`)
 - [ ] Añadir job en CI (GitHub Actions) que ejecute pruebas E2E del POC.
 - [ ] Añadir UI mínima para disparar comandos y mostrar estado/ACK.
 
