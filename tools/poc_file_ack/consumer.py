@@ -70,9 +70,13 @@ class Consumer(threading.Thread):
                     try:
                         with open(path, 'r', encoding='utf-8') as fh:
                             payload = json.load(fh)
+                    except (FileNotFoundError, PermissionError, json.JSONDecodeError) as e:
+                        # file might be partial or deleted or malformed; skip with a debug log
+                        logger.debug("Skipping file %s due to read/parse error: %s", path, e)
+                        continue
                     except Exception:
-                        # file might be partial or deleted; skip
-                        logger.debug("Skipping file %s due to read/parse error", path, exc_info=True)
+                        # unexpected error reading file; log full exception to aid debugging
+                        logger.exception("Unexpected error reading command file %s; skipping", path)
                         continue
                     cmd_id = payload.get('id')
                     if not cmd_id or cmd_id in self.processed:
