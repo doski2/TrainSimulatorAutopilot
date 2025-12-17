@@ -26,6 +26,16 @@ class Consumer(threading.Thread):
         # Use OrderedDict as an LRU-like structure: keys are cmd_ids, values are timestamps
         self.processed = OrderedDict()
         self.processed_ids_file = os.path.join(self.dirpath, processed_ids_file)
+        # Defensive: make sure we are not accidentally shadowing Thread._stop
+        # Older versions of the class used `self._stop = threading.Event()` which
+        # overwrote Thread._stop leading to TypeError in join() (Event not callable).
+        if hasattr(self, '_stop') and not callable(getattr(self, '_stop')):
+            logger.warning("Consumer instance unexpectedly has non-callable '_stop' attribute; renaming to '_stop_shadow' to avoid join errors")
+            self._stop_shadow = getattr(self, '_stop')
+            try:
+                delattr(self, '_stop')
+            except Exception:
+                logger.exception("Failed to remove shadowing '_stop' attribute")
         # track repeated failures to remove files so we can alert if persistent
         self.removal_failure_threshold = removal_failure_threshold
         self.removal_failure_counts: dict[str, int] = {}
@@ -80,6 +90,15 @@ class Consumer(threading.Thread):
     def run(self):
         while not self._stop_event.is_set():
             try:
+                # ensure directory exists; if it was removed externally, attempt to recreate
+                if not os.path.isdir(self.dirpath):
+                    logger.warning("Consumer directory %s missing; recreating", self.dirpath)
+                    try:
+                        os.makedirs(self.dirpath, exist_ok=True)
+                    except Exception:
+                        logger.exception("Failed to recreate consumer directory %s; will retry", self.dirpath)
+                        time.sleep(self.poll_interval)
+                        continue
                 # use scandir for better performance on directories with many files
                 with os.scandir(self.dirpath) as it:
                     for entry in it:
