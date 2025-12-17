@@ -79,77 +79,98 @@ class Consumer(threading.Thread):
     def run(self):
         while not self._stop.is_set():
             try:
-                files = [f for f in os.listdir(self.dirpath) if f.startswith("cmd-") and f.endswith('.json')]
-                for f in files:
-                    path = os.path.join(self.dirpath, f)
-                    try:
-                        with open(path, 'r', encoding='utf-8') as fh:
-                            payload = json.load(fh)
-                    except (FileNotFoundError, PermissionError, json.JSONDecodeError) as e:
-                        # file might be partial or deleted or malformed; skip with a debug log
-                        logger.debug("Skipping file %s due to read/parse error: %s", path, e)
-                        continue
-                    except Exception:
-                        # unexpected error reading file; log full exception to aid debugging
-                        logger.exception("Unexpected error reading command file %s; skipping", path)
-                        continue
-                    cmd_id = payload.get('id')
-                    if not cmd_id or cmd_id in self.processed:
-                        # remove/ignore duplicates or malformed commands — log a warning to aid debugging
-                        reason = 'missing id' if not cmd_id else 'duplicate id'
-                        logger.warning("Ignoring command file %s (%s); removing file.", path, reason)
+                # use scandir for better performance on directories with many files
+                with os.scandir(self.dirpath) as it:
+                    for entry in it:
+                        try:
+                            if not entry.is_file():
+                                continue
+                        except Exception:
+                            # If entry disappears or is inaccessible, skip it
+                            logger.debug("Skipping non-file entry in dir scan: %s", entry, exc_info=True)
+                            continue
+                        f = entry.name
+                        if not (f.startswith("cmd-") and f.endswith('.json')):
+                            continue
+                        path = entry.path
+                        try:
+                            with open(path, 'r', encoding='utf-8') as fh:
+                                payload = json.load(fh)
+                        except (FileNotFoundError, json.JSONDecodeError, PermissionError) as e:
+                            # file might be partial, deleted or malformed; skip with a debug log
+                            logger.debug("Skipping file %s due to read/parse error: %s", path, e)
+                            continue
+                        except Exception:
+                            # unexpected error reading file; log full exception to aid debugging
+                            logger.exception("Unexpected error reading command file %s; skipping", path)
+                            continue
+                        cmd_id = payload.get('id')
+                        if not cmd_id or cmd_id in self.processed:
+                            # remove/ignore duplicates or malformed commands — log a warning to aid debugging
+                            reason = 'missing id' if not cmd_id else 'duplicate id'
+                            logger.warning("Ignoring command file %s (%s); removing file.", path, reason)
+                            try:
+                                os.remove(path)
+                                # successful removal -> reset counter if any
+                                if path in self.removal_failure_counts:
+                                    del self.removal_failure_counts[path]
+                            except FileNotFoundError:
+                                # already removed by another actor; ignore
+                                pass
+                            except Exception:
+                                # increment failure counter and alert if persistent
+                                cnt = self.removal_failure_counts.get(path, 0) + 1
+                                self.removal_failure_counts[path] = cnt
+                                logger.exception("Failed to remove ignored command file %s (attempt %d)", path, cnt)
+                                if cnt >= self.removal_failure_threshold:
+                                    logger.error("Persistent failure removing ignored command file %s after %d attempts", path, cnt)
+                            continue
+                        # simulate processing
+                        time.sleep(self.process_time)
+                        # mark processed and persist BEFORE writing ack to avoid race conditions
+                        # Use OrderedDict to maintain insertion order and support bounded size
+                        self.processed[cmd_id] = int(time.time())
+                        # evict oldest if we exceed configured maximum
+                        if len(self.processed) > self.processed_ids_max:
+                            evicted, _ = self.processed.popitem(last=False)
+                            logger.info("Evicted old processed id %s to keep max=%d", evicted, self.processed_ids_max)
+                        try:
+                            self._persist_processed_ids()
+                        except Exception:
+                            # persistence failed; log and continue — processed is in-memory
+                            logger.exception("Failed to persist processed id %s immediately after processing", cmd_id)
+                        # write ack
+                        ack_path = os.path.join(self.dirpath, f"ack-{cmd_id}.json")
+                        ack = {
+                            'id': cmd_id,
+                            'status': 'applied',
+                            'ts': int(time.time()),
+                            'notes': f"Processed {payload.get('type') or 'cmd'}"
+                        }
+                        try:
+                            with open(ack_path + '.tmp', 'w', encoding='utf-8') as af:
+                                af.write(json.dumps(ack, ensure_ascii=False) + '\n')
+                            os.replace(ack_path + '.tmp', ack_path)
+                        except Exception:
+                            logger.exception("Failed to write ack for %s", cmd_id)
+                        # remove the command file
                         try:
                             os.remove(path)
-                            # successful removal -> reset counter if any
                             if path in self.removal_failure_counts:
                                 del self.removal_failure_counts[path]
+                        except FileNotFoundError:
+                            # already removed by another actor; ignore
+                            pass
                         except Exception:
-                            # increment failure counter and alert if persistent
                             cnt = self.removal_failure_counts.get(path, 0) + 1
                             self.removal_failure_counts[path] = cnt
-                            logger.exception("Failed to remove ignored command file %s (attempt %d)", path, cnt)
+                            logger.exception("Failed to remove command file %s after processing %s (attempt %d)", path, cmd_id, cnt)
                             if cnt >= self.removal_failure_threshold:
-                                logger.error("Persistent failure removing ignored command file %s after %d attempts", path, cnt)
-                        continue
-                    # simulate processing
-                    time.sleep(self.process_time)
-                    # mark processed and persist BEFORE writing ack to avoid race conditions
-                    # Use OrderedDict to maintain insertion order and support bounded size
-                    self.processed[cmd_id] = int(time.time())
-                    # evict oldest if we exceed configured maximum
-                    if len(self.processed) > self.processed_ids_max:
-                        evicted, _ = self.processed.popitem(last=False)
-                        logger.info("Evicted old processed id %s to keep max=%d", evicted, self.processed_ids_max)
-                    try:
-                        self._persist_processed_ids()
-                    except Exception:
-                        # persistence failed; log and continue — processed is in-memory
-                        logger.exception("Failed to persist processed id %s immediately after processing", cmd_id)
-                    # write ack
-                    ack_path = os.path.join(self.dirpath, f"ack-{cmd_id}.json")
-                    ack = {
-                        'id': cmd_id,
-                        'status': 'applied',
-                        'ts': int(time.time()),
-                        'notes': f"Processed {payload.get('type') or 'cmd'}"
-                    }
-                    try:
-                        with open(ack_path + '.tmp', 'w', encoding='utf-8') as af:
-                            af.write(json.dumps(ack, ensure_ascii=False) + '\n')
-                        os.replace(ack_path + '.tmp', ack_path)
-                    except Exception:
-                        logger.exception("Failed to write ack for %s", cmd_id)
-                    # remove the command file
-                    try:
-                        os.remove(path)
-                        if path in self.removal_failure_counts:
-                            del self.removal_failure_counts[path]
-                    except Exception:
-                        cnt = self.removal_failure_counts.get(path, 0) + 1
-                        self.removal_failure_counts[path] = cnt
-                        logger.exception("Failed to remove command file %s after processing %s (attempt %d)", path, cmd_id, cnt)
-                        if cnt >= self.removal_failure_threshold:
-                            logger.error("Persistent failure removing processed command file %s after %d attempts", path, cnt)
+                                logger.error("Persistent failure removing processed command file %s after %d attempts", path, cnt)
+            except KeyboardInterrupt:
+                raise
+            except Exception:
+                logger.exception("Unhandled exception in Consumer run loop; continuing")
             except KeyboardInterrupt:
                 raise
             except Exception:
