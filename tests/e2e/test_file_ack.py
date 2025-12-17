@@ -1,8 +1,27 @@
 import os
 import tempfile
+import subprocess
 
 from tools.poc_file_ack.enqueue import atomic_write_cmd, wait_for_ack
 from tools.poc_file_ack.consumer import Consumer
+
+# CI diagnostic: print git HEAD and snippet of consumer.py so remote logs show which version is used.
+def _ci_diagnostic():
+    try:
+        sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], stderr=subprocess.STDOUT).decode().strip()
+    except Exception as e:
+        sha = f'git rev-parse failed: {e}'
+    print(f"CI DIAGNOSTIC: git HEAD: {sha}")
+    try:
+        path = os.path.join(os.path.dirname(__file__), '..', '..', 'tools', 'poc_file_ack', 'consumer.py')
+        path = os.path.abspath(path)
+        with open(path, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+        print("CI DIAGNOSTIC: consumer.py head:\n" + "".join(lines[:120]))
+    except Exception as e:
+        print(f"CI DIAGNOSTIC: failed to read consumer.py: {e}")
+
+_ci_diagnostic()
 
 
 def test_enqueue_and_ack():
