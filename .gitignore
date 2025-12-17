@@ -261,3 +261,5 @@ data/telemetry_history.json
 # Temporary debug/test helper scripts
 tmp_*.py
 tests/tmp_*.py
+# Temporary POC directories created by running consumer in manual/dev mode
+tmp_poc_dir/
