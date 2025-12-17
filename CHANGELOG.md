@@ -7,6 +7,7 @@
 - **tests**: Añadido `tests/unit/test_consumer_exceptions.py` que valida logging y resiliencia del consumer.
 - **tests**: Centralizada la configuración de `sys.path` en `tests/conftest.py` (se removieron inserciones manuales desde tests individuales).
 - **docs**: Documentación actualizada sobre la opción Archivo+ACK y la configuración de tests (`docs/docs controles/opcion1_archivo_ack.md`, `docs/testing-framework.md`).
+- **docs**: Añadida documentación `docs/troubleshooting/yaml-ghost-error.md` sobre el error YAML "mensaje fantasma" (causas: caracteres de control/BOM o claves mal formateadas) y el script de diagnóstico `scripts/check_yaml.py`.
 - **ci**: `.gitignore` actualizado para ignorar `tmp_poc_dir/` y job POC E2E (`.github/workflows/poc-e2e.yml`) añadido previamente.
 - **consumer**: Marcar y persistir IDs procesados antes de escribir ACK para evitar reprocesos (test: `tests/unit/test_consumer_race_condition.py`).
 - **consumer**: Mantener una caché de `processed_ids` con tamaño limitado (`processed_ids_max`) para evitar crecimiento ilimitado de memoria en consumidores de larga duración (test: `tests/unit/test_consumer_bounded_processed_set.py`).
