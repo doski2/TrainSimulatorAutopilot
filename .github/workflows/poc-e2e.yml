@@ -26,17 +26,6 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install pytest
 
-      - name: CI diagnostic - print repo and consumer.py head
-        run: |
-          echo "==== GIT HEAD ===="
-          git rev-parse HEAD || true
-          git log -n1 --oneline || true
-          echo "\n==== REPO LISTING (top) ===="
-          ls -la | sed -n '1,120p' || true
-          echo "\n==== consumer.py head ===="
-          sed -n '1,160p' tools/poc_file_ack/consumer.py || true
-          echo "\n==== runtime Consumer source (first 400 chars) ===="
-          python -c "import inspect, tools.poc_file_ack.consumer as c; import sys; src=inspect.getsource(c.Consumer); sys.stdout.write(src[:400])"
 
       - name: Run POC E2E tests (file+ACK subset)
         run: |
