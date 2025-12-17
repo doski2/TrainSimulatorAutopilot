@@ -1,10 +1,12 @@
 name: POC E2E Tests (File+ACK)
 
-on:
+"on":
   push:
-    branches: [ 'wip/ack-implementation' ]
+    branches:
+      - wip/ack-implementation
   pull_request:
-    branches: [ 'master' ]
+    branches:
+      - master
 
 jobs:
   test-poc:
