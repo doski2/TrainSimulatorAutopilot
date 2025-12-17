@@ -1,6 +1,5 @@
 import os
 import tempfile
-import threading
 
 from tools.poc_file_ack.enqueue import atomic_write_cmd, wait_for_ack
 from tools.poc_file_ack.consumer import Consumer
