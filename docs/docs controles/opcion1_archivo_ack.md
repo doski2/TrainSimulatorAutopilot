@@ -109,28 +109,41 @@ function Update(elapsed)
 end
 ```
 
-Pruebas sugeridas
-- Unit tests: formato JSON, escritura atómica, wait_for_ack comportamiento con ack presente/ausente.
-- E2E: lanzar POC Python encolador y un proceso Lua (o mock consumer) que lee y emite ACK. Verificar timeout/retry.
-- CI: agregar mock adapter para simular plugin en GitHub Actions y ejecutar tests E2E.
+Operación y manejo de errores (consideraciones operativas)
 
-Checklist de despliegue
-- [ ] Definir carpeta configurable y documentar permisos
-- [ ] Añadir probe file escrito por plugin al iniciar (`plugin_loaded.txt`)
-- [ ] Implementar lista persistente de `ids` procesados en plugin para idempotencia
-- [ ] Configurar timeouts y política de reintentos (por defecto 3 reintentos)
-- [ ] Añadir logs correlacionados por `id` y métricas (latencia enqueue→ack)
+- Manejo de excepciones: el consumidor (plugin o mock) no debe silenciar excepciones genéricas; en el POC el consumidor ahora usa `logging.exception(...)` para registrar fallos inesperados y continuar ejecutando el bucle de polling. Esto facilita debugging y evita perder fallos silenciosos.
+- Persistencia y resiliencia: el consumer persiste IDs procesados en `processed_ids.json` para evitar reprocesos después de reinicios. Se recomienda revisar permisos y rotación de este archivo en producción.
+- Probe & readiness: el plugin escribe `plugin_loaded.txt` al iniciarse (contiene timestamp); el orquestador puede comprobar la existencia de este fichero antes de confiar en la recepción de comandos en caliente.
+- Archivos temporales: use `tmp` + `os.replace` para escrituras atómicas y evitar lecturas parciales.
+
+Pruebas y CI (qué está presente hoy)
+
+- Tests añadidos:
+  - Unit: `tests/unit/test_consumer_exceptions.py` valida que excepciones en persistencia se registren y que el consumidor siga funcionando.
+  - E2E POC: `tests/e2e/test_file_ack.py`, `tests/e2e/test_probe_file.py`, `tests/e2e/test_retries.py`, `tests/e2e/test_persist_ids.py` (comprueban enqueue→ack, probe, retries y persistencia respectivamente).
+  - API: `tests/unit/test_api_commands.py` verifica el endpoint `POST /api/commands` con y sin espera por ACK.
+- CI: existe un job específico para el POC `/.github/workflows/poc-e2e.yml` que ejecuta el subconjunto E2E POC en PRs a la rama del POC.
+- Configuración de tests: se centralizó la manipulación de `sys.path` en `tests/conftest.py` en lugar de insertar `sys.path` en cada test; esto hace las importaciones más robustas y coherentes en CI y desarrollo local.
+
+Checklist de despliegue (estado actual)
+- [x] Definir carpeta configurable y documentar permisos (documentado en instalación) 
+- [x] Añadir probe file escrito por plugin al iniciar (`plugin_loaded.txt`) 
+- [x] Implementar lista persistente de `ids` procesados por consumer (`processed_ids.json`) 
+- [x] Configurar timeouts y política de reintentos (por defecto: la POC implementa retries/backoff con parámetros configurables)
+- [x] Añadir logs correlacionados por `id` y métricas (latencia enqueue→ack) — POC introduce logging básico y es sugerible extender con métricas
+- [x] Manejo de excepciones: el consumer ahora registra errores en vez de silenciarlos
 
 Problemas comunes y remedios
 - Latencia: reducir polling y usar archivos por comando (no un único monolito).
 - Concursos: uso de `os.replace` y tmp files para escrituras atómicas.
 - Plugin no cargado: probe file + fallback GetData (documentado) + alertas en orquestador.
 
-Siguiente pasos propuestos
-1. Añadir POC funcional a `tools/poc_file_ack/` (Python enqueue + Lua consumer mock).
-2. Añadir tests E2E y CI job que ejecute el mock.
-3. Si OK, integrar adapter en el Orchestrator y exponer endpoint HTTP para la IA.
+Siguientes pasos propuestos
+
+1. Pulir el endpoint `POST /api/commands` para añadir autenticación y validación más estricta (por ejemplo, API key o JWT).
+2. Monitorización y métricas (exponer latencias enqueue→ack y recuento de excepciones en consumer).
+3. Integración completa del plugin en escenarios reales y añadir tests de integración que ejecuten escenarios de la vida real.
 
 ---
 
-¿Quieres que cree ahora la carpeta `tools/poc_file_ack/` con los scripts POC y un test E2E en `tests/e2e/`? Si sí, los añado en la rama `wip/file-ack-poc` y abro PR. 👇
+¿Quieres que cree ahora la carpeta `tools/poc_file_ack/` con scripts POC y abra PR (si no lo está ya)? Si sí, lo dejo listo en `wip/ack-implementation` para revisión.

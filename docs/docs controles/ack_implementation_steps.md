@@ -67,8 +67,9 @@ Decisiones de diseño
 Pruebas y resultados
 
 - El test `tests/e2e/test_file_ack.py` pasa localmente en Windows con Python 3.13.
-- Se añadió un ajuste temporal en el test para asegurar que el repo root esté en
-  sys.path para pytest.
+- Se añadió `tests/unit/test_consumer_exceptions.py` para verificar que el consumer registra excepciones inesperadas y continúa ejecutando el bucle de polling.
+- Se centralizó la configuración de import path para pytest en `tests/conftest.py` (ya no se insertan líneas `sys.path` en cada test).
+- `.gitignore` fue actualizado para ignorar `tmp_poc_dir/` creado por ejecuciones manuales del consumer.
 
 Checklist de mejoras pendientes (próximos pasos)
 
@@ -79,12 +80,16 @@ Checklist de mejoras pendientes (próximos pasos)
 - [x] Integrar el adapter con el Orchestrator (exponer POST /api/commands). (Implementado en `web_dashboard.py`, tests `tests/unit/test_api_commands.py`)
 - [x] Añadir job en CI (GitHub Actions) que ejecute pruebas E2E del POC (subset de tests POC). (Implementado: `.github/workflows/poc-e2e.yml`)
 - [x] Añadir UI mínima para disparar comandos y mostrar estado/ACK. (Implementado: botón en `index.html` + JS en `web/static/js/dashboard.js`)
+- [x] Robustecer manejo de errores del consumer: ahora **registra** excepciones en vez de silenciarlas (test: `tests/unit/test_consumer_exceptions.py`).
+- [x] Centralizar la configuración de `sys.path` para pytest en `tests/conftest.py`.
+- [x] Añadir `tmp_poc_dir/` a `.gitignore` para evitar commits accidentales de artefactos temporales.
 
 Notas operativas
 
 - Directorios y permisos: definir carpeta configurable para los archivos y
   documentar permisos (Windows: privilegios de usuario, UAC si procede).
-- Observabilidad: logs correlacionados por `id` y métricas de latencia.  
+- Observabilidad: logs correlacionados por `id` y métricas de latencia.
+- Recomendación: en entornos de desarrollo y CI se recomienda `pip install -e .` para evitar depender de modificaciones de `sys.path` por tests.
 
 ¿Siguiente paso?
 

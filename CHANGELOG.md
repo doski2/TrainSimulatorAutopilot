@@ -1,11 +1,21 @@
 # Train Simulator Autopilot - Registro de Cambios
 
+## [Unreleased] - 2025-12-17
+
+### 🔧 Correcciones y mejoras (POC Archivo+ACK)
+- **consumer**: Registrar excepciones en lugar de silenciarlas para mejorar diagnósticos y mantener el loop vivo (`tools/poc_file_ack/consumer.py`).
+- **tests**: Añadido `tests/unit/test_consumer_exceptions.py` que valida logging y resiliencia del consumer.
+- **tests**: Centralizada la configuración de `sys.path` en `tests/conftest.py` (se removieron inserciones manuales desde tests individuales).
+- **docs**: Documentación actualizada sobre la opción Archivo+ACK y la configuración de tests (`docs/docs controles/opcion1_archivo_ack.md`, `docs/testing-framework.md`).
+- **ci**: `.gitignore` actualizado para ignorar `tmp_poc_dir/` y job POC E2E (`.github/workflows/poc-e2e.yml`) añadido previamente.
+
+
+# Train Simulator Autopilot - Registro de Cambios
+
 Todos los cambios notables en este proyecto serán documentados en este archivo.
 
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-y este proyecto se adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.0.html).
-
-## [2.1.0] - 2025-12-06 - Sistema de Estado para Controles de Locomotora
+ y este proyecto se adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.0/).
 
 ### ✨ Nuevas Funcionalidades
 
