@@ -118,6 +118,8 @@ Operación y manejo de errores (consideraciones operativas)
 
 - Orden seguro de procesamiento: **Importante** — para evitar condiciones de carrera el consumer debe **marcar el id como procesado y persistirlo antes de escribir el ACK**. De esta forma, si la eliminación del archivo de comando falla o el proceso se interrumpe justo después de escribir el ACK, el reinicio del consumer no reprocesará el comando duplicadamente. Esta práctica está implementada en el POC y cubierta por tests (`tests/unit/test_consumer_race_condition.py`).
 
+- Manejo de archivos malformados/duplicados: cuando el consumer encuentra un archivo de comando que carece del campo `id` o cuyo `id` ya está marcado como procesado, el proceso ahora **registra una advertencia** y elimina el archivo para evitar confusión y facilitar el diagnóstico. Esto está probado en `tests/unit/test_consumer_ignore_malformed_or_duplicate.py`.
+
 Pruebas y CI (qué está presente hoy)
 
 - Tests añadidos:

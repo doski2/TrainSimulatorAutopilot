@@ -73,11 +73,13 @@ class Consumer(threading.Thread):
                         continue
                     cmd_id = payload.get('id')
                     if not cmd_id or cmd_id in self.processed:
-                        # remove/ignore duplicates
+                        # remove/ignore duplicates or malformed commands — log a warning to aid debugging
+                        reason = 'missing id' if not cmd_id else 'duplicate id'
+                        logger.warning("Ignoring command file %s (%s); removing file.", path, reason)
                         try:
                             os.remove(path)
                         except Exception:
-                            pass
+                            logger.exception("Failed to remove ignored command file %s", path)
                         continue
                     # simulate processing
                     time.sleep(self.process_time)
