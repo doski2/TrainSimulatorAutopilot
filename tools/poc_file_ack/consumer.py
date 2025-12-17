@@ -2,6 +2,9 @@ import json
 import os
 import time
 import threading
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Consumer(threading.Thread):
@@ -30,8 +33,7 @@ class Consumer(threading.Thread):
                     if isinstance(data, list):
                         self.processed.update(data)
         except Exception:
-            # best effort; ignore errors to keep consumer alive
-            pass
+            logger.exception("Failed to load processed_ids from %s", self.processed_ids_file)
 
     def _persist_processed_ids(self):
         """Persist the processed ids set to disk atomically."""
@@ -41,7 +43,7 @@ class Consumer(threading.Thread):
                 json.dump(list(self.processed), f, ensure_ascii=False)
             os.replace(tmp, self.processed_ids_file)
         except Exception:
-            pass
+            logger.exception("Failed to persist processed ids to %s", self.processed_ids_file)
 
     def write_probe_file(self):
         """Write a probe file 'plugin_loaded.txt' atomically to indicate readiness."""
@@ -52,8 +54,7 @@ class Consumer(threading.Thread):
                 f.write('loaded: ' + str(int(time.time())) + '\n')
             os.replace(tmp, probe_path)
         except Exception:
-            # best effort; don't raise to keep consumer alive
-            pass
+            logger.exception("Failed to write probe file in %s", self.dirpath)
     def stop(self):
         self._stop.set()
 
@@ -68,6 +69,7 @@ class Consumer(threading.Thread):
                             payload = json.load(fh)
                     except Exception:
                         # file might be partial or deleted; skip
+                        logger.debug("Skipping file %s due to read/parse error", path, exc_info=True)
                         continue
                     cmd_id = payload.get('id')
                     if not cmd_id or cmd_id in self.processed:
@@ -98,9 +100,10 @@ class Consumer(threading.Thread):
                         os.remove(path)
                     except Exception:
                         pass
+            except KeyboardInterrupt:
+                raise
             except Exception:
-                # swallow exceptions to keep consumer alive
-                pass
+                logger.exception("Unhandled exception in Consumer run loop; continuing")
             time.sleep(self.poll_interval)
 
 

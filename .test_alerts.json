@@ -390,5 +390,33 @@
     },
     "acknowledged": true,
     "acknowledged_at": "2025-12-15T22:10:53.535689"
+  },
+  {
+    "alert_id": "speed_test_1",
+    "alert_type": "speed_violation",
+    "severity": "high",
+    "title": "Violación de Velocidad Detectada",
+    "message": "Velocidad actual: 145.0 km/h (límite: 120 km/h)",
+    "timestamp": "2025-12-17T21:54:55.931610",
+    "data": {
+      "current_speed": 145.0,
+      "max_speed": 120
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-17T21:54:55.931619"
+  },
+  {
+    "alert_id": "wheelslip_test_1",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-17T21:54:55.934209",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-17T21:54:55.934217"
   }
 ]
