@@ -81,6 +81,13 @@ class Consumer(threading.Thread):
                         continue
                     # simulate processing
                     time.sleep(self.process_time)
+                    # mark processed and persist BEFORE writing ack to avoid race conditions
+                    self.processed.add(cmd_id)
+                    try:
+                        self._persist_processed_ids()
+                    except Exception:
+                        # persistence failed; log and continue — processed is in-memory
+                        logger.exception("Failed to persist processed id %s immediately after processing", cmd_id)
                     # write ack
                     ack_path = os.path.join(self.dirpath, f"ack-{cmd_id}.json")
                     ack = {
@@ -89,17 +96,17 @@ class Consumer(threading.Thread):
                         'ts': int(time.time()),
                         'notes': f"Processed {payload.get('type') or 'cmd'}"
                     }
-                    with open(ack_path + '.tmp', 'w', encoding='utf-8') as af:
-                        af.write(json.dumps(ack, ensure_ascii=False) + '\n')
-                    os.replace(ack_path + '.tmp', ack_path)
-                    # mark processed and persist
-                    self.processed.add(cmd_id)
-                    self._persist_processed_ids()
+                    try:
+                        with open(ack_path + '.tmp', 'w', encoding='utf-8') as af:
+                            af.write(json.dumps(ack, ensure_ascii=False) + '\n')
+                        os.replace(ack_path + '.tmp', ack_path)
+                    except Exception:
+                        logger.exception("Failed to write ack for %s", cmd_id)
                     # remove the command file
                     try:
                         os.remove(path)
                     except Exception:
-                        pass
+                        logger.exception("Failed to remove command file %s after processing %s", path, cmd_id)
             except KeyboardInterrupt:
                 raise
             except Exception:
