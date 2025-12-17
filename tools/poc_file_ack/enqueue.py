@@ -63,9 +63,33 @@ def send_command_with_retries(dirpath, payload, timeout=5.0, retries=3, initial_
     return None
 
 
+import argparse
+import tempfile
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 if __name__ == "__main__":
-    # demo usage
-    d = os.path.abspath("./tmp_poc_dir")
+    logging.basicConfig(level=logging.INFO)
+    parser = argparse.ArgumentParser(description='Demo send command with retries')
+    parser.add_argument('--dir', '-d', help='Directory to use for POC (default: temporary dir)')
+    args = parser.parse_args()
+
+    temp_ctx = None
+    if args.dir:
+        d = os.path.abspath(args.dir)
+        os.makedirs(d, exist_ok=True)
+        logger.info("Using provided directory for demo: %s", d)
+    else:
+        temp_ctx = tempfile.TemporaryDirectory(prefix='poc_')
+        d = temp_ctx.name
+        logger.info("Using temporary directory for demo: %s", d)
+
     print("Sending cmd to", d)
     ack = send_command_with_retries(d, {"type": "set_regulator", "value": 0.5}, timeout=2.0, retries=3, initial_delay=0.5)
     print("ACK:", ack)
+
+    if temp_ctx is not None:
+        temp_ctx.cleanup()
+        logger.info("Temporary directory cleaned up: %s", d)
