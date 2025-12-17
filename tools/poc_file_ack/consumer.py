@@ -22,7 +22,7 @@ class Consumer(threading.Thread):
         self.dirpath = dirpath
         self.poll_interval = poll_interval
         self.process_time = process_time
-        self._stop = threading.Event()
+        self._stop_event = threading.Event()
         # Use OrderedDict as an LRU-like structure: keys are cmd_ids, values are timestamps
         self.processed = OrderedDict()
         self.processed_ids_file = os.path.join(self.dirpath, processed_ids_file)
@@ -74,10 +74,11 @@ class Consumer(threading.Thread):
         except Exception:
             logger.exception("Failed to write probe file in %s", self.dirpath)
     def stop(self):
-        self._stop.set()
+        """Signal the consumer to stop gracefully."""
+        self._stop_event.set()
 
     def run(self):
-        while not self._stop.is_set():
+        while not self._stop_event.is_set():
             try:
                 # use scandir for better performance on directories with many files
                 with os.scandir(self.dirpath) as it:
