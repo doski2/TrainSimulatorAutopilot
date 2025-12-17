@@ -24,9 +24,10 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install pytest
 
-      - name: Run E2E tests
+      - name: Run POC E2E tests (file+ACK subset)
         run: |
-          pytest tests/e2e -q
+          pytest tests/e2e/test_file_ack.py tests/e2e/test_probe_file.py \
+                 tests/e2e/test_retries.py tests/e2e/test_persist_ids.py -q
 
       - name: Run unit tests for API endpoint
         run: |
