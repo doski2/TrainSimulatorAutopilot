@@ -5,14 +5,20 @@ import uuid
 
 
 def atomic_write_cmd(dirpath, payload):
-    """Write a command atomically as cmd-{id}.json and return the id."""
+    """Write a command atomically as cmd-{id}.json and return the id.
+
+    Note: make a shallow copy of the payload to avoid mutating the caller's
+    dictionary (we add an `id` field for internal tracking).
+    """
     os.makedirs(dirpath, exist_ok=True)
-    cmd_id = payload.get("id") or str(uuid.uuid4())
-    payload["id"] = cmd_id
+    # copy payload to avoid mutating caller's dict
+    p = dict(payload)
+    cmd_id = p.get("id") or str(uuid.uuid4())
+    p["id"] = cmd_id
     tmp = os.path.join(dirpath, f"cmd-{cmd_id}.tmp")
     final = os.path.join(dirpath, f"cmd-{cmd_id}.json")
     with open(tmp, "w", encoding="utf-8") as f:
-        f.write(json.dumps(payload, ensure_ascii=False) + "\n")
+        f.write(json.dumps(p, ensure_ascii=False) + "\n")
     # Atomic replace
     os.replace(tmp, final)
     return cmd_id
