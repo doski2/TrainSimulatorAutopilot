@@ -1,12 +1,8 @@
 import os
-import sys
 import json
 import time
 import logging
 from pathlib import Path
-
-# Ensure repo root is on sys.path for pytest
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 from tools.poc_file_ack.consumer import Consumer
 

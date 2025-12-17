@@ -1,10 +1,6 @@
 import os
-import sys
 import tempfile
 import time
-
-# Ensure repo root is on sys.path for pytest
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 from tools.poc_file_ack.enqueue import atomic_write_cmd
 from tools.poc_file_ack.consumer import Consumer

@@ -3,9 +3,6 @@ import sys
 import tempfile
 import time
 
-# Ensure repo root is on sys.path for pytest
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-
 # Avoid importing heavy 3rd-party modules during unit tests by providing
 # a minimal stub for bokeh if it's not installed in the test env.
 import types
