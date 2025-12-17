@@ -1,5 +1,4 @@
 import os
-import time
 import argparse
 import tempfile
 import logging
