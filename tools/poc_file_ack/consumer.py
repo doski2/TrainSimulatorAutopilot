@@ -11,7 +11,7 @@ class Consumer(threading.Thread):
     """Simple consumer that polls a directory for cmd-*.json files
     and writes ack-{id}.json after 'processing'."""
 
-    def __init__(self, dirpath, poll_interval=0.1, process_time=0.05, processed_ids_file='processed_ids.json'):
+    def __init__(self, dirpath, poll_interval=0.1, process_time=0.05, processed_ids_file='processed_ids.json', removal_failure_threshold: int = 5):
         super().__init__(daemon=True)
         self.dirpath = dirpath
         self.poll_interval = poll_interval
@@ -19,6 +19,9 @@ class Consumer(threading.Thread):
         self._stop = threading.Event()
         self.processed = set()
         self.processed_ids_file = os.path.join(self.dirpath, processed_ids_file)
+        # track repeated failures to remove files so we can alert if persistent
+        self.removal_failure_threshold = removal_failure_threshold
+        self.removal_failure_counts: dict[str, int] = {}
         os.makedirs(self.dirpath, exist_ok=True)
         # load persisted processed ids (if present)
         self._load_processed_ids()
@@ -78,8 +81,16 @@ class Consumer(threading.Thread):
                         logger.warning("Ignoring command file %s (%s); removing file.", path, reason)
                         try:
                             os.remove(path)
+                            # successful removal -> reset counter if any
+                            if path in self.removal_failure_counts:
+                                del self.removal_failure_counts[path]
                         except Exception:
-                            logger.exception("Failed to remove ignored command file %s", path)
+                            # increment failure counter and alert if persistent
+                            cnt = self.removal_failure_counts.get(path, 0) + 1
+                            self.removal_failure_counts[path] = cnt
+                            logger.exception("Failed to remove ignored command file %s (attempt %d)", path, cnt)
+                            if cnt >= self.removal_failure_threshold:
+                                logger.error("Persistent failure removing ignored command file %s after %d attempts", path, cnt)
                         continue
                     # simulate processing
                     time.sleep(self.process_time)
@@ -107,8 +118,14 @@ class Consumer(threading.Thread):
                     # remove the command file
                     try:
                         os.remove(path)
+                        if path in self.removal_failure_counts:
+                            del self.removal_failure_counts[path]
                     except Exception:
-                        logger.exception("Failed to remove command file %s after processing %s", path, cmd_id)
+                        cnt = self.removal_failure_counts.get(path, 0) + 1
+                        self.removal_failure_counts[path] = cnt
+                        logger.exception("Failed to remove command file %s after processing %s (attempt %d)", path, cmd_id, cnt)
+                        if cnt >= self.removal_failure_threshold:
+                            logger.error("Persistent failure removing processed command file %s after %d attempts", path, cnt)
             except KeyboardInterrupt:
                 raise
             except Exception:
