@@ -87,6 +87,28 @@ class Consumer(threading.Thread):
         """Signal the consumer to stop gracefully."""
         self._stop_event.set()
 
+    def join(self, timeout: float | None = None) -> None:
+        """Override Thread.join to defensively remove any non-callable `_stop` attribute
+        that may have been set on the instance (e.g., older code or external actors setting
+        `self._stop = threading.Event()`). This prevents Thread.join from calling a
+        non-callable attribute and raising a TypeError.
+        """
+        # If an instance attribute `_stop` exists and is not callable, remove it so the
+        # class method `_stop` is used by the underlying Thread implementation.
+        try:
+            if hasattr(self, '_stop') and not callable(getattr(self, '_stop')):
+                logger.warning("Consumer.join found non-callable '_stop' attribute; removing to avoid join error")
+                try:
+                    delattr(self, '_stop')
+                except Exception:
+                    # Best-effort: log and continue to attempt to join
+                    logger.exception("Failed to remove shadowing '_stop' attribute during join")
+        except Exception:
+            # Be extremely defensive: don't let introspection issues prevent joining
+            logger.exception("Unexpected error while defensively checking '_stop' in join")
+        # Delegate to Thread.join
+        return super().join(timeout)
+
     def run(self):
         while not self._stop_event.is_set():
             try:
