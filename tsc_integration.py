@@ -160,7 +160,7 @@ class TSCIntegration:
             plugins_dir = os.path.dirname(self.ruta_archivo_comandos)
             state_file = os.path.join(plugins_dir, "autopilot_state.txt")
             if os.path.exists(state_file):
-                with open(state_file, "r", encoding="utf-8") as f:
+                with open(state_file, encoding="utf-8") as f:
                     val = f.read().strip().lower()
                     if val in ("on", "off"):
                         return val
@@ -301,12 +301,18 @@ class TSCIntegration:
             # Si RPM aún es 0, inferir desde Regulator o VirtualThrottle (si están presentes)
             if datos_ia.get("rpm", 0.0) == 0.0:
                 try:
-                    if "Regulator" in datos_archivo and datos_archivo.get("Regulator", None) is not None:
+                    if (
+                        "Regulator" in datos_archivo
+                        and datos_archivo.get("Regulator", None) is not None
+                    ):
                         reg_val = self._to_float(datos_archivo.get("Regulator", 0.0))
                         if reg_val > 0.0:
                             datos_ia["rpm"] = reg_val * self.max_engine_rpm
                             datos_ia["rpm_inferida"] = True
-                    elif "VirtualThrottle" in datos_archivo and datos_archivo.get("VirtualThrottle", None) is not None:
+                    elif (
+                        "VirtualThrottle" in datos_archivo
+                        and datos_archivo.get("VirtualThrottle", None) is not None
+                    ):
                         vt = self._to_float(datos_archivo.get("VirtualThrottle", 0.0))
                         if vt > 0.0:
                             datos_ia["rpm"] = vt * self.max_engine_rpm
@@ -326,7 +332,7 @@ class TSCIntegration:
             if datos_ia.get("posicion_freno_tren") is not None:
                 val = datos_ia.get("posicion_freno_tren")
                 try:
-                        val = self._to_float(val)
+                    val = self._to_float(val)
                 except Exception:
                     val = 0.0
                 # Clamp entre 0 y 1
@@ -391,7 +397,10 @@ class TSCIntegration:
                     if reg_val > 0.0:
                         datos_ia["rpm"] = reg_val * self.max_engine_rpm
                         datos_ia["rpm_inferida"] = True
-                elif "VirtualThrottle" in datos_archivo and datos_archivo.get("VirtualThrottle", 0) is not None:
+                elif (
+                    "VirtualThrottle" in datos_archivo
+                    and datos_archivo.get("VirtualThrottle", 0) is not None
+                ):
                     vt = self._to_float(datos_archivo.get("VirtualThrottle", 0.0))
                     if vt > 0.0:
                         datos_ia["rpm"] = vt * self.max_engine_rpm
@@ -488,7 +497,9 @@ class TSCIntegration:
             datos_ia["deslizamiento_ruedas_intensidad"] = round(float(intensity), 3)
         except Exception:
             datos_ia.setdefault("deslizamiento_ruedas_intensidad", 0.0)
-            datos_ia.setdefault("deslizamiento_ruedas_raw", datos_ia.get("deslizamiento_ruedas", 0.0))
+            datos_ia.setdefault(
+                "deslizamiento_ruedas_raw", datos_ia.get("deslizamiento_ruedas", 0.0)
+            )
 
         # If wheelslip control not present or raw is zero, try to infer from other telemetry
         try:
@@ -507,10 +518,12 @@ class TSCIntegration:
                 if inferred > 0.0:
                     # Keep higher of observed intensity and inferred
                     current_int = datos_ia.get("deslizamiento_ruedas_intensidad", 0.0)
-                    datos_ia["deslizamiento_ruedas_intensidad"] = round(max(float(current_int), inferred), 3)
-                    datos_ia["deslizamiento_ruedas_interpretacion"] = (
-                        datos_ia.get("deslizamiento_ruedas_interpretacion", "") + ",inferred_from_tractive".lstrip(',')
+                    datos_ia["deslizamiento_ruedas_intensidad"] = round(
+                        max(float(current_int), inferred), 3
                     )
+                    datos_ia["deslizamiento_ruedas_interpretacion"] = datos_ia.get(
+                        "deslizamiento_ruedas_interpretacion", ""
+                    ) + ",inferred_from_tractive".lstrip(",")
                     datos_ia.setdefault("deslizamiento_ruedas_inferida", True)
         except Exception:
             # On any error during wheelslip inference, record interpretation if available
@@ -519,7 +532,9 @@ class TSCIntegration:
             except NameError:
                 datos_ia.setdefault("deslizamiento_ruedas_interpretacion", "unknown")
             datos_ia.setdefault("deslizamiento_ruedas_intensidad", 0.0)
-            datos_ia.setdefault("deslizamiento_ruedas_raw", datos_ia.get("deslizamiento_ruedas", 0.0))
+            datos_ia.setdefault(
+                "deslizamiento_ruedas_raw", datos_ia.get("deslizamiento_ruedas", 0.0)
+            )
         # Brake Pressure Defaults
         datos_ia.setdefault("presion_tubo_freno", 0.0)
         datos_ia.setdefault("presion_freno_loco", 0.0)
@@ -549,7 +564,9 @@ class TSCIntegration:
         datos_ia["presion_tubo_freno_presente"] = "AirBrakePipePressurePSI" in datos_archivo
         datos_ia["presion_freno_loco_presente"] = "LocoBrakeCylinderPressurePSI" in datos_archivo
         datos_ia["presion_freno_tren_presente"] = "TrainBrakeCylinderPressurePSI" in datos_archivo
-        datos_ia["presion_deposito_principal_presente"] = "MainReservoirPressurePSIDisplayed" in datos_archivo
+        datos_ia["presion_deposito_principal_presente"] = (
+            "MainReservoirPressurePSIDisplayed" in datos_archivo
+        )
         datos_ia["eq_reservoir_presente"] = "EqReservoirPressurePSIAdvanced" in datos_archivo
         # Presencia de control TrainBrakeControl o VirtualBrake (control de freno de tren)
         datos_ia["posicion_freno_tren_presente"] = (
@@ -589,7 +606,11 @@ class TSCIntegration:
             # Inferir presion_tubo_freno si no está presente
             if not datos_ia.get("presion_tubo_freno_presente"):
                 # Basarse en el control de freno (TrainBrakeControl) cuando exista
-                train_brake_cmd = datos_archivo.get("TrainBrakeControl") or datos_archivo.get("VirtualBrake") or 0.0
+                train_brake_cmd = (
+                    datos_archivo.get("TrainBrakeControl")
+                    or datos_archivo.get("VirtualBrake")
+                    or 0.0
+                )
                 try:
                     train_brake_cmd = self._to_float(train_brake_cmd)
                 except Exception:
@@ -598,7 +619,9 @@ class TSCIntegration:
                     datos_ia["presion_tubo_freno"] = 0.0
                 else:
                     # Suponer valor normal si no frena (conservador)
-                    datos_ia["presion_tubo_freno"] = datos_ia.get("presion_tubo_freno_mostrada", 80.0)
+                    datos_ia["presion_tubo_freno"] = datos_ia.get(
+                        "presion_tubo_freno_mostrada", 80.0
+                    )
                 datos_ia["presion_tubo_freno_inferida"] = True
             else:
                 datos_ia.setdefault("presion_tubo_freno_inferida", False)
@@ -616,7 +639,12 @@ class TSCIntegration:
 
             # Inferir presion_freno_tren si no está presente, en función del TrainBrakeControl / VirtualBrake
             if not datos_ia.get("presion_freno_tren_presente"):
-                train_brake_val = datos_ia.get("posicion_freno_tren") or datos_archivo.get("TrainBrakeControl") or datos_archivo.get("VirtualBrake") or 0.0
+                train_brake_val = (
+                    datos_ia.get("posicion_freno_tren")
+                    or datos_archivo.get("TrainBrakeControl")
+                    or datos_archivo.get("VirtualBrake")
+                    or 0.0
+                )
                 try:
                     train_brake_val = self._to_float(train_brake_val)
                 except Exception:
@@ -624,7 +652,9 @@ class TSCIntegration:
                 # Heurística conservadora: si el control de freno está parcialmente aplicado,
                 # inferimos una presión de cilindro proporcional a la posición del control.
                 if train_brake_val > 0.0:
-                    datos_ia["presion_freno_tren"] = 30.0 + (train_brake_val * 60.0)  # 30..90 PSI promedio
+                    datos_ia["presion_freno_tren"] = 30.0 + (
+                        train_brake_val * 60.0
+                    )  # 30..90 PSI promedio
                 else:
                     datos_ia["presion_freno_tren"] = datos_ia.get("presion_freno_tren", 0.0)
                 datos_ia["presion_freno_tren_inferida"] = True
@@ -810,11 +840,15 @@ class TSCIntegration:
                     lua_commands_file = os.path.join(directorio, "autopilot_commands.txt")
                     # If the configured commands file and the Lua file are the same path,
                     # skip the second write to avoid duplicate writes.
-                    if os.path.abspath(lua_commands_file) != os.path.abspath(self.ruta_archivo_comandos):
+                    if os.path.abspath(lua_commands_file) != os.path.abspath(
+                        self.ruta_archivo_comandos
+                    ):
                         with open(lua_commands_file, "w", encoding="utf-8") as lf:
                             for linea in comandos_texto:
                                 lf.write(linea + "\n")
-                        logger.info(f"[TSC] También escrito archivo de comandos Lua: {lua_commands_file}")
+                        logger.info(
+                            f"[TSC] También escrito archivo de comandos Lua: {lua_commands_file}"
+                        )
                     else:
                         logger.debug(
                             f"[TSC] Ruta de comandos configurada ya es el archivo Lua ({lua_commands_file}); omitida escritura duplicada"

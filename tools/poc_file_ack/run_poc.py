@@ -1,9 +1,10 @@
-import os
 import argparse
-import tempfile
 import logging
-from tools.poc_file_ack.enqueue import atomic_write_cmd, wait_for_ack
+import os
+import tempfile
+
 from tools.poc_file_ack.consumer import Consumer
+from tools.poc_file_ack.enqueue import atomic_write_cmd, wait_for_ack
 
 logger = logging.getLogger(__name__)
 
@@ -24,10 +25,10 @@ def demo(dirpath: str | None = None):
     c = Consumer(d)
     c.start()
     try:
-        cmd_id = atomic_write_cmd(d, {'type': 'set_regulator', 'value': 0.6})
-        print('Wrote cmd', cmd_id)
+        cmd_id = atomic_write_cmd(d, {"type": "set_regulator", "value": 0.6})
+        print("Wrote cmd", cmd_id)
         ack = wait_for_ack(d, cmd_id, timeout=5.0)
-        print('ACK received:', ack)
+        print("ACK received:", ack)
     finally:
         c.stop()
         c.join()
@@ -36,9 +37,11 @@ def demo(dirpath: str | None = None):
             logger.info("Temporary directory cleaned up: %s", d)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    parser = argparse.ArgumentParser(description='Run POC consumer + enqueue demo')
-    parser.add_argument('--dir', '-d', help='Directory to use for POC (default: temporary directory)')
+    parser = argparse.ArgumentParser(description="Run POC consumer + enqueue demo")
+    parser.add_argument(
+        "--dir", "-d", help="Directory to use for POC (default: temporary directory)"
+    )
     args = parser.parse_args()
     demo(args.dir)

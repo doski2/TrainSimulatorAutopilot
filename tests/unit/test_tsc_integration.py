@@ -155,7 +155,6 @@ def test_enviar_comandos_no_duplicate_when_same_file(tsc_integration, tmp_path):
     contenido = lua_cmd.read_text(encoding="utf-8")
     assert "start_autopilot" in contenido
 
-
     def test_sendcommand_lowercase_written(tmp_path, monkeypatch):
         # Ensure that enviar_comandos writes sendcommand.txt (lowercase) when numeric commands present
         plugins = tmp_path / "plugins"

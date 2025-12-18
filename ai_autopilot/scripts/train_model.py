@@ -15,6 +15,7 @@ try:
     from tensorflow.keras.callbacks import ModelCheckpoint  # type: ignore[import]
     from tensorflow.keras.layers import LSTM, Dense  # type: ignore[import]
     from tensorflow.keras.models import Sequential  # type: ignore[import]
+
     _TF_AVAILABLE = True
 except Exception:  # pragma: no cover - Optional on dev envs
     ModelCheckpoint = Any  # type: ignore[assignment]
@@ -28,7 +29,9 @@ from ai_autopilot.scripts.preprocess import windowed_sequences
 
 def build_model(input_shape):
     if not _TF_AVAILABLE:
-        raise RuntimeError("TensorFlow is required to build model. Install tensorflow to use this script.")
+        raise RuntimeError(
+            "TensorFlow is required to build model. Install tensorflow to use this script."
+        )
     model = Sequential()  # type: ignore[call-arg]
     model.add(LSTM(32, input_shape=input_shape))  # type: ignore[call-arg]
     model.add(Dense(16, activation="relu"))  # type: ignore[call-arg]

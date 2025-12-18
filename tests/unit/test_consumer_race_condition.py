@@ -1,7 +1,6 @@
 import json
-import time
 import logging
-from pathlib import Path
+import time
 
 from tools.poc_file_ack.consumer import Consumer
 from tools.poc_file_ack.enqueue import atomic_write_cmd
@@ -12,20 +11,20 @@ def test_consumer_marks_processed_before_ack_and_does_not_reprocess(tmp_path, ca
     d = str(tmp_path)
 
     # create a command file
-    cmd_id = 'race-1'
-    atomic_write_cmd(d, {'id': cmd_id, 'type': 'set_regulator', 'value': 0.5})
+    cmd_id = "race-1"
+    atomic_write_cmd(d, {"id": cmd_id, "type": "set_regulator", "value": 0.5})
 
     # monkeypatch os.remove to fail the first time a specific cmd file is removed
     import os as _os
 
     original_remove = _os.remove
-    calls = {'n': 0}
+    calls = {"n": 0}
 
     def flaky_remove(path):
         # only raise for the specific command file once
-        if path.endswith(f'cmd-{cmd_id}.json') and calls['n'] == 0:
-            calls['n'] += 1
-            raise OSError('simulate inability to remove file')
+        if path.endswith(f"cmd-{cmd_id}.json") and calls["n"] == 0:
+            calls["n"] += 1
+            raise OSError("simulate inability to remove file")
         return original_remove(path)
 
     _os.remove = flaky_remove
@@ -39,13 +38,13 @@ def test_consumer_marks_processed_before_ack_and_does_not_reprocess(tmp_path, ca
         c.join(timeout=1)
 
         # ack should exist
-        ack_path = tmp_path / f'ack-{cmd_id}.json'
-        assert ack_path.exists(), 'ack file should have been written'
+        ack_path = tmp_path / f"ack-{cmd_id}.json"
+        assert ack_path.exists(), "ack file should have been written"
 
         # processed_ids should include cmd_id (persisted)
-        processed_file = tmp_path / 'processed_ids.json'
-        assert processed_file.exists(), 'processed_ids.json should exist'
-        with open(processed_file, 'r', encoding='utf-8') as f:
+        processed_file = tmp_path / "processed_ids.json"
+        assert processed_file.exists(), "processed_ids.json should exist"
+        with open(processed_file, encoding="utf-8") as f:
             data = json.load(f)
         assert cmd_id in data
 
@@ -57,12 +56,12 @@ def test_consumer_marks_processed_before_ack_and_does_not_reprocess(tmp_path, ca
         c2.join(timeout=1)
 
         # ensure there's only one ack file for cmd_id
-        ack_files = list(tmp_path.glob(f'ack-{cmd_id}*.json'))
-        assert len(ack_files) == 1, f'expected 1 ack file, found {len(ack_files)}'
+        ack_files = list(tmp_path.glob(f"ack-{cmd_id}*.json"))
+        assert len(ack_files) == 1, f"expected 1 ack file, found {len(ack_files)}"
 
         # command file should now be removed
-        cmd_path = tmp_path / f'cmd-{cmd_id}.json'
-        assert not cmd_path.exists(), 'command file should have been removed by second consumer'
+        cmd_path = tmp_path / f"cmd-{cmd_id}.json"
+        assert not cmd_path.exists(), "command file should have been removed by second consumer"
 
     finally:
         # restore os.remove

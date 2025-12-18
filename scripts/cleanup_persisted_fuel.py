@@ -14,8 +14,14 @@ TELEMETRY_FILE = ROOT / "data" / "telemetry_history.json"
 BACKUP_SUFFIX = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
 
 FUEL_ALERT_TYPES = {"fuel_low", "fuel_high", "fuel"}
-FUEL_FIELD_KEYS = {"fuel_level", "fuelLevel", "fuelConsumption", "combustible", "combustible_porcentaje", "combustible_galones"}
-
+FUEL_FIELD_KEYS = {
+    "fuel_level",
+    "fuelLevel",
+    "fuelConsumption",
+    "combustible",
+    "combustible_porcentaje",
+    "combustible_galones",
+}
 
 
 def cleanup_alerts(path: Path) -> None:
@@ -27,7 +33,14 @@ def cleanup_alerts(path: Path) -> None:
 
     original_len = len(alerts)
 
-    cleaned = [a for a in alerts if not (str(a.get("alert_type", "")).lower().startswith("fuel") or "fuel_" in str(a.get("alert_id", "")).lower())]
+    cleaned = [
+        a
+        for a in alerts
+        if not (
+            str(a.get("alert_type", "")).lower().startswith("fuel")
+            or "fuel_" in str(a.get("alert_id", "")).lower()
+        )
+    ]
 
     removed = original_len - len(cleaned)
     if removed == 0:
@@ -74,7 +87,9 @@ def cleanup_telemetry(path: Path) -> None:
     with path.open("w", encoding="utf-8") as f:
         json.dump(telemetry, f, indent=2, ensure_ascii=False)
 
-    print(f"Backed up telemetry to {backup} and removed {removed_fields} fuel fields from {count_items} telemetry entries.")
+    print(
+        f"Backed up telemetry to {backup} and removed {removed_fields} fuel fields from {count_items} telemetry entries."
+    )
 
 
 if __name__ == "__main__":

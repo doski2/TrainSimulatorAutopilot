@@ -85,6 +85,7 @@ python configurator.py
 1. **Editar `config.ini`**:
 
    <!-- markdownlint-disable MD013 -->
+
 ```ini
 [TSC_INTEGRATION]
 data_file_path = C:\...\GetData.txt
@@ -110,8 +111,9 @@ cuando `FuelLevel` esté en 0..1. Si `FuelLevel` es un número grande (por ejemp
    - Verificar permisos de escritura en la carpeta plugins
 
 2. **Configurar puertos**:
-  - Dashboard principal: `http://localhost:5000`
-  - Visualizaciones Bokeh: `http://localhost:5006`
+
+- Dashboard principal: `http://localhost:5000`
+- Visualizaciones Bokeh: `http://localhost:5006`
 
 ---
 
@@ -237,13 +239,13 @@ El sistema incluye controles avanzados para operar la locomotora:
   heurísticas y fallback controls — por ejemplo, si
   `DynamicBrake` no existe, puede mapear `DynamicBrake` a
   `VirtualEngineBrakeControl`.
-  - Asegúrate de que `TrainBrakeControl` o `VirtualBrake` aparecen en
+
+- Asegúrate de que `TrainBrakeControl` o `VirtualBrake` aparecen en
     `GetData.txt`, o que `posicion_freno_tren_presente` sea True.
-  - Si el mod/locomotora solo reporta `presion_tubo_freno_mostrada` y no
+- Si el mod/locomotora solo reporta `presion_tubo_freno_mostrada` y no
     `AirBrakePipePressurePSI`, la integración usa
     `presion_tubo_freno_mostrada` como fallback y marca
     `presion_tubo_freno_inferida`.
- 
 
 **Ejemplo — comportamiento sobre señal:**
 
@@ -592,7 +594,7 @@ detalles.
 - **Email**: <support@trainsimulator-autopilot.com>
 - **Discord**: [Train Simulator Autopilot](https://discord.gg/train-simulator)
 - **GitHub**: Issues —
-  https://github.com/tu-usuario/train-simulator-autopilot/issues
+  <https://github.com/tu-usuario/train-simulator-autopilot/issues>
 
 ---
 

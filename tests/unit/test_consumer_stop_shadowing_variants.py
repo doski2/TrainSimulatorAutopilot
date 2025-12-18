@@ -1,5 +1,6 @@
 import threading
 import time
+
 from tools.poc_file_ack.consumer import Consumer
 
 
@@ -17,7 +18,7 @@ def test_consumer_handles_classlevel__stop_shadowing(tmp_path):
     finally:
         # cleanup to avoid affecting other tests
         try:
-            delattr(Consumer, '_stop')
+            delattr(Consumer, "_stop")
         except Exception:
             pass
 

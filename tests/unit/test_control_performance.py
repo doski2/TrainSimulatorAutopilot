@@ -17,15 +17,15 @@ def test_toggle_performance_monitor():
     assert not performance_monitor.is_monitoring
 
     # Iniciar via API
-    resp = client.post('/api/control/toggle_performance')
+    resp = client.post("/api/control/toggle_performance")
     data = resp.get_json()
-    assert data['success'] is True
-    assert data['performance_monitoring'] is True
+    assert data["success"] is True
+    assert data["performance_monitoring"] is True
     assert performance_monitor.is_monitoring is True
 
     # Parar via API
-    resp2 = client.post('/api/control/toggle_performance')
+    resp2 = client.post("/api/control/toggle_performance")
     data2 = resp2.get_json()
-    assert data2['success'] is True
-    assert data2['performance_monitoring'] is False
+    assert data2["success"] is True
+    assert data2["performance_monitoring"] is False
     assert performance_monitor.is_monitoring is False

@@ -1,5 +1,6 @@
 import os
 import time
+
 from tools.poc_file_ack.consumer import Consumer
 from tools.poc_file_ack.enqueue import atomic_write_cmd
 
@@ -14,14 +15,15 @@ def test_consumer_recreates_missing_directory_and_continues(tmp_path):
         # remove directory to simulate external cleanup
         time.sleep(0.05)
         import shutil
+
         shutil.rmtree(d)
         # wait a bit for consumer to detect and recreate
         time.sleep(0.2)
         # now enqueue a command using atomic writer (should recreate dir if was deleted)
-        cid = atomic_write_cmd(d, {'type': 'set_regulator', 'value': 0.5})
+        cid = atomic_write_cmd(d, {"type": "set_regulator", "value": 0.5})
         # wait for ack
         time.sleep(0.2)
-        ack_path = os.path.join(d, f'ack-{cid}.json')
+        ack_path = os.path.join(d, f"ack-{cid}.json")
         assert os.path.exists(ack_path)
     finally:
         c.stop()

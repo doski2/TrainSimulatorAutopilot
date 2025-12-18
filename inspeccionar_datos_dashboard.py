@@ -29,7 +29,9 @@ def obtener_datos_debug():
             except Exception:
                 response = None
         if response is None:
-            raise requests.exceptions.ConnectionError("No se pudo conectar a /debug_data en puerto 5000/5001")
+            raise requests.exceptions.ConnectionError(
+                "No se pudo conectar a /debug_data en puerto 5000/5001"
+            )
         if response.status_code == 200:
             return response.json()
         else:
@@ -71,17 +73,37 @@ def mostrar_datos(datos):
             print(f"   Timestamp:             {telem['timestamp']}")
         # Mostrar flags de presencia de campos en GetData
         print("\n   📌 Flags de presencia de presiones de freno:")
-        print(f"      presion_tubo_freno_presente: {telem.get('presion_tubo_freno_presente', False)}")
-        print(f"      presion_freno_loco_presente: {telem.get('presion_freno_loco_presente', False)}")
-        print(f"      presion_freno_tren_presente: {telem.get('presion_freno_tren_presente', False)}")
-        print(f"      presion_deposito_principal_presente: {telem.get('presion_deposito_principal_presente', False)}")
+        print(
+            f"      presion_tubo_freno_presente: {telem.get('presion_tubo_freno_presente', False)}"
+        )
+        print(
+            f"      presion_freno_loco_presente: {telem.get('presion_freno_loco_presente', False)}"
+        )
+        print(
+            f"      presion_freno_tren_presente: {telem.get('presion_freno_tren_presente', False)}"
+        )
+        print(
+            f"      presion_deposito_principal_presente: {telem.get('presion_deposito_principal_presente', False)}"
+        )
         print(f"      eq_reservoir_presente: {telem.get('eq_reservoir_presente', False)}")
-        print(f"      presion_tubo_freno_mostrada_presente: {telem.get('presion_tubo_freno_mostrada_presente', False)}")
-        print(f"      presion_freno_loco_mostrada_presente: {telem.get('presion_freno_loco_mostrada_presente', False)}")
-        print(f"      presion_deposito_auxiliar_presente: {telem.get('presion_deposito_auxiliar_presente', False)}")
-        print(f"      posicion_freno_tren_presente: {telem.get('posicion_freno_tren_presente', False)}")
-        print(f"      presion_freno_tren_inferida: {telem.get('presion_freno_tren_inferida', False)}")
-        print(f"      presion_freno_loco_avanzada_presente: {telem.get('presion_freno_loco_avanzada_presente', False)}")
+        print(
+            f"      presion_tubo_freno_mostrada_presente: {telem.get('presion_tubo_freno_mostrada_presente', False)}"
+        )
+        print(
+            f"      presion_freno_loco_mostrada_presente: {telem.get('presion_freno_loco_mostrada_presente', False)}"
+        )
+        print(
+            f"      presion_deposito_auxiliar_presente: {telem.get('presion_deposito_auxiliar_presente', False)}"
+        )
+        print(
+            f"      posicion_freno_tren_presente: {telem.get('posicion_freno_tren_presente', False)}"
+        )
+        print(
+            f"      presion_freno_tren_inferida: {telem.get('presion_freno_tren_inferida', False)}"
+        )
+        print(
+            f"      presion_freno_loco_avanzada_presente: {telem.get('presion_freno_loco_avanzada_presente', False)}"
+        )
 
     # Estado del sistema
     if "system_status" in datos:

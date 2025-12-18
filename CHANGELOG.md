@@ -3,6 +3,7 @@
 ## [Unreleased] - 2025-12-17
 
 ### 🔧 Correcciones y mejoras (POC Archivo+ACK)
+
 - **consumer**: Registrar excepciones en lugar de silenciarlas para mejorar diagnósticos y mantener el loop vivo (`tools/poc_file_ack/consumer.py`).
 - **tests**: Añadido `tests/unit/test_consumer_exceptions.py` que valida logging y resiliencia del consumer.
 - **tests**: Centralizada la configuración de `sys.path` en `tests/conftest.py` (se removieron inserciones manuales desde tests individuales).
@@ -11,7 +12,6 @@
 - **ci**: `.gitignore` actualizado para ignorar `tmp_poc_dir/` y job POC E2E (`.github/workflows/poc-e2e.yml`) añadido previamente.
 - **consumer**: Marcar y persistir IDs procesados antes de escribir ACK para evitar reprocesos (test: `tests/unit/test_consumer_race_condition.py`).
 - **consumer**: Mantener una caché de `processed_ids` con tamaño limitado (`processed_ids_max`) para evitar crecimiento ilimitado de memoria en consumidores de larga duración (test: `tests/unit/test_consumer_bounded_processed_set.py`).
-
 
 # Train Simulator Autopilot - Registro de Cambios
 
@@ -406,7 +406,7 @@ actualizaciones OTA
 
 ### 🛠️ Correcciones y mejoras de telemetría y UI
 
- - **Nueva visualización**: Badge de presencia para
+- **Nueva visualización**: Badge de presencia para
    `BrakePipePressureTailEnd` (Tubo Freno Cola) en la UI, indicando
    `PRESENTE`, `INFERIDO`, o `NO`.
 - **Nueva visualización**: Badge de presencia para

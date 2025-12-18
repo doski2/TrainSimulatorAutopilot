@@ -53,8 +53,12 @@ def verificar_archivo_getdata():
     """Verifica que el archivo GetData.txt existe y tiene datos."""
     try:
         # Use default TSC plugin path to check if real GetData.txt exists
-        default_getdata_path = r"C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins\GetData.txt"
-        target_path = default_getdata_path if os.path.exists(default_getdata_path) else "GetData.txt"
+        default_getdata_path = (
+            r"C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins\GetData.txt"
+        )
+        target_path = (
+            default_getdata_path if os.path.exists(default_getdata_path) else "GetData.txt"
+        )
         with open(target_path, encoding="utf-8") as f:
             contenido = f.read()
             if contenido.strip():
@@ -69,7 +73,9 @@ def verificar_archivo_getdata():
                 print("❌ Archivo GetData.txt está vacío")
                 return False
     except FileNotFoundError:
-        print(f"❌ Archivo GetData.txt no encontrado en {default_getdata_path} ni en el directorio actual")
+        print(
+            f"❌ Archivo GetData.txt no encontrado en {default_getdata_path} ni en el directorio actual"
+        )
         return False
     except Exception as e:
         print(f"❌ Error leyendo GetData.txt: {e}")

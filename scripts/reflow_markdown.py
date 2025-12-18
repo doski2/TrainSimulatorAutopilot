@@ -12,7 +12,7 @@ URL_RE = re.compile(r"https?://\S+")
 
 def should_skip_line(line):
     line_strip = line.strip()
-    if line_strip.startswith("```)" ) or line_strip.startswith("~~~"):
+    if line_strip.startswith("```)") or line_strip.startswith("~~~"):
         return True
     if line_strip.startswith("-") or line_strip.startswith("*") or line_strip.startswith("+"):
         return False
@@ -34,11 +34,11 @@ def reflow_text(text, width=80):
     def flush_buffer(indent=""):
         if not buffer:
             return
-        paragraph = " ".join(l.strip() for l in buffer)
+        paragraph = " ".join(line.strip() for line in buffer)
         # Keep it as is if contains URL
         if URL_RE.search(paragraph):
-            for l in buffer:
-                out_lines.append(indent + l.strip())
+            for line in buffer:
+                out_lines.append(indent + line.strip())
         else:
             wrapped = textwrap.wrap(paragraph, width=width - len(indent))
             for w in wrapped:
@@ -87,7 +87,7 @@ def reflow_text(text, width=80):
 
 
 def reflow_file(path, width=80):
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         content = f.read()
     new_lines = []
     in_code_block = False
@@ -138,7 +138,7 @@ if __name__ == "__main__":
     files = []
     for p in args.paths:
         if os.path.isdir(p):
-            for root, dirs, filenames in os.walk(p):
+            for root, _dirs, filenames in os.walk(p):
                 for fn in filenames:
                     if fn.lower().endswith(".md"):
                         files.append(os.path.join(root, fn))

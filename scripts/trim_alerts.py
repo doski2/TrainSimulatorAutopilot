@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-alerts_path = Path(__file__).parent.parent / 'alerts.json'
+alerts_path = Path(__file__).parent.parent / "alerts.json"
 minimal = [
     {
         "alert_id": "wheelslip_example_ack_20251214_214237",
@@ -26,7 +26,7 @@ minimal = [
     },
 ]
 
-with open(alerts_path, 'w', encoding='utf-8') as f:
+with open(alerts_path, "w", encoding="utf-8") as f:
     json.dump(minimal, f, indent=2, ensure_ascii=False)
 
-print('Wrote minimal alerts.json')
+print("Wrote minimal alerts.json")

@@ -126,7 +126,7 @@ except Exception as e:
 
         # Minimal render_template compatibility
         def render_template(self, *args, **kwargs):
-            return ''
+            return ""
 
     # Minimal socketio stub
     class _SimpleSocketIO:
@@ -145,7 +145,9 @@ except Exception as e:
             return decorator
 
     SocketIO = _SimpleSocketIO
-    emit = lambda *args, **kwargs: None
+
+    def emit(*args, **kwargs):
+        pass
 
 
 # Local imports
@@ -200,9 +202,11 @@ try:
     print("[BOOT] Performance monitor importado")
 
     from alert_system import check_alerts, get_alert_system  # noqa: E402
+
     print("[BOOT] Alert system importado")
 
     from automated_reports import generate_report, get_automated_reports  # noqa: E402
+
     print("[BOOT] Automated reports importado")
 
 except Exception as e:
@@ -468,7 +472,7 @@ def telemetry_update_loop():
                             "rpm": 0.0,
                             "amperaje": 0.0,
                             "deslizamiento_ruedas": 0.0,
-                                    "deslizamiento_ruedas_intensidad": 0.0,
+                            "deslizamiento_ruedas_intensidad": 0.0,
                             "presion_tubo_freno": 0.0,
                             "presion_freno_loco": 0.0,
                             "presion_freno_tren": 0.0,
@@ -562,8 +566,12 @@ def telemetry_update_loop():
                     # Ensure system_status reflects autopilot Lua plugin state (if TSC integration available)
                     try:
                         if tsc_integration:
-                            system_status["autopilot_plugin_loaded"] = tsc_integration.is_autopilot_plugin_loaded()
-                            system_status["autopilot_plugin_state"] = tsc_integration.get_autopilot_plugin_state()
+                            system_status["autopilot_plugin_loaded"] = (
+                                tsc_integration.is_autopilot_plugin_loaded()
+                            )
+                            system_status["autopilot_plugin_state"] = (
+                                tsc_integration.get_autopilot_plugin_state()
+                            )
                         else:
                             system_status["autopilot_plugin_loaded"] = False
                             system_status["autopilot_plugin_state"] = None
@@ -573,10 +581,16 @@ def telemetry_update_loop():
 
                     # Debug: active alerts payload
                     try:
-                        active_list = active_alerts.get('alerts') if isinstance(active_alerts, dict) else active_alerts
+                        active_list = (
+                            active_alerts.get("alerts")
+                            if isinstance(active_alerts, dict)
+                            else active_alerts
+                        )
                         if isinstance(active_list, list):
                             print(f"[DEBUG] Active alerts (count) = {len(active_list)}")
-                            print(f"[DEBUG] Active alerts (types) = {[a.get('alert_type') for a in active_list[:10]]}")
+                            print(
+                                f"[DEBUG] Active alerts (types) = {[a.get('alert_type') for a in active_list[:10]]}"
+                            )
                         else:
                             print(f"[DEBUG] Active alerts: {active_alerts}")
                     except Exception as e:
@@ -831,21 +845,71 @@ def get_system_status():
                 "telemetry_source": system_status.get("telemetry_source", "unknown"),
                 "brake_pressure_present": brake_pressure_present,
                 # Exponer flags de presencia individuales para verificación rápida
-                "presion_tubo_freno_presente": last_telemetry.get("presion_tubo_freno_presente", False) if last_telemetry else False,
-                "presion_tubo_freno_mostrada_presente": last_telemetry.get("presion_tubo_freno_mostrada_presente", False) if last_telemetry else False,
-                "presion_freno_loco_presente": last_telemetry.get("presion_freno_loco_presente", False) if last_telemetry else False,
-                "presion_freno_loco_mostrada_presente": last_telemetry.get("presion_freno_loco_mostrada_presente", False) if last_telemetry else False,
-                "presion_freno_tren_presente": last_telemetry.get("presion_freno_tren_presente", False) if last_telemetry else False,
-                "posicion_freno_tren_presente": last_telemetry.get("posicion_freno_tren_presente", False) if last_telemetry else False,
-                "presion_freno_tren_inferida": last_telemetry.get("presion_freno_tren_inferida", False) if last_telemetry else False,
-                "presion_freno_loco_avanzada_presente": last_telemetry.get("presion_freno_loco_avanzada_presente", False) if last_telemetry else False,
-                "presion_deposito_principal_presente": last_telemetry.get("presion_deposito_principal_presente", False) if last_telemetry else False,
-                "eq_reservoir_presente": last_telemetry.get("eq_reservoir_presente", False) if last_telemetry else False,
-                "presion_deposito_auxiliar_presente": last_telemetry.get("presion_deposito_auxiliar_presente", False) if last_telemetry else False,
-                "presion_tubo_freno_cola_presente": last_telemetry.get("presion_tubo_freno_cola_presente", False) if last_telemetry else False,
+                "presion_tubo_freno_presente": (
+                    last_telemetry.get("presion_tubo_freno_presente", False)
+                    if last_telemetry
+                    else False
+                ),
+                "presion_tubo_freno_mostrada_presente": (
+                    last_telemetry.get("presion_tubo_freno_mostrada_presente", False)
+                    if last_telemetry
+                    else False
+                ),
+                "presion_freno_loco_presente": (
+                    last_telemetry.get("presion_freno_loco_presente", False)
+                    if last_telemetry
+                    else False
+                ),
+                "presion_freno_loco_mostrada_presente": (
+                    last_telemetry.get("presion_freno_loco_mostrada_presente", False)
+                    if last_telemetry
+                    else False
+                ),
+                "presion_freno_tren_presente": (
+                    last_telemetry.get("presion_freno_tren_presente", False)
+                    if last_telemetry
+                    else False
+                ),
+                "posicion_freno_tren_presente": (
+                    last_telemetry.get("posicion_freno_tren_presente", False)
+                    if last_telemetry
+                    else False
+                ),
+                "presion_freno_tren_inferida": (
+                    last_telemetry.get("presion_freno_tren_inferida", False)
+                    if last_telemetry
+                    else False
+                ),
+                "presion_freno_loco_avanzada_presente": (
+                    last_telemetry.get("presion_freno_loco_avanzada_presente", False)
+                    if last_telemetry
+                    else False
+                ),
+                "presion_deposito_principal_presente": (
+                    last_telemetry.get("presion_deposito_principal_presente", False)
+                    if last_telemetry
+                    else False
+                ),
+                "eq_reservoir_presente": (
+                    last_telemetry.get("eq_reservoir_presente", False) if last_telemetry else False
+                ),
+                "presion_deposito_auxiliar_presente": (
+                    last_telemetry.get("presion_deposito_auxiliar_presente", False)
+                    if last_telemetry
+                    else False
+                ),
+                "presion_tubo_freno_cola_presente": (
+                    last_telemetry.get("presion_tubo_freno_cola_presente", False)
+                    if last_telemetry
+                    else False
+                ),
                 # Información del plugin Lua (si está disponible)
-                "autopilot_plugin_loaded": tsc_integration.is_autopilot_plugin_loaded() if tsc_integration else False,
-                "autopilot_plugin_state": tsc_integration.get_autopilot_plugin_state() if tsc_integration else None,
+                "autopilot_plugin_loaded": (
+                    tsc_integration.is_autopilot_plugin_loaded() if tsc_integration else False
+                ),
+                "autopilot_plugin_state": (
+                    tsc_integration.get_autopilot_plugin_state() if tsc_integration else None
+                ),
             }
         )
     except Exception as e:
@@ -862,7 +926,7 @@ def get_system_status():
         )
 
 
-@app.route('/api/commands', methods=['POST'])
+@app.route("/api/commands", methods=["POST"])
 def api_commands():
     """Endpoint para encolar comandos para el simulador.
 
@@ -875,23 +939,23 @@ def api_commands():
         "retries": 3          # opcional
     }
 
-    Si `wait_for_ack` es true, el endpoint esperará hasta `timeout` 
+    Si `wait_for_ack` es true, el endpoint esperará hasta `timeout`
     por un ACK y devolverá 200 con el ACK si lo recibe, o 504/500 si falla.
     Si `wait_for_ack` es false, devolverá 202 Accepted inmediatamente.
     """
     global tsc_integration
     try:
         payload = request.get_json() or {}
-        wait_for_ack_flag = bool(payload.get('wait_for_ack', False))
-        timeout = float(payload.get('timeout', 5.0))
-        retries = int(payload.get('retries', 0))
+        wait_for_ack_flag = bool(payload.get("wait_for_ack", False))
+        timeout = float(payload.get("timeout", 5.0))
+        retries = int(payload.get("retries", 0))
 
         # Determine plugins directory from TSCIntegration
         if tsc_integration:
             plugins_dir = os.path.dirname(tsc_integration.ruta_archivo_comandos)
         else:
             # fallback to local plugins dir
-            plugins_dir = os.path.abspath('./plugins')
+            plugins_dir = os.path.abspath("./plugins")
             os.makedirs(plugins_dir, exist_ok=True)
 
         # If not waiting for ack, just write atomically and return 202
@@ -948,12 +1012,16 @@ def control_action(action):
                             # Primer intento: comprobar estado actual
                             plugin_state = tsc_integration.get_autopilot_plugin_state()
                             # Si no hay ack inmediato, esperar brevemente por la confirmación
-                            if plugin_state is None and tsc_integration.wait_for_autopilot_state("on", timeout=2.0):
+                            if plugin_state is None and tsc_integration.wait_for_autopilot_state(
+                                "on", timeout=2.0
+                            ):
                                 plugin_state = "on"
                     except Exception:
                         plugin_state = None
 
-                    return jsonify({"success": True, "action": action, "autopilot_plugin_state": plugin_state})
+                    return jsonify(
+                        {"success": True, "action": action, "autopilot_plugin_state": plugin_state}
+                    )
                 except Exception as e:
                     return (
                         jsonify(
@@ -982,12 +1050,16 @@ def control_action(action):
                     try:
                         if tsc_integration:
                             plugin_state = tsc_integration.get_autopilot_plugin_state()
-                            if plugin_state is None and tsc_integration.wait_for_autopilot_state("off", timeout=2.0):
+                            if plugin_state is None and tsc_integration.wait_for_autopilot_state(
+                                "off", timeout=2.0
+                            ):
                                 plugin_state = "off"
                     except Exception:
                         plugin_state = None
 
-                    return jsonify({"success": True, "action": action, "autopilot_plugin_state": plugin_state})
+                    return jsonify(
+                        {"success": True, "action": action, "autopilot_plugin_state": plugin_state}
+                    )
                 except Exception as e:
                     return (
                         jsonify(
@@ -1054,10 +1126,17 @@ def control_action(action):
                         {"message": "Monitor de rendimiento iniciado", "type": "success"},
                     )
 
-                return jsonify({"success": True, "performance_monitoring": system_status["performance_monitoring"]})
+                return jsonify(
+                    {
+                        "success": True,
+                        "performance_monitoring": system_status["performance_monitoring"],
+                    }
+                )
             except Exception as e:
                 return (
-                    jsonify({"success": False, "error": f"Error toggling performance monitor: {e}"}),
+                    jsonify(
+                        {"success": False, "error": f"Error toggling performance monitor: {e}"}
+                    ),
                     500,
                 )
 

@@ -1,11 +1,16 @@
+import argparse
 import json
+import logging
 import os
+import tempfile
 import time
 import uuid
 
 # Defaults for wait_for_ack behavior
 DEFAULT_ACK_TIMEOUT = 5.0
 DEFAULT_ACK_POLL = 0.1
+
+logger = logging.getLogger(__name__)
 
 
 def atomic_write_cmd(dirpath, payload):
@@ -28,7 +33,9 @@ def atomic_write_cmd(dirpath, payload):
     return cmd_id
 
 
-def wait_for_ack(dirpath, cmd_id, timeout: float = DEFAULT_ACK_TIMEOUT, poll: float = DEFAULT_ACK_POLL):
+def wait_for_ack(
+    dirpath, cmd_id, timeout: float = DEFAULT_ACK_TIMEOUT, poll: float = DEFAULT_ACK_POLL
+):
     """Wait for an ACK file for a given command id in `dirpath`.
 
     Parameters:
@@ -47,20 +54,22 @@ def wait_for_ack(dirpath, cmd_id, timeout: float = DEFAULT_ACK_TIMEOUT, poll: fl
     end = time.time() + timeout
     while time.time() < end:
         if os.path.exists(ack):
-            with open(ack, "r", encoding="utf-8") as f:
+            with open(ack, encoding="utf-8") as f:
                 return json.load(f)
         time.sleep(poll)
     return None
 
 
-def send_command_with_retries(dirpath, payload, timeout=5.0, retries=3, initial_delay=0.5, backoff=2.0, poll=0.1):
+def send_command_with_retries(
+    dirpath, payload, timeout=5.0, retries=3, initial_delay=0.5, backoff=2.0, poll=0.1
+):
     """Send a command and wait for ACK with retries and exponential backoff.
 
     Returns the ACK dict if received, otherwise None after exhausting retries.
     """
     # Ensure payload has an id so retries reuse same id (idempotent)
-    cmd_id = payload.get('id') or str(uuid.uuid4())
-    payload['id'] = cmd_id
+    cmd_id = payload.get("id") or str(uuid.uuid4())
+    payload["id"] = cmd_id
 
     attempt = 0
     delay = initial_delay
@@ -87,17 +96,10 @@ def send_command_with_retries(dirpath, payload, timeout=5.0, retries=3, initial_
     return None
 
 
-import argparse
-import tempfile
-import logging
-
-logger = logging.getLogger(__name__)
-
-
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    parser = argparse.ArgumentParser(description='Demo send command with retries')
-    parser.add_argument('--dir', '-d', help='Directory to use for POC (default: temporary dir)')
+    parser = argparse.ArgumentParser(description="Demo send command with retries")
+    parser.add_argument("--dir", "-d", help="Directory to use for POC (default: temporary dir)")
     args = parser.parse_args()
 
     temp_ctx = None
@@ -106,12 +108,14 @@ if __name__ == "__main__":
         os.makedirs(d, exist_ok=True)
         logger.info("Using provided directory for demo: %s", d)
     else:
-        temp_ctx = tempfile.TemporaryDirectory(prefix='poc_')
+        temp_ctx = tempfile.TemporaryDirectory(prefix="poc_")
         d = temp_ctx.name
         logger.info("Using temporary directory for demo: %s", d)
 
     print("Sending cmd to", d)
-    ack = send_command_with_retries(d, {"type": "set_regulator", "value": 0.5}, timeout=2.0, retries=3, initial_delay=0.5)
+    ack = send_command_with_retries(
+        d, {"type": "set_regulator", "value": 0.5}, timeout=2.0, retries=3, initial_delay=0.5
+    )
     print("ACK:", ack)
 
     if temp_ctx is not None:

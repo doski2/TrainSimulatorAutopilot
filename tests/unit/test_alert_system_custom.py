@@ -1,25 +1,24 @@
 import os
 import sys
-from datetime import datetime
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
-from alert_system import AlertSystem, AlertType
+from alert_system import AlertSystem, AlertType  # noqa: E402
 
 
 def test_brake_pipe_discrepancy_alert():
     # Use a fresh AlertSystem instance
-    alert_system = AlertSystem(alerts_file='test_alerts.json', config_file='test_alert_config.json')
+    alert_system = AlertSystem(alerts_file="test_alerts.json", config_file="test_alert_config.json")
 
     # Ensure threshold is small for test
-    alert_system.config['brake_pipe_discrepancy']['threshold_psi'] = 10.0
-    alert_system.config['brake_pipe_discrepancy']['enabled'] = True
+    alert_system.config["brake_pipe_discrepancy"]["threshold_psi"] = 10.0
+    alert_system.config["brake_pipe_discrepancy"]["enabled"] = True
 
     # Monkeypatch TSCIntegration reader to return a raw data with front/tail mismatch
     def fake_leer():
-        return {'AirBrakePipePressurePSI': 90.0, 'BrakePipePressureTailEnd': 60.0}
+        return {"AirBrakePipePressurePSI": 90.0, "BrakePipePressureTailEnd": 60.0}
 
     alert_system.tsc_integration.leer_datos_archivo = fake_leer
 
@@ -30,17 +29,17 @@ def test_brake_pipe_discrepancy_alert():
 
 
 def test_health_check_handles_none_values():
-    alert_system = AlertSystem(alerts_file='test_alerts.json', config_file='test_alert_config.json')
+    alert_system = AlertSystem(alerts_file="test_alerts.json", config_file="test_alert_config.json")
 
     # Set some config thresholds to None to simulate misconfiguration
-    alert_system.config['performance_degradation']['response_time_threshold_ms'] = None
+    alert_system.config["performance_degradation"]["response_time_threshold_ms"] = None
 
     # Fake leer_datos_archivo to return None values for numeric fields
     def fake_leer_none():
         return {
-            'velocidad_actual': None,
-            'deslizamiento_ruedas_intensidad': None,
-            'temperatura': None,
+            "velocidad_actual": None,
+            "deslizamiento_ruedas_intensidad": None,
+            "temperatura": None,
         }
 
     alert_system.tsc_integration.leer_datos_archivo = fake_leer_none

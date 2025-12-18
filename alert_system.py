@@ -3,6 +3,7 @@
 
 import json
 import os
+import traceback
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
@@ -12,7 +13,6 @@ import numpy as np
 import pandas as pd
 
 from seaborn_analysis import SeabornAnalysis
-import traceback
 
 # Importar módulos del proyecto
 from tsc_integration import TSCIntegration
@@ -188,7 +188,9 @@ class AlertSystem:
                                 json.dump(filtered, wf, indent=2, ensure_ascii=False)
                             print("[INFO] Removed legacy fuel_low alerts from alerts.json")
                         except Exception as e:
-                            print(f"[ERROR] Could not update alerts file after pruning legacy fuel_low alerts: {e}")
+                            print(
+                                f"[ERROR] Could not update alerts file after pruning legacy fuel_low alerts: {e}"
+                            )
                     return [Alert.from_dict(alert_data) for alert_data in filtered]
             except Exception as e:
                 print(f"Error cargando alertas: {e}")
@@ -213,6 +215,7 @@ class AlertSystem:
             return float(x)
         except Exception:
             return None
+
     def check_speed_violation(self, current_data: Dict) -> Optional[Alert]:
         """Verificar violación de velocidad"""
         if not self.config["speed_violation"]["enabled"]:
@@ -444,7 +447,9 @@ class AlertSystem:
 
         threshold = self.config.get("brake_pipe_discrepancy", {}).get("threshold_psi", 20.0)
         if diff > threshold:
-            severity = AlertSeverity(self.config.get("brake_pipe_discrepancy", {}).get("severity", "high"))
+            severity = AlertSeverity(
+                self.config.get("brake_pipe_discrepancy", {}).get("severity", "high")
+            )
             return Alert(
                 alert_id=f"brake_pipe_diff_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
                 alert_type=AlertType.BRAKE_PRESSURE_DISCREPANCY,
@@ -672,7 +677,9 @@ class AlertSystem:
             wheelslip_current = None
             # Prefer intensity normalized
             if current_data.get("deslizamiento_ruedas_intensidad") is not None:
-                wheelslip_current = self._to_float(current_data.get("deslizamiento_ruedas_intensidad"))
+                wheelslip_current = self._to_float(
+                    current_data.get("deslizamiento_ruedas_intensidad")
+                )
             else:
                 wheelslip_current = self._to_float(current_data.get("deslizamiento_ruedas"))
 
@@ -685,31 +692,66 @@ class AlertSystem:
                 try:
                     if alert.alert_type == AlertType.SPEED_VIOLATION:
                         # Obtener umbral del dato de la alerta o del config
-                        max_speed_candidate = alert.data.get("max_speed", self.config["speed_violation"]["max_speed"])
+                        max_speed_candidate = alert.data.get(
+                            "max_speed", self.config["speed_violation"]["max_speed"]
+                        )
                         max_speed_val = self._to_float(max_speed_candidate)
-                        max_speed = max_speed_val if max_speed_val is not None else self.config["speed_violation"]["max_speed"]
-                        if current_speed is not None and max_speed is not None and current_speed <= float(max_speed):
+                        max_speed = (
+                            max_speed_val
+                            if max_speed_val is not None
+                            else self.config["speed_violation"]["max_speed"]
+                        )
+                        if (
+                            current_speed is not None
+                            and max_speed is not None
+                            and current_speed <= float(max_speed)
+                        ):
                             alert.acknowledged = True
                             alert.acknowledged_at = datetime.now()
                             print(f"[OK] Alerta resuelta automáticamente: {alert.alert_id} (speed)")
                             changed = True
                     elif alert.alert_type == AlertType.WHEELSLIP:
-                        thr_candidate = alert.data.get("threshold", self.config["wheelslip"]["threshold"])
+                        thr_candidate = alert.data.get(
+                            "threshold", self.config["wheelslip"]["threshold"]
+                        )
                         thr_val = self._to_float(thr_candidate)
-                        threshold = thr_val if thr_val is not None else self.config["wheelslip"]["threshold"]
-                        if wheelslip_current is not None and threshold is not None and wheelslip_current <= float(threshold):
+                        threshold = (
+                            thr_val
+                            if thr_val is not None
+                            else self.config["wheelslip"]["threshold"]
+                        )
+                        if (
+                            wheelslip_current is not None
+                            and threshold is not None
+                            and wheelslip_current <= float(threshold)
+                        ):
                             alert.acknowledged = True
                             alert.acknowledged_at = datetime.now()
-                            print(f"[OK] Alerta resuelta automáticamente: {alert.alert_id} (wheelslip)")
+                            print(
+                                f"[OK] Alerta resuelta automáticamente: {alert.alert_id} (wheelslip)"
+                            )
                             changed = True
                     elif alert.alert_type == AlertType.OVERHEATING:
-                        th_candidate = alert.data.get("temperature_threshold", self.config["overheating"]["temperature_threshold"])
+                        th_candidate = alert.data.get(
+                            "temperature_threshold",
+                            self.config["overheating"]["temperature_threshold"],
+                        )
                         th_val = self._to_float(th_candidate)
-                        threshold = th_val if th_val is not None else self.config["overheating"]["temperature_threshold"]
-                        if temp_current is not None and threshold is not None and temp_current <= float(threshold):
+                        threshold = (
+                            th_val
+                            if th_val is not None
+                            else self.config["overheating"]["temperature_threshold"]
+                        )
+                        if (
+                            temp_current is not None
+                            and threshold is not None
+                            and temp_current <= float(threshold)
+                        ):
                             alert.acknowledged = True
                             alert.acknowledged_at = datetime.now()
-                            print(f"[OK] Alerta resuelta automáticamente: {alert.alert_id} (overheating)")
+                            print(
+                                f"[OK] Alerta resuelta automáticamente: {alert.alert_id} (overheating)"
+                            )
                             changed = True
                 except Exception as e:
                     # No romper si hay error en evaluación de una alerta

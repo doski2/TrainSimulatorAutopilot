@@ -275,11 +275,9 @@ class AutomatedReports:
             if "fecha_hora" in self.analyzer.df.columns and "velocidad" in self.analyzer.df.columns:
                 # Agrupar por día
                 # Use apply() to extract date to avoid static type issues
-                daily_avg = self.analyzer.df.groupby(self.analyzer.df["fecha_hora"].apply(
-                    lambda x: x.date()
-                ))[
-                    "velocidad"
-                ].mean()
+                daily_avg = self.analyzer.df.groupby(
+                    self.analyzer.df["fecha_hora"].apply(lambda x: x.date())
+                )["velocidad"].mean()
                 summary["daily_velocity_trend"] = {
                     str(date): float(avg) for date, avg in daily_avg.items()
                 }

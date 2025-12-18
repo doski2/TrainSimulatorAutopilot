@@ -48,7 +48,7 @@ class TestEndToEndScenarios:
                 "speed": 0.0,
                 "acceleration": 0.5,
                 "gradient": 0.0,
-                    # fuel metrics removed
+                # fuel metrics removed
                 "tractive_effort": 150.0,
                 "rpm": 800,
                 "amperage": 180.0,
@@ -58,7 +58,7 @@ class TestEndToEndScenarios:
                 "speed": 10.0,
                 "acceleration": 0.8,
                 "gradient": 0.0,
-                    # fuel metrics removed
+                # fuel metrics removed
                 "tractive_effort": 180.0,
                 "rpm": 900,
                 "amperage": 200.0,
@@ -68,7 +68,7 @@ class TestEndToEndScenarios:
                 "speed": 25.0,
                 "acceleration": 0.6,
                 "gradient": 0.5,
-                    # fuel metrics removed
+                # fuel metrics removed
                 "tractive_effort": 160.0,
                 "rpm": 1000,
                 "amperage": 190.0,
@@ -79,7 +79,7 @@ class TestEndToEndScenarios:
                 "speed": 45.0,
                 "acceleration": 0.1,
                 "gradient": 1.0,
-                    # fuel metrics removed
+                # fuel metrics removed
                 "tractive_effort": 120.0,
                 "rpm": 1100,
                 "amperage": 170.0,
@@ -89,7 +89,7 @@ class TestEndToEndScenarios:
                 "speed": 48.0,
                 "acceleration": 0.05,
                 "gradient": 1.2,
-                    # fuel metrics removed
+                # fuel metrics removed
                 "tractive_effort": 115.0,
                 "rpm": 1120,
                 "amperage": 165.0,
@@ -100,7 +100,7 @@ class TestEndToEndScenarios:
                 "speed": 42.0,
                 "acceleration": -0.2,
                 "gradient": 3.5,
-                    # fuel metrics removed
+                # fuel metrics removed
                 "tractive_effort": 200.0,
                 "rpm": 1200,
                 "amperage": 220.0,
@@ -110,7 +110,7 @@ class TestEndToEndScenarios:
                 "speed": 38.0,
                 "acceleration": -0.3,
                 "gradient": 4.0,
-                    # fuel metrics removed
+                # fuel metrics removed
                 "tractive_effort": 220.0,
                 "rpm": 1250,
                 "amperage": 240.0,
@@ -121,7 +121,7 @@ class TestEndToEndScenarios:
                 "speed": 55.0,
                 "acceleration": 0.8,
                 "gradient": -2.0,
-                    # fuel metrics removed
+                # fuel metrics removed
                 "tractive_effort": 80.0,
                 "rpm": 1000,
                 "amperage": 140.0,
@@ -132,7 +132,7 @@ class TestEndToEndScenarios:
                 "speed": 45.0,
                 "acceleration": -0.5,
                 "gradient": -1.0,
-                    # fuel metrics removed
+                # fuel metrics removed
                 "tractive_effort": 50.0,
                 "rpm": 900,
                 "amperage": 120.0,
@@ -142,7 +142,7 @@ class TestEndToEndScenarios:
                 "speed": 35.0,
                 "acceleration": -0.7,
                 "gradient": -0.5,
-                    # fuel metrics removed
+                # fuel metrics removed
                 "tractive_effort": 30.0,
                 "rpm": 800,
                 "amperage": 100.0,
@@ -206,7 +206,7 @@ class TestEndToEndScenarios:
                 "speed": 58.0,
                 "acceleration": -0.8,
                 "gradient": 0.0,
-                    # fuel metrics removed
+                # fuel metrics removed
                 "tractive_effort": 40.0,
                 "rpm": 1000,
                 "amperage": 110.0,
@@ -216,7 +216,7 @@ class TestEndToEndScenarios:
                 "speed": 45.0,
                 "acceleration": -1.2,
                 "gradient": 0.0,
-                    # fuel metrics removed
+                # fuel metrics removed
                 "tractive_effort": 20.0,
                 "rpm": 850,
                 "amperage": 90.0,
@@ -226,7 +226,7 @@ class TestEndToEndScenarios:
                 "speed": 25.0,
                 "acceleration": -1.5,
                 "gradient": 0.0,
-                    # fuel metrics removed
+                # fuel metrics removed
                 "tractive_effort": 10.0,
                 "rpm": 700,
                 "amperage": 70.0,
@@ -236,7 +236,7 @@ class TestEndToEndScenarios:
                 "speed": 0.0,
                 "acceleration": -2.0,
                 "gradient": 0.0,
-                    # fuel metrics removed
+                # fuel metrics removed
                 "tractive_effort": 0.0,
                 "rpm": 0,
                 "amperage": 0.0,
@@ -355,7 +355,7 @@ class TestEndToEndScenarios:
                 "speed": 35.0,
                 "acceleration": -0.2,
                 "gradient": 1.5,
-                    # fuel metrics removed
+                # fuel metrics removed
                 "tractive_effort": 90.0,
                 "rpm": 900,
                 "amperage": 140.0,
@@ -366,7 +366,7 @@ class TestEndToEndScenarios:
                 "speed": 38.0,
                 "acceleration": 0.3,
                 "gradient": 1.2,
-                    # fuel metrics removed
+                # fuel metrics removed
                 "tractive_effort": 110.0,
                 "rpm": 980,
                 "amperage": 155.0,

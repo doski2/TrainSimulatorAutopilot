@@ -34,6 +34,7 @@ model: Any = None
 
 
 if app is not None:
+
     @app.on_event("startup")
     def load_model_event():
         # import tensorflow and keras explicitly to help some linters/Pylance
@@ -50,6 +51,7 @@ if app is not None:
 
 
 if app is not None:
+
     @app.post("/infer")
     def infer(payload: dict):
         global model

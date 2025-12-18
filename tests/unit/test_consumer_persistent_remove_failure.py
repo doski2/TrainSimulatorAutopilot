@@ -1,7 +1,5 @@
-import json
 import logging
 import time
-from pathlib import Path
 
 from tools.poc_file_ack.consumer import Consumer
 from tools.poc_file_ack.enqueue import atomic_write_cmd
@@ -11,16 +9,17 @@ def test_consumer_logs_error_on_persistent_remove_failure(tmp_path, caplog):
     caplog.set_level(logging.ERROR)
     d = str(tmp_path)
 
-    cmd_id = 'persistent-1'
-    atomic_write_cmd(d, {'id': cmd_id, 'type': 'set_regulator', 'value': 0.7})
+    cmd_id = "persistent-1"
+    atomic_write_cmd(d, {"id": cmd_id, "type": "set_regulator", "value": 0.7})
 
     # monkeypatch os.remove to always raise for this specific command file
     import os as _os
+
     original_remove = _os.remove
 
     def always_fail(path):
-        if path.endswith(f'cmd-{cmd_id}.json'):
-            raise OSError('simulate persistent inability to remove file')
+        if path.endswith(f"cmd-{cmd_id}.json"):
+            raise OSError("simulate persistent inability to remove file")
         return original_remove(path)
 
     _os.remove = always_fail
@@ -36,6 +35,6 @@ def test_consumer_logs_error_on_persistent_remove_failure(tmp_path, caplog):
 
         # check logs for persistent failure message
         messages = [r.getMessage() for r in caplog.records]
-        assert any('Persistent failure removing' in m for m in messages), messages
+        assert any("Persistent failure removing" in m for m in messages), messages
     finally:
         _os.remove = original_remove

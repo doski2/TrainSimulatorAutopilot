@@ -2,11 +2,11 @@ import os
 import sys
 
 # Ensure project root is importable when running from pytest
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
-from alert_system import AlertSystem, AlertType
+from alert_system import AlertSystem, AlertType  # noqa: E402
 
 
 def test_check_wheelslip_triggered_above_threshold():
@@ -33,13 +33,14 @@ def test_auto_resolve_speed_violation():
     system.config["speed_violation"]["max_speed"] = 120
     # Crear alerta de velocidad activa
     from alert_system import Alert, AlertSeverity
+
     alert = Alert(
         alert_id="speed_test_1",
         alert_type=AlertType.SPEED_VIOLATION,
         severity=AlertSeverity.HIGH,
         title="Violación de Velocidad Detectada",
         message="Velocidad actual: 145.0 km/h (límite: 120 km/h)",
-        timestamp=__import__('datetime').datetime.now(),
+        timestamp=__import__("datetime").datetime.now(),
         data={"current_speed": 145.0, "max_speed": 120},
     )
     system.alerts.append(alert)
@@ -55,13 +56,14 @@ def test_auto_resolve_wheelslip():
     system = AlertSystem(alerts_file=".test_alerts.json", config_file=".test_alerts_config.json")
     system.config["wheelslip"]["threshold"] = 0.5
     from alert_system import Alert, AlertSeverity
+
     alert = Alert(
         alert_id="wheelslip_test_1",
         alert_type=AlertType.WHEELSLIP,
         severity=AlertSeverity.HIGH,
         title="Deslizamiento de Ruedas Detectado",
         message="Deslizamiento: 1.00 (umbral: 0.5)",
-        timestamp=__import__('datetime').datetime.now(),
+        timestamp=__import__("datetime").datetime.now(),
         data={"wheelslip": 1.0, "threshold": 0.5},
     )
     system.alerts.append(alert)
