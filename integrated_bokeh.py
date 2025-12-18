@@ -149,6 +149,7 @@ BOKEH_TEMPLATE = """
 
 # Ejemplo de uso
 if __name__ == "__main__":
+    import os
     from flask import Flask
 
     app = Flask(__name__, template_folder="../web/templates")
@@ -164,4 +165,7 @@ if __name__ == "__main__":
     print("- Dashboard principal: http://localhost:5002/")
     print("- Dashboard Bokeh: http://localhost:5002/bokeh-dashboard")
 
-    app.run(host="localhost", port=5002, debug=True)
+    # Security: Use environment variable for debug mode to prevent code execution in production (CWE-94)
+    # Default to False for production safety
+    debug_mode = os.environ.get("FLASK_DEBUG", "False").lower() in ("true", "1", "yes")
+    app.run(host="localhost", port=5002, debug=debug_mode)

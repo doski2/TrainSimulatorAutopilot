@@ -193,7 +193,8 @@ def verificar_integridad_datos():
             if file.endswith((".db", ".json", ".csv")):
                 file_path = os.path.join(data_dir, file)
                 with open(file_path, "rb") as f:
-                    hashes_actuales[file] = hashlib.md5(f.read()).hexdigest()
+                    # MD5 is used for non-security checksums only, not for cryptographic purposes
+                    hashes_actuales[file] = hashlib.md5(f.read(), usedforsecurity=False).hexdigest()
 
         # Comparar con hashes anteriores si existen
         if os.path.exists(integrity_file):
