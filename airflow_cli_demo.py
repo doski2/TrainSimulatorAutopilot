@@ -22,7 +22,7 @@ sys.path.insert(0, str(project_root))
 
 def ejecutar_comando_airflow(comando, descripcion):
     """Ejecuta un comando de Airflow y maneja errores
-    
+
     Security: Commands are parsed with shlex.split() to prevent shell injection (CWE-78)
     """
     try:

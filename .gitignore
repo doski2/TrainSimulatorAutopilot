@@ -263,3 +263,14 @@ tmp_*.py
 tests/tmp_*.py
 # Temporary POC directories created by running consumer in manual/dev mode
 tmp_poc_dir/
+
+# Train simulator command files
+sendcommand.txt
+autopilot_commands.txt
+SendCommand.txt
+
+# Predictive model files
+data/predictive_model.pkl
+
+# Test alert files
+.test_alerts.json

@@ -150,6 +150,7 @@ BOKEH_TEMPLATE = """
 # Ejemplo de uso
 if __name__ == "__main__":
     import os
+
     from flask import Flask
 
     app = Flask(__name__, template_folder="../web/templates")

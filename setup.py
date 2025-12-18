@@ -14,7 +14,7 @@ from pathlib import Path
 
 def run_command(command, description):
     """Ejecuta un comando y muestra el resultado.
-    
+
     Security: Commands are passed as lists to prevent shell injection (CWE-78)
     """
     print(f"\n🔧 {description}...")
@@ -23,7 +23,7 @@ def run_command(command, description):
         if isinstance(command, str):
             # Split command string into list for safe execution
             command = shlex.split(command)
-        
+
         subprocess.run(command, shell=False, check=True, capture_output=True, text=True)
         print(f"✅ {description} completado exitosamente")
         return True
