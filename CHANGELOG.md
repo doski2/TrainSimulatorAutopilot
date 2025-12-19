@@ -3,16 +3,26 @@
 ## [Unreleased] - 2025-12-17
 
 ### 🔧 Correcciones y mejoras (POC Archivo+ACK)
-- **consumer**: Registrar excepciones en lugar de silenciarlas para mejorar diagnósticos y mantener el loop vivo (`tools/poc_file_ack/consumer.py`).
-- **tests**: Añadido `tests/unit/test_consumer_exceptions.py` que valida logging y resiliencia del consumer.
-- **tests**: Centralizada la configuración de `sys.path` en `tests/conftest.py` (se removieron inserciones manuales desde tests individuales).
-- **docs**: Documentación actualizada sobre la opción Archivo+ACK y la configuración de tests (`docs/docs controles/opcion1_archivo_ack.md`, `docs/testing-framework.md`).
-- **ci**: `.gitignore` actualizado para ignorar `tmp_poc_dir/` y job POC E2E (`.github/workflows/poc-e2e.yml`) añadido previamente.
-- **consumer**: Marcar y persistir IDs procesados antes de escribir ACK para evitar reprocesos (test: `tests/unit/test_consumer_race_condition.py`).
-- **consumer**: Mantener una caché de `processed_ids` con tamaño limitado (`processed_ids_max`) para evitar crecimiento ilimitado de memoria en consumidores de larga duración (test: `tests/unit/test_consumer_bounded_processed_set.py`).
 
+- **consumer**: Registrar excepciones en lugar de silenciarlas para mejorar
+  diagnósticos y mantener el loop vivo (`tools/poc_file_ack/consumer.py`).
+- **tests**: Añadido `tests/unit/test_consumer_exceptions.py` que valida
+  logging y resiliencia del consumer.
+- **tests**: Centralizada la configuración de `sys.path` en `tests/conftest.py`
+  (se removieron inserciones manuales desde tests individuales).
+- **docs**: Documentación actualizada sobre la opción Archivo+ACK y la
+  configuración de tests (`docs/docs controles/opcion1_archivo_ack.md`,
+  `docs/testing-framework.md`).
+- **ci**: `.gitignore` actualizado para ignorar `tmp_poc_dir/` y job POC E2E
+  (`.github/workflows/poc-e2e.yml`) añadido previamente.
+- **consumer**: Marcar y persistir IDs procesados antes de escribir ACK para
+  evitar reprocesos (test: `tests/unit/test_consumer_race_condition.py`).
+- **consumer**: Mantener una caché de `processed_ids` con tamaño limitado
+  (`processed_ids_max`) para evitar crecimiento ilimitado de memoria en
+  consumidores de larga duración (test:
+  `tests/unit/test_consumer_bounded_processed_set.py`).
 
-# Train Simulator Autopilot - Registro de Cambios
+## [2.1.0] - 2025-12-17
 
 Todos los cambios notables en este proyecto serán documentados en este archivo.
 
@@ -24,28 +34,28 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.
 #### Estado de Controles de Locomotora
 
 - **Nueva funcionalidad**: Sistema de estado interno para controles de puertas y
-luces
+  luces
 - **API Endpoint**: `GET /api/control/status` para consultar estado actual
 - **Lógica de alternancia**: Los botones ahora alternan correctamente entre
-abrir/cerrar y encender/apagar
+  abrir/cerrar y encender/apagar
 - **Mensajes mejorados**: Confirmaciones claras del estado actual
-("Puertas ABIERTAS", "Luces APAGADAS")
+  ("Puertas ABIERTAS", "Luces APAGADAS")
 
 ### 🔧 Problemas Resueltos — v2.1.0
 
 #### Controles No Se Actualizaban Correctamente
 
 - **Problema**: Los botones de puertas/luces siempre enviaban el mismo comando
-(ej: siempre "doors_open")
+  (ej: siempre "doors_open")
 - **Causa**: Falta de estado interno para mantener el estado de los controles
 - **Solución**: Implementación de variables de estado `control_states` con
-alternancia lógica
+  alternancia lógica
 - **Impacto**: Los controles ahora funcionan como toggles reales
 
 #### Comandos Incorrectos Enviados al Lua Script
 
 - **Problema**: El Python enviaba "doors_open" incluso cuando las puertas ya
-estaban abiertas
+  estaban abiertas
 - **Causa**: Sin distinción entre comandos de apertura y cierre
 - **Solución**: Lógica que envía "doors_open"/"doors_close" y
 "lights_on"/"lights_off" según estado
@@ -405,7 +415,7 @@ actualizaciones OTA
 
 ### 🛠️ Correcciones y mejoras de telemetría y UI
 
- - **Nueva visualización**: Badge de presencia para
+- **Nueva visualización**: Badge de presencia para
    `BrakePipePressureTailEnd` (Tubo Freno Cola) en la UI, indicando
    `PRESENTE`, `INFERIDO`, o `NO`.
 - **Nueva visualización**: Badge de presencia para
@@ -747,7 +757,8 @@ de pruebas y documentación del proyecto
 desarrollo y pruebas
 - ✅ **Plantilla de Configuración**: config.ini.example completo con todas las
 opciones disponibles
-- ✅ **README Mejorado**: Documentación profesional con instalación, uso,
+- ✅ **README Mejorado**: Documentación profesional con instalación,
+  uso,
 referencia de API y guías de contribución
 
 ### Corregido
