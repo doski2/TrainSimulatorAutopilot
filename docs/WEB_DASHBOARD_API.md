@@ -5,7 +5,9 @@ completa, consulte `API_REFERENCE.md`.
 
 ## Endpoints Principales
 
-- `GET /api/status` - Estado del servidor (AHORA incluye `autopilot_plugin_loaded` y `autopilot_plugin_state` cuando el plugin Lua está presente)
+- `GET /api/status` - Estado del servidor (AHORA incluye
+  `autopilot_plugin_loaded` y `autopilot_plugin_state` cuando el plugin Lua
+  está presente)
 - `GET /api/telemetry` - Telemetría actual
   - Telemetría incluye claves: `velocidad_actual`, `aceleracion`, `rpm`,
 `presion_tubo_freno`, `senal_principal`, `senal_avanzada`, `senal_procesada`.
