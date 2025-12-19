@@ -9,12 +9,12 @@ end
 
 function Update(time)
     -- Called every frame; handle continuous logic here if needed
-    -- For example, automatic door opening based on speed (simplified)
-    local speed = SysCall("PlayerEngine:GetControlValue", "SpeedometerMPH", 0)
+    -- For example, automatic door closing based on speed (for safety)
+    local speed = SysCall("PlayerEngineGetControlValue", "SpeedometerMPH", 0)
     if speed > 5 then
-        SysCall("PlayerEngineSetControlValue", "DoorSwitch", 0, 1)  -- Open doors if moving
+        SysCall("PlayerEngineSetControlValue", "DoorSwitch", 0, 0)  -- Close doors if moving
     else
-        SysCall("PlayerEngineSetControlValue", "DoorSwitch", 0, 0)  -- Close doors if stopped
+        SysCall("PlayerEngineSetControlValue", "DoorSwitch", 0, 1)  -- Open doors if stopped
     end
 end
 
