@@ -149,13 +149,13 @@ ventajas y desventajas.
 
 ## Comparación rápida (resumen)
 
-| Método | Perm. | Lat. | Rob. | Fac. | Recomendado |
-|---|---:|---:|---:|---:|---|
-| Archivo+ACK | bajo | medio | alto | muy fácil | integración |
-| SendCommand | bajo | medio | medio | fácil | mapeos |
-| vJoy | medio | baja | alta | medio | fallback |
-| Socket | medio-alto | muy baja | alta | difícil | baja-latencia |
-| HTTP | bajo | depende | alta | fácil | orquestación |
+|Método|Perm.|Lat.|Rob.|Fac.|Recomendado|
+|---|---:|---:|---:|---:|---:|---|
+|Archivo+ACK|bajo|medio|alto|muy fácil|integración|
+|SendCommand|bajo|medio|medio|fácil|mapeos|
+|vJoy|medio|baja|alta|medio|fallback|
+|Socket|medio-alto|muy baja|alta|difícil|baja-latencia|
+|HTTP|bajo|depende|alta|fácil|orquestación|
 
 ---
 
