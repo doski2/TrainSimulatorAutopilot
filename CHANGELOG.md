@@ -763,7 +763,8 @@ referencia de API y guías de contribución
 
 ### Corregido
 
-- 🐛 **Modal del Botón de Configuración**: Convertido el panel de configuración a
+- 🐛 **Modal del Botón de Configuración**: Convertido el panel de
+  configuración a
 modal de Bootstrap para mejor UX. Anteriormente, el panel de configuración al
 final de la página no se mostraba correctamente en Electron debido a conflictos
 de CSS con `display: none/block`. Ahora usa modal de Bootstrap que aparece
