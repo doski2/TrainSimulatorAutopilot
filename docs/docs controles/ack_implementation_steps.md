@@ -6,14 +6,18 @@ implementación del POC para el protocolo "Archivo + ACK".
 Branch y PR
 
 - Branch de trabajo: `wip/ack-implementation` (POC).  
-- Pull Request: https://github.com/doski2/TrainSimulatorAutopilot/pull/8
+- Pull Request: <https://github.com/doski2/TrainSimulatorAutopilot/pull/8>
 
 Resumen de ficheros añadidos
 
-- docs/docs controles/opcion1_archivo_ack.md — Especificación detallada.
-- tools/poc_file_ack/enqueue.py — escritura atómica y wait_for_ack helper.
-- tools/poc_file_ack/consumer.py — mock consumer que procesa comandos y escribe ack.
-- tools/poc_file_ack/run_poc.py — demo que ejecuta POC (start consumer y encola un comando).
+- docs/docs controles/opcion1_archivo_ack.md — Especificación
+  detallada.
+- tools/poc_file_ack/enqueue.py — escritura atómica y wait_for_ack
+  helper.
+- tools/poc_file_ack/consumer.py — mock consumer que procesa comandos y
+  escribe ack.
+- tools/poc_file_ack/run_poc.py — demo que ejecuta POC (start consumer y
+  encola un comando).
 - tests/e2e/test_file_ack.py — test E2E que verifica enqueue → ack.
 
 Comandos ejecutados (útiles para reproducir localmente)
@@ -25,7 +29,7 @@ Comandos ejecutados (útiles para reproducir localmente)
 git checkout -b wip/ack-implementation
 ```
 
-2. Ejecutar demo local (daemon consumer + enqueue + wait for ack):
+1. Ejecutar demo local (daemon consumer + enqueue + wait for ack):
 
 ```powershell
 # desde la raíz del repositorio; por defecto se usa un directorio temporal que se limpia al terminar
@@ -45,15 +49,17 @@ python -m tools.poc_file_ack.enqueue
 python -m tools.poc_file_ack.enqueue --dir C:\ruta\a\mi\poc_dir
 ```
 
-**Nota**: ambos demos usan un `TemporaryDirectory` por defecto para evitar crear carpetas en ubicaciones inesperadas; use `--dir` para pasar una ruta persistente si necesita inspeccionar archivos después de la ejecución.
+**Nota**: ambos demos usan un `TemporaryDirectory` por defecto para evitar
+crear carpetas en ubicaciones inesperadas; use `--dir` para pasar una ruta
+persistente si necesita inspeccionar archivos después de la ejecución.
 
-3. Ejecutar test E2E individual:
+1. Ejecutar test E2E individual:
 
 ```powershell
 pytest tests/e2e/test_file_ack.py -q
 ```
 
-4. Crear y subir cambios:
+1. Crear y subir cambios:
 
 ```powershell
 git add <files>
@@ -82,31 +88,47 @@ Decisiones de diseño
 Pruebas y resultados
 
 - El test `tests/e2e/test_file_ack.py` pasa localmente en Windows con Python 3.13.
-- Se añadió `tests/unit/test_consumer_exceptions.py` para verificar que el consumer registra excepciones inesperadas y continúa ejecutando el bucle de polling.
-- Se centralizó la configuración de import path para pytest en `tests/conftest.py` (ya no se insertan líneas `sys.path` en cada test).
-- `.gitignore` fue actualizado para ignorar `tmp_poc_dir/` creado por ejecuciones manuales del consumer.
+- Se añadió `tests/unit/test_consumer_exceptions.py` para verificar que el
+  consumer registra excepciones inesperadas y continúa ejecutando el bucle de
+  polling.
+- Se centralizó la configuración de import path para pytest en
+  `tests/conftest.py` (ya no se insertan líneas `sys.path` en cada test).
+- `.gitignore` fue actualizado para ignorar `tmp_poc_dir/` creado por
+  ejecuciones manuales del consumer.
 
 Checklist de mejoras pendientes (próximos pasos)
 
 - [x] Implementar probe file en el consumer (`plugin_loaded.txt`) y listar
   comportamiento de readiness. (Implementado, test `tests/e2e/test_probe_file.py`)
-- [x] Añadir retries/backoff al `enqueue` y tests relacionados. (Implementado: `send_command_with_retries`, tests `tests/e2e/test_retries.py`)
-- [x] Persistir IDs procesados por el consumer para idempotencia. (Implementado: `processed_ids.json`, test `tests/e2e/test_persist_ids.py`)
-- [x] Integrar el adapter con el Orchestrator (exponer POST /api/commands). (Implementado en `web_dashboard.py`, tests `tests/unit/test_api_commands.py`)
-- [x] Añadir job en CI (GitHub Actions) que ejecute pruebas E2E del POC (subset de tests POC). (Implementado: `.github/workflows/poc-e2e.yml`)
-- [x] Añadir UI mínima para disparar comandos y mostrar estado/ACK. (Implementado: botón en `index.html` + JS en `web/static/js/dashboard.js`)
-- [x] Robustecer manejo de errores del consumer: ahora **registra** excepciones en vez de silenciarlas (test: `tests/unit/test_consumer_exceptions.py`).
-- [x] Marcar y persistir IDs procesados antes de escribir el ACK para evitar reprocesos (implementado y probado: `tests/unit/test_consumer_race_condition.py`).
-- [x] Mantener una caché de `processed_ids` con tamaño limitado para evitar crecimiento ilimitado de memoria (`processed_ids_max`), probado en `tests/unit/test_consumer_bounded_processed_set.py`.
-- [x] Centralizar la configuración de `sys.path` para pytest en `tests/conftest.py`.
-- [x] Añadir `tmp_poc_dir/` a `.gitignore` para evitar commits accidentales de artefactos temporales.
+- [x] Añadir retries/backoff al `enqueue` y tests relacionados.
+  (Implementado: `send_command_with_retries`, tests `tests/e2e/test_retries.py`)
+- [x] Persistir IDs procesados por el consumer para idempotencia.
+  (Implementado: `processed_ids.json`, test `tests/e2e/test_persist_ids.py`)
+- [x] Integrar el adapter con el Orchestrator (exponer POST /api/commands).
+  (Implementado en `web_dashboard.py`, tests `tests/unit/test_api_commands.py`)
+- [x] Añadir job en CI (GitHub Actions) que ejecute pruebas E2E del POC
+  (subset de tests POC). (Implementado: `.github/workflows/poc-e2e.yml`)
+- [x] Añadir UI mínima para disparar comandos y mostrar estado/ACK.
+  (Implementado: botón en `index.html` + JS en `web/static/js/dashboard.js`)
+- [x] Robustecer manejo de errores del consumer: ahora **registra**
+  excepciones en vez de silenciarlas (test: `tests/unit/test_consumer_exceptions.py`).
+- [x] Marcar y persistir IDs procesados antes de escribir el ACK para evitar
+  reprocesos (implementado y probado: `tests/unit/test_consumer_race_condition.py`).
+- [x] Mantener una caché de `processed_ids` con tamaño limitado para evitar
+  crecimiento ilimitado de memoria (`processed_ids_max`), probado en
+  `tests/unit/test_consumer_bounded_processed_set.py`.
+- [x] Centralizar la configuración de `sys.path` para pytest en
+  `tests/conftest.py`.
+- [x] Añadir `tmp_poc_dir/` a `.gitignore` para evitar commits accidentales de
+  artefactos temporales.
 
 Notas operativas
 
-- Directorios y permisos: definir carpeta configurable para los archivos y
-  documentar permisos (Windows: privilegios de usuario, UAC si procede).
+- Directorios y permisos: definir carpeta configurable para los archivos
+  y documentar permisos (Windows: privilegios de usuario, UAC si procede).
 - Observabilidad: logs correlacionados por `id` y métricas de latencia.
-- Recomendación: en entornos de desarrollo y CI se recomienda `pip install -e .` para evitar depender de modificaciones de `sys.path` por tests.
+- Recomendación: en entornos de desarrollo y CI se recomienda `pip install -e .`
+  para evitar depender de modificaciones de `sys.path` por tests.
 
 ¿Siguiente paso?
 
