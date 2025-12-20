@@ -415,6 +415,12 @@ def initialize_system():
         system_status["reports_active"] = status.get("automation_enabled", False)
         logger.info("Sistema de reportes inicializado")
 
+        logger.info("Inicializando monitoreo de rendimiento...")
+        # Inicializar monitoreo de rendimiento
+        performance_monitor.start_monitoring()
+        system_status["performance_monitoring"] = True
+        logger.info("Monitoreo de rendimiento inicializado")
+
         logger.info("Todos los componentes inicializados exitosamente")
         return True
     except Exception as e:
@@ -543,12 +549,24 @@ def telemetry_update_loop():
                     if ws_latency > 50:  # Más de 50ms
                         latency_optimizer.apply_optimization("websocket_batching")
 
+                    # Debug: show acceleration and RPM for diagnostic
+                    try:
+                        accel_debug = f"Aceleración cruda: {compressed_telemetry.get('aceleracion')}"
+                        logger.debug(accel_debug)
+                        rpm_debug = f"RPM del motor: {compressed_telemetry.get('rpm', 0.0)}"
+                        logger.debug(rpm_debug)
+                    except Exception as e:
+                        logger.error(f"Failed to print acceleration/RPM debug info: {e}")
+                        import traceback
+
+                        traceback.print_exc()
+
                     # Debug: show wheelslip raw and intensity for diagnostic
                     try:
-                        ws_debug = f"[DEBUG] Wheelslip raw={compressed_telemetry.get('deslizamiento_ruedas_raw')} intensity={compressed_telemetry.get('deslizamiento_ruedas_intensidad')}"
-                        print(ws_debug)
+                        ws_debug = f"Wheelslip raw={compressed_telemetry.get('deslizamiento_ruedas_raw')} intensity={compressed_telemetry.get('deslizamiento_ruedas_intensidad')}"
+                        logger.debug(ws_debug)
                     except Exception as e:
-                        print(f"[ERROR] Failed to print wheelslip debug info: {e}")
+                        logger.error(f"Failed to print wheelslip debug info: {e}")
                         import traceback
 
                         traceback.print_exc()
@@ -574,22 +592,20 @@ def telemetry_update_loop():
                     try:
                         active_list = active_alerts.get('alerts') if isinstance(active_alerts, dict) else active_alerts
                         if isinstance(active_list, list):
-                            print(f"[DEBUG] Active alerts (count) = {len(active_list)}")
-                            print(f"[DEBUG] Active alerts (types) = {[a.get('alert_type') for a in active_list[:10]]}")
+                            logger.debug(f"Active alerts (count) = {len(active_list)}")
+                            logger.debug(f"Active alerts (types) = {[a.get('alert_type') for a in active_list[:10]]}")
                         else:
-                            print(f"[DEBUG] Active alerts: {active_alerts}")
+                            logger.debug(f"Active alerts: {active_alerts}")
                     except Exception as e:
-                        print(f"[ERROR] Failed to print active alerts debug info: {e}")
+                        logger.error(f"Failed to print active alerts debug info: {e}")
                         import traceback
 
                         traceback.print_exc()
                 except Exception as emit_error:
-                    print(f"[WS] Error en emit: {emit_error}")
-                    print(
-                        f"[DEBUG] Estado tras error emit: predictive_running={predictive_analyzer.is_running if predictive_analyzer else False}"
-                    )
+                    logger.error(f"Error en emit: {emit_error}")
+                    logger.debug(f"Estado tras error emit: predictive_running={predictive_analyzer.is_running if predictive_analyzer else False}")
         except Exception as e:
-            print(f"[ERROR] Error en actualizacion de telemetria: {e}")
+            logger.error(f"Error en actualizacion de telemetria: {e}")
             import traceback
 
             traceback.print_exc()

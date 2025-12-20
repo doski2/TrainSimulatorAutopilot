@@ -271,21 +271,21 @@ class TSCIntegration:
         # Procesar aceleración para separar acelerador y freno
         if "aceleracion" in datos_ia:
             accel = datos_ia["aceleracion"]
-            print(f"[DEBUG] Aceleración cruda: {accel}")
+            logger.debug(f"Aceleración cruda: {accel}")
 
             # TEMPORAL: Mostrar valores sin filtro para debugging
             if accel > 0:
                 datos_ia["acelerador"] = accel
                 datos_ia["freno_tren"] = 0.0
-                print(f"[DEBUG] Acelerador: {accel}, Freno: 0.0")
+                logger.debug(f"Acelerador: {accel}, Freno: 0.0")
             elif accel < 0:
                 datos_ia["acelerador"] = 0.0
                 datos_ia["freno_tren"] = -accel  # Convertir a positivo para freno
-                print(f"[DEBUG] Acelerador: 0.0, Freno: {-accel}")
+                logger.debug(f"Acelerador: 0.0, Freno: {-accel}")
             else:
                 datos_ia["acelerador"] = 0.0
                 datos_ia["freno_tren"] = 0.0
-                print("[DEBUG] Acelerador: 0.0, Freno: 0.0")
+                logger.debug("Acelerador: 0.0, Freno: 0.0")
             # Si rpm es 0, intentar usar RPMDelta (alias) del archivo
             if datos_ia.get("rpm", 0.0) == 0.0 and "RPMDelta" in datos_archivo:
                 try:

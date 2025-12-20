@@ -1,0 +1,48 @@
+{
+  "timestamp": "2025-12-20T18:56:24.444943",
+  "monitoring_duration_seconds": 93,
+  "current_metrics": {
+    "cpu_percent": 19.6,
+    "memory_percent": 42.8,
+    "memory_mb": 13999.890625,
+    "network_connections": 122,
+    "open_files": 4,
+    "threads_count": 46,
+    "dashboard_response_time": 0,
+    "websocket_latency": 0.0,
+    "chart_render_time": 0,
+    "metrics_update_frequency": 9.599685068925504,
+    "ui_frame_drops": 0,
+    "timestamp": "2025-12-20T18:56:23.429872"
+  },
+  "averages": {
+    "cpu_percent": 17.427956989247317,
+    "memory_percent": 41.56236559139785,
+    "memory_mb": 13582.319052419354,
+    "network_connections": 118.38709677419355,
+    "open_files": 4.0,
+    "threads_count": 46.40860215053763,
+    "dashboard_response_time": 0.0,
+    "websocket_latency": 0.13365284089119203,
+    "chart_render_time": 0.0,
+    "metrics_update_frequency": 9.559435257977707,
+    "ui_frame_drops": 0.0
+  },
+  "peaks": {
+    "cpu_percent": 44.9,
+    "memory_percent": 43.9,
+    "memory_mb": 14353.85546875,
+    "network_connections": 125,
+    "open_files": 4,
+    "threads_count": 48,
+    "dashboard_response_time": 0,
+    "websocket_latency": 3.0536651611328125,
+    "chart_render_time": 0,
+    "metrics_update_frequency": 9.667235195958218,
+    "ui_frame_drops": 0
+  },
+  "optimization_impacts": {},
+  "recommendations": [
+    "Memoria elevada: Reducir puntos de historial"
+  ]
+}
