@@ -23,12 +23,11 @@ import logging  # noqa: E402
 import threading  # noqa: E402
 import time  # noqa: E402
 from datetime import datetime  # noqa: E402
+from logging_config import get_logger, setup_logging  # noqa: E402
 
 # Configurar logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
-logger = logging.getLogger(__name__)
+setup_logging()
+logger = get_logger(__name__)
 
 logger.info(f"Python executable: {sys.executable}")
 logger.info(f"Python version: {sys.version}")
