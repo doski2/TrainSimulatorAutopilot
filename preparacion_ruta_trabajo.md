@@ -20,15 +20,19 @@ Nota: Como es Program Files, necesitarás permisos de administrador.
 
 ## Paso 3: Copiar Scripts Lua
 
-Copia los scripts Lua necesarios al directorio de plugins o a la carpeta de la locomotora.
+Usa el script automatizado para copiar los archivos:
 
-### Opción 1: Usar Plugins Globales
+```bash
+python prepare_simulator.py
+```
+
+Esto copiará `complete_autopilot_lua.lua` a `RailWorks/plugins/engineScript.lua` y creará archivos de estado necesarios.
+
+### Copia Manual (si es necesario)
+Si prefieres hacerlo manualmente:
+
 - Copia `complete_autopilot_lua.lua` a `RailWorks/plugins/`
-- Renómbralo a `engineScript.lua` si es necesario (depende de la configuración de la locomotora).
-
-### Opción 2: Por Locomotora
-- Encuentra la carpeta de la locomotora en `RailWorks/Assets/` (ej: `DTG/BRClass66/`)
-- Copia el script a la subcarpeta `Script/` de la locomotora.
+- Renómbralo a `engineScript.lua` si es necesario.
 
 ## Paso 4: Configurar el Sistema de Autopiloto
 
