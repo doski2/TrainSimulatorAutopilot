@@ -39,8 +39,6 @@ pcall(function()
     local f = io.open("plugins/autopilot_probe_loaded.txt", "w")
     if f then
         f:write(os.date("%Y-%m-%d %H:%M:%S") .. " - probe: script file loaded by game\n")
-        f:write("Script version: complete_autopilot_lua.lua\n")
-        f:write("Current working directory: " .. (io.popen("cd"):read("*a") or "unknown") .. "\n")
         f:close()
     end
 end)

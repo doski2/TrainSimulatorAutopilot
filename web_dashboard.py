@@ -16,6 +16,9 @@ print(f"[BOOT] Directorio actual: {os.getcwd()}")
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 print(f"[BOOT] Path agregado: {os.path.dirname(os.path.dirname(os.path.abspath(__file__)))}")
 
+# Global variable for stub request json data
+_current_json_data = None
+
 # Standard library imports
 import configparser  # noqa: E402
 import json  # noqa: E402
@@ -23,11 +26,12 @@ import logging  # noqa: E402
 import threading  # noqa: E402
 import time  # noqa: E402
 from datetime import datetime  # noqa: E402
-from logging_config import get_logger, setup_logging  # noqa: E402
 
 # Configurar logging
-setup_logging()
-logger = get_logger(__name__)
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 logger.info(f"Python executable: {sys.executable}")
 logger.info(f"Python version: {sys.version}")
@@ -49,7 +53,7 @@ logger.info("Imports estándar completados")
 # Third-party imports
 try:
     from bokeh.embed import server_document  # noqa: E402
-    from flask import Flask, jsonify, render_template, request  # noqa: E402
+    from flask import Flask, jsonify, render_template, request, Response  # noqa: E402
     from flask_socketio import SocketIO, emit  # noqa: E402
 
     print("[BOOT] Imports de terceros completados")
@@ -59,16 +63,17 @@ except Exception as e:
 
     # Minimal request stub
     class _SimpleRequest:
-        _json = None
-
         def get_json(self):
-            return self._json
+            return _current_json_data
 
     request = _SimpleRequest()
 
     # Simple jsonify
     def jsonify(obj):
         return obj
+
+    def render_template(template_name_or_list, **context):
+        return f"<rendered {template_name_or_list}>"
 
     # Simple Flask-like test harness
     class _SimpleResponse:
@@ -82,6 +87,7 @@ except Exception as e:
     class _SimpleClient:
         def __init__(self, app):
             self.app = app
+            self._json_data = None
 
         def __enter__(self):
             return self
@@ -90,7 +96,9 @@ except Exception as e:
             return False
 
         def post(self, path, json=None):
-            request._json = json
+            # Set the json data for the stub request
+            global _current_json_data
+            _current_json_data = json
             func = self.app._routes.get(path)
             if not func:
                 return _SimpleResponse(404, {"error": "not found"})
@@ -107,6 +115,16 @@ except Exception as e:
             self._routes = {}
             self.config = {}
             self._after_request = None
+            self.static_folder = kw.get("static_folder", "web/static")
+            self.template_folder = kw.get("template_folder", "web/templates")
+            self.name = "web_dashboard"
+            self.import_name = "web_dashboard"
+
+            class _MockUrlMap:
+                def __init__(self):
+                    self._rules = []
+
+            self.url_map = _MockUrlMap()
 
         def route(self, path, methods=None):
             def decorator(f):
@@ -143,8 +161,13 @@ except Exception as e:
 
             return decorator
 
+        def run(self, *args, **kwargs):
+            pass
+
     SocketIO = _SimpleSocketIO
-    emit = lambda *args, **kwargs: None
+
+    def emit(*args, **kwargs):
+        pass
 
 
 # Local imports
@@ -415,12 +438,6 @@ def initialize_system():
         system_status["reports_active"] = status.get("automation_enabled", False)
         logger.info("Sistema de reportes inicializado")
 
-        logger.info("Inicializando monitoreo de rendimiento...")
-        # Inicializar monitoreo de rendimiento
-        performance_monitor.start_monitoring()
-        system_status["performance_monitoring"] = True
-        logger.info("Monitoreo de rendimiento inicializado")
-
         logger.info("Todos los componentes inicializados exitosamente")
         return True
     except Exception as e:
@@ -490,18 +507,23 @@ def telemetry_update_loop():
             # Siempre enviar actualización (con datos reales o simulados)
             if last_telemetry:
                 # Comprimir datos antes de enviar - FASE 4
-                compressed_telemetry = data_compressor.compress_data(last_telemetry)
+                compressed_telemetry = (
+                    data_compressor.compress_data(last_telemetry)
+                    if data_compressor
+                    else last_telemetry
+                )
 
                 # Cache inteligente para predicciones - FASE 4
                 cache_key = f"predictions_{int(time.time() // 60)}"  # Cache por minuto
-                cached_predictions = smart_cache.get(cache_key)
+                cached_predictions = smart_cache.get(cache_key) if smart_cache else None
                 if cached_predictions is None:
                     # Obtener predicciones actuales del analizador predictivo
                     predictions = (
                         predictive_analyzer.get_current_predictions() if predictive_analyzer else {}
                     )
                     cached_predictions = predictions
-                    smart_cache.put(cache_key, predictions)
+                    if smart_cache:
+                        smart_cache.put(cache_key, predictions)
 
                 # Obtener datos de multi-locomotora
                 multi_loco_data = (
@@ -514,7 +536,11 @@ def telemetry_update_loop():
                 active_alerts = check_alerts()
 
                 # Obtener métricas de rendimiento
-                performance_report = performance_monitor.get_performance_report()
+                performance_report = (
+                    performance_monitor.get_performance_report()
+                    if performance_monitor
+                    else {}
+                )
 
                 # Obtener estado de reportes
                 reports_status = {
@@ -547,26 +573,15 @@ def telemetry_update_loop():
 
                     # Aplicar optimizaciones de latencia si latencia es alta
                     if ws_latency > 50:  # Más de 50ms
-                        latency_optimizer.apply_optimization("websocket_batching")
-
-                    # Debug: show acceleration and RPM for diagnostic
-                    try:
-                        accel_debug = f"Aceleración cruda: {compressed_telemetry.get('aceleracion')}"
-                        logger.debug(accel_debug)
-                        rpm_debug = f"RPM del motor: {compressed_telemetry.get('rpm', 0.0)}"
-                        logger.debug(rpm_debug)
-                    except Exception as e:
-                        logger.error(f"Failed to print acceleration/RPM debug info: {e}")
-                        import traceback
-
-                        traceback.print_exc()
+                        if latency_optimizer:
+                            latency_optimizer.apply_optimization("websocket_batching")
 
                     # Debug: show wheelslip raw and intensity for diagnostic
                     try:
-                        ws_debug = f"Wheelslip raw={compressed_telemetry.get('deslizamiento_ruedas_raw')} intensity={compressed_telemetry.get('deslizamiento_ruedas_intensidad')}"
-                        logger.debug(ws_debug)
+                        ws_debug = f"[DEBUG] Wheelslip raw={compressed_telemetry.get('deslizamiento_ruedas_raw')} intensity={compressed_telemetry.get('deslizamiento_ruedas_intensidad')}"
+                        print(ws_debug)
                     except Exception as e:
-                        logger.error(f"Failed to print wheelslip debug info: {e}")
+                        print(f"[ERROR] Failed to print wheelslip debug info: {e}")
                         import traceback
 
                         traceback.print_exc()
@@ -592,20 +607,22 @@ def telemetry_update_loop():
                     try:
                         active_list = active_alerts.get('alerts') if isinstance(active_alerts, dict) else active_alerts
                         if isinstance(active_list, list):
-                            logger.debug(f"Active alerts (count) = {len(active_list)}")
-                            logger.debug(f"Active alerts (types) = {[a.get('alert_type') for a in active_list[:10]]}")
+                            print(f"[DEBUG] Active alerts (count) = {len(active_list)}")
+                            print(f"[DEBUG] Active alerts (types) = {[a.get('alert_type') for a in active_list[:10]]}")
                         else:
-                            logger.debug(f"Active alerts: {active_alerts}")
+                            print(f"[DEBUG] Active alerts: {active_alerts}")
                     except Exception as e:
-                        logger.error(f"Failed to print active alerts debug info: {e}")
+                        print(f"[ERROR] Failed to print active alerts debug info: {e}")
                         import traceback
 
                         traceback.print_exc()
                 except Exception as emit_error:
-                    logger.error(f"Error en emit: {emit_error}")
-                    logger.debug(f"Estado tras error emit: predictive_running={predictive_analyzer.is_running if predictive_analyzer else False}")
+                    print(f"[WS] Error en emit: {emit_error}")
+                    print(
+                        f"[DEBUG] Estado tras error emit: predictive_running={predictive_analyzer.is_running if predictive_analyzer else False}"
+                    )
         except Exception as e:
-            logger.error(f"Error en actualizacion de telemetria: {e}")
+            print(f"[ERROR] Error en actualizacion de telemetria: {e}")
             import traceback
 
             traceback.print_exc()
@@ -780,6 +797,8 @@ def validate_config():
 def get_performance_report():
     """API para obtener reporte de rendimiento."""
     try:
+        if performance_monitor is None:
+            return jsonify({"error": "Performance monitor not available"}), 503
         report = performance_monitor.get_performance_report()
         return jsonify(report)
     except Exception as e:
@@ -890,7 +909,7 @@ def api_commands():
         "retries": 3          # opcional
     }
 
-    Si `wait_for_ack` es true, el endpoint esperará hasta `timeout` 
+    Si `wait_for_ack` es true, el endpoint esperará hasta `timeout`
     por un ACK y devolverá 200 con el ACK si lo recibe, o 504/500 si falla.
     Si `wait_for_ack` es false, devolverá 202 Accepted inmediatamente.
     """
@@ -911,10 +930,22 @@ def api_commands():
 
         # If not waiting for ack, just write atomically and return 202
         if not wait_for_ack_flag:
+            if atomic_write_cmd is None:
+                return (
+                    jsonify(
+                        {"status": "error", "error": "atomic command writer unavailable"}
+                    ),
+                    503,
+                )
             cmd_id = atomic_write_cmd(plugins_dir, payload)
             return jsonify({"status": "queued", "id": cmd_id}), 202
 
         # else, send with retries and wait for ack
+        if send_command_with_retries is None:
+            return (
+                jsonify({"status": "error", "error": "ACK sender unavailable"}),
+                503,
+            )
         ack = send_command_with_retries(plugins_dir, payload, timeout=timeout, retries=retries)
         if ack is not None:
             return jsonify({"status": "applied", "ack": ack}), 200
@@ -1237,7 +1268,11 @@ def handle_telemetry_request():
                 ),
                 "system_status": system_status,
                 "active_alerts": check_alerts(),
-                "performance": performance_monitor.get_performance_report(),
+                "performance": (
+                    performance_monitor.get_performance_report()
+                    if performance_monitor
+                    else {}
+                ),
                 "reports": get_automated_reports().get_reports_status(),
             },
         )
@@ -1565,7 +1600,11 @@ def get_dashboard_metrics():
         from performance_monitor import performance_monitor
 
         # Obtener métricas del monitor de rendimiento
-        perf_report = performance_monitor.get_performance_report()
+        perf_report = (
+            performance_monitor.get_performance_report()
+            if performance_monitor
+            else {}
+        )
 
         # Calcular métricas adicionales
         uptime = time.time() - (globals().get("start_time", time.time()))
@@ -1600,7 +1639,87 @@ def get_dashboard_metrics():
         return jsonify({"success": False, "error": "Módulos de métricas no disponibles"}), 503
     except Exception as e:
         print(f"[ERROR] Error obteniendo métricas del dashboard: {e}")
-        return jsonify({"success": False, "error": f"Error interno del servidor: {str(e)}"}), 500
+        logger.exception("Error collecting dashboard metrics: %s", e)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/metrics/io")
+def get_io_metrics_endpoint():
+    """Endpoint que devuelve métricas I/O del TSC Integration (lectura/escritura)."""
+    try:
+        if tsc_integration:
+            return jsonify({"tsc_io_metrics": tsc_integration.get_io_metrics()}), 200
+        else:
+            return jsonify({"error": "TSC integration not configured"}), 200
+    except Exception as e:
+        logger.exception("Error obtaining I/O metrics: %s", e)
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/metrics')
+def prometheus_metrics_endpoint():
+    """Export simple Prometheus text metrics (no depende de prometheus_client).
+
+    Exponemos métricas de I/O del TSC integration y métricas básicas del dashboard.
+    Formato: texto plano compatible con el colector Prometheus (type=gauge).
+    """
+    try:
+        lines = []
+        # TSC I/O metrics
+        io = tsc_integration.get_io_metrics() if tsc_integration else {}
+        for k, v in io.items():
+            name = f"tsc_io_{k}"
+            lines.append(f"# HELP {name} TSC I/O metric {k}")
+            lines.append(f"# TYPE {name} gauge")
+            # Ensure numeric formatting
+            try:
+                val = float(v)
+            except Exception:
+                val = 0.0
+            lines.append(f"{name} {val}")
+        # Alert system metrics (if available)
+        try:
+            if alert_system:
+                a_metrics = getattr(alert_system, "metrics", {})
+                for k, v in a_metrics.items():
+                    name = f"alerts_{k}"
+                    lines.append(f"# HELP {name} Alert system metric {k}")
+                    lines.append(f"# TYPE {name} gauge")
+                    try:
+                        val = float(v)
+                    except Exception:
+                        val = 0.0
+                    lines.append(f"{name} {val}")
+        except Exception:
+            pass
+
+        # Autopilot IA metrics (if available)
+        try:
+            if autopilot_system and getattr(autopilot_system, "ia", None):
+                ia_metrics = getattr(autopilot_system.ia, "metrics", {})
+                for k, v in ia_metrics.items():
+                    name = f"autopilot_ia_{k}"
+                    lines.append(f"# HELP {name} Autopilot IA metric {k}")
+                    lines.append(f"# TYPE {name} gauge")
+                    try:
+                        val = float(v)
+                    except Exception:
+                        val = 0.0
+                    lines.append(f"{name} {val}")
+        except Exception:
+            pass
+
+        # Dashboard uptime
+        uptime = time.time() - globals().get("start_time", time.time())
+        lines.append("# HELP dashboard_uptime_seconds Uptime of dashboard in seconds")
+        lines.append("# TYPE dashboard_uptime_seconds gauge")
+        lines.append(f"dashboard_uptime_seconds {uptime}")
+
+        body = "\n".join(lines) + "\n"
+        return Response(body, mimetype="text/plain; version=0.0.4")
+    except Exception as e:
+        logger.exception("Error producing prometheus metrics: %s", e)
+        return Response("", status=500, mimetype="text/plain")
 
 
 def start_bokeh_server():

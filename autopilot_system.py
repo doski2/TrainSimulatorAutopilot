@@ -6,6 +6,7 @@ Integra TSC + IA + Control de comandos
 """
 
 from datetime import datetime
+import time
 from typing import Any, Dict, Optional
 
 from tsc_integration import TSCIntegration
@@ -20,6 +21,13 @@ class IASistema:
         self.umbral_cambio_velocidad = 0.5  # mph
         self.umbral_aceleracion_maxima = 0.8
         self.umbral_freno_maximo = 0.9
+
+        # Métricas de IA
+        self.metrics = {
+            "decision_total": 0,
+            "decision_total_time_ms": 0.0,
+            "decision_last_latency_ms": 0.0,
+        }
 
     def procesar_telemetria(self, datos: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -251,8 +259,17 @@ class AutopilotSystem:
         if not datos_telemetria:
             return None
 
-        # Procesar con IA
+        # Procesar con IA y medir latencia
+        start = time.time()
         comandos = self.ia.procesar_telemetria(datos_telemetria)
+        elapsed_ms = (time.time() - start) * 1000.0
+        # Update IA metrics
+        try:
+            self.ia.metrics["decision_last_latency_ms"] = round(elapsed_ms, 3)
+            self.ia.metrics["decision_total"] += 1
+            self.ia.metrics["decision_total_time_ms"] += elapsed_ms
+        except Exception:
+            pass
 
         # Reglas de seguridad por señal - overrides (solo si autobrake_by_signal está activado)
         try:

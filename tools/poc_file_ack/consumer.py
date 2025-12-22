@@ -8,6 +8,23 @@ from collections import OrderedDict
 logger = logging.getLogger(__name__)
 
 
+class _OrderedSetDict(OrderedDict):
+    """OrderedDict compatible wrapper that provides a set-like `add()` method.
+
+    Tests expect a `processed` attribute that supports `.add(id)` but the
+    implementation prefers an OrderedDict to maintain insertion order and
+    timestamps. This small subclass preserves OrderedDict behaviour while
+    adding an `add()` convenience method used in tests.
+    """
+
+    def add(self, key, value=None):
+        # If value is omitted, store current timestamp to preserve previous behaviour
+        if value is None:
+            self[key] = int(time.time())
+        else:
+            self[key] = value
+
+
 class Consumer(threading.Thread):
     """Simple consumer that polls a directory for cmd-*.json files
     and writes ack-{id}.json after 'processing'.
@@ -23,8 +40,8 @@ class Consumer(threading.Thread):
         self.poll_interval = poll_interval
         self.process_time = process_time
         self._stop_event = threading.Event()
-        # Use OrderedDict as an LRU-like structure: keys are cmd_ids, values are timestamps
-        self.processed = OrderedDict()
+        # Use OrderedDict-like structure (with .add() compatibility) as an LRU-like structure: keys are cmd_ids, values are timestamps
+        self.processed = _OrderedSetDict()
         self.processed_ids_file = os.path.join(self.dirpath, processed_ids_file)
         # Defensive: make sure we are not accidentally shadowing Thread._stop
         # Older versions of the class used `self._stop = threading.Event()` which

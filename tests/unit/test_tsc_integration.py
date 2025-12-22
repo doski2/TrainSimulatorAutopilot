@@ -174,3 +174,79 @@ def test_enviar_comandos_no_duplicate_when_same_file(tsc_integration, tmp_path):
         assert lower.exists()
         txt = lower.read_text(encoding="utf-8")
         assert "Regulator:0.500" in txt
+
+
+def test_enviar_comandos_retries_on_permission_error(tmp_path, monkeypatch):
+    """Simular PermissionError en la primera escritura y verificar reintentos."""
+    tsc = TSCIntegration()
+    # Preparar ruta de SendCommand en tmp dir
+    send_dir = tmp_path / "plugins"
+    send_dir.mkdir()
+    send_cmd = send_dir / "SendCommand.txt"
+    tsc.ruta_archivo_comandos = str(send_cmd)
+
+    orig_open = open
+    calls = {"count": 0}
+
+    def fake_open(path, mode="r", *args, **kwargs):
+        # Simular PermissionError solo durante la primera escritura al archivo temporal SendCommand.txt.tmp
+        tmp_path = os.path.abspath(str(tsc.ruta_archivo_comandos) + ".tmp")
+        if os.path.abspath(path) == tmp_path and "w" in mode and calls["count"] == 0:
+            calls["count"] += 1
+            raise PermissionError("file locked")
+        return orig_open(path, mode, *args, **kwargs)
+
+    monkeypatch.setattr("builtins.open", fake_open)
+
+    # No debe lanzar, debe retornar True y terminar escribiendo el archivo
+    assert tsc.enviar_comandos({"acelerador": 0.4}) is True
+    assert send_cmd.exists()
+    contenido = send_cmd.read_text(encoding="utf-8")
+    assert "Regulator:0.400" in contenido
+    # Metrics should show that a write retry happened and latency recorded
+    metrics = tsc.get_io_metrics()
+    assert metrics["write_total_retries"] >= 1
+    assert metrics["write_attempts_last"] >= 1
+    # latency may be very small on fast filesystems; ensure it's present as a non-negative number
+    assert metrics["write_last_latency_ms"] >= 0.0
+
+
+def test_leer_datos_retries_on_permission_error(tmp_path, monkeypatch):
+    """Simular PermissionError en la primera lectura y verificar reintentos."""
+    tsc = TSCIntegration()
+    temp = tmp_path / "GetData.txt"
+    temp.write_text("ControlName:CurrentSpeed\nControlValue:5.0\n", encoding="utf-8")
+    tsc.ruta_archivo = str(temp)
+
+    orig_open = open
+    calls = {"count": 0}
+
+    def fake_open(path, mode="r", *args, **kwargs):
+        if os.path.abspath(path) == os.path.abspath(tsc.ruta_archivo) and calls["count"] == 0:
+            calls["count"] += 1
+            raise PermissionError("file locked on read")
+        return orig_open(path, mode, *args, **kwargs)
+
+    monkeypatch.setattr("builtins.open", fake_open)
+
+    datos = tsc.leer_datos_archivo()
+    assert datos is not None
+    assert datos.get("CurrentSpeed") == 5.0
+    # Metrics should show that we performed at least one retry
+    metrics = tsc.get_io_metrics()
+    assert metrics["read_total_retries"] >= 1
+    assert metrics["read_last_latency_ms"] > 0.0
+
+
+def test_leer_datos_ignora_entrada_parcial(tmp_path):
+    """Si GetData.txt está parcialmente escrito (ControlName sin ControlValue), debe ignorar esa entrada."""
+    tsc = TSCIntegration()
+    temp = tmp_path / "GetData_partial.txt"
+    content = "ControlName:CurrentSpeed\nControlValue:10.0\nControlName:Acceleration\n"  # falta ControlValue para Acceleration
+    temp.write_text(content, encoding="utf-8")
+    tsc.ruta_archivo = str(temp)
+
+    datos = tsc.leer_datos_archivo()
+    assert datos is not None
+    assert datos.get("CurrentSpeed") == 10.0
+    assert "Acceleration" not in datos
