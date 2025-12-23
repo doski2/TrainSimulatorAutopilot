@@ -245,6 +245,13 @@ app.config["SESSION_COOKIE_SECURE"] = False  # Para desarrollo local
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["PERMANENT_SESSION_LIFETIME"] = 3600  # 1 hora
 
+# Timeout para esperar ACK del plugin autopilot (segundos). Puede sobreescribirse
+# por variable de entorno AUTOPILOT_ACK_TIMEOUT
+try:
+    AUTOPILOT_ACK_TIMEOUT = float(os.getenv("AUTOPILOT_ACK_TIMEOUT", "3.0"))
+except Exception:
+    AUTOPILOT_ACK_TIMEOUT = 3.0
+
 # Configuración SocketIO
 SOCKETIO_CORS_ORIGINS = "*"
 SOCKETIO_ASYNC_MODE = "threading"
@@ -274,6 +281,12 @@ system_status = {
     "reports_active": False,
     "autobrake_by_signal": True,
     "performance_monitoring": False,
+}
+
+# Métricas relacionadas con el plugin Autopilot (visibilidad y reintentos)
+autopilot_metrics = {
+    "retry_total": 0,
+    "unacked_total": 0,
 }
 
 # Estado de controles de locomotora
@@ -987,15 +1000,36 @@ def control_action(action):
                         "system_message",
                         {"message": "Piloto automático iniciado", "type": "success"},
                     )
+                    # Determinar si el cliente pidió esperar por ACK (por defecto: True)
+                    payload = request.get_json(silent=True) or {}
+                    wait_for_ack = bool(payload.get("wait_for_ack", True))
+
                     # Intentar confirmar estado desde el plugin Lua
                     plugin_state = None
                     try:
                         if tsc_integration:
                             # Primer intento: comprobar estado actual
                             plugin_state = tsc_integration.get_autopilot_plugin_state()
-                            # Si no hay ack inmediato, esperar brevemente por la confirmación
-                            if plugin_state is None and tsc_integration.wait_for_autopilot_state("on", timeout=2.0):
-                                plugin_state = "on"
+                            # Si no hay ack inmediato y el cliente quiere esperar, hacerlo con timeout configurado
+                            if plugin_state is None and wait_for_ack:
+                                if tsc_integration.wait_for_autopilot_state("on", timeout=AUTOPILOT_ACK_TIMEOUT):
+                                    plugin_state = "on"
+                                else:
+                                    # No llegó ACK en tiempo: registrar métrica y responder con 504 (Gateway Timeout)
+                                    try:
+                                        autopilot_metrics["unacked_total"] += 1
+                                    except Exception:
+                                        pass
+                                    return (
+                                        jsonify(
+                                            {
+                                                "success": False,
+                                                "error": "Autopilot plugin did not confirm start within timeout",
+                                                "action": action,
+                                            }
+                                        ),
+                                        504,
+                                    )
                     except Exception:
                         plugin_state = None
 
@@ -1008,6 +1042,11 @@ def control_action(action):
                         500,
                     )
             else:
+                return (
+                    jsonify({"success": False, "error": "Sistema autopilot no inicializado"}),
+                    500,
+                )
+
                 return (
                     jsonify({"success": False, "error": "Sistema autopilot no inicializado"}),
                     500,
@@ -1282,6 +1321,40 @@ def handle_telemetry_request():
 
 
 @app.route("/bokeh")
+
+
+@app.route('/api/control/retry_autopilot', methods=['POST'])
+def retry_autopilot():
+    """Endpoint para reintentar iniciar Autopilot sin esperar por ACK.
+
+    - Incrementa un contador de reintentos
+    - Envía comando de inicio y devuelve el estado conocido del plugin (no espera ACK)
+    """
+    global autopilot_metrics
+    try:
+        if not autopilot_system:
+            return jsonify({"success": False, "error": "Sistema autopilot no inicializado"}), 500
+
+        # Incrementar contador de reintentos
+        try:
+            autopilot_metrics["retry_total"] += 1
+        except Exception:
+            pass
+
+        # Forzar start sin esperar ACK
+        try:
+            autopilot_system.start()
+            autopilot_system.activar_modo_automatico()
+            # Intentar leer estado conocido del plugin (no esperar)
+            plugin_state = None
+            if tsc_integration:
+                plugin_state = tsc_integration.get_autopilot_plugin_state()
+            return jsonify({"success": True, "action": "retry_autopilot", "autopilot_plugin_state": plugin_state}), 200
+        except Exception as e:
+            return jsonify({"success": False, "error": str(e)}), 500
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
 def bokeh_dashboard():
     """Servir el dashboard interactivo de Bokeh."""
     try:
@@ -1714,6 +1787,33 @@ def prometheus_metrics_endpoint():
         lines.append("# HELP dashboard_uptime_seconds Uptime of dashboard in seconds")
         lines.append("# TYPE dashboard_uptime_seconds gauge")
         lines.append(f"dashboard_uptime_seconds {uptime}")
+
+        # Autopilot plugin metrics (reintentos y ACKs faltantes)
+        try:
+            am = globals().get("autopilot_metrics", {})
+            for k, v in am.items():
+                name = f"autopilot_plugin_{k}"
+                lines.append(f"# HELP {name} Autopilot plugin metric {k}")
+                lines.append(f"# TYPE {name} gauge")
+                try:
+                    val = float(v)
+                except Exception:
+                    val = 0.0
+                lines.append(f"{name} {val}")
+        except Exception:
+            pass
+
+        # Exponer estado del plugin como métric gauge (1 = on, 0 = off/unknown)
+        try:
+            plugin_state = None
+            if tsc_integration:
+                plugin_state = tsc_integration.get_autopilot_plugin_state()
+            state_val = 1.0 if plugin_state == "on" else 0.0
+            lines.append("# HELP autopilot_plugin_state_up 1 if autopilot plugin reports 'on'")
+            lines.append("# TYPE autopilot_plugin_state_up gauge")
+            lines.append(f"autopilot_plugin_state_up {state_val}")
+        except Exception:
+            pass
 
         body = "\n".join(lines) + "\n"
         return Response(body, mimetype="text/plain; version=0.0.4")
