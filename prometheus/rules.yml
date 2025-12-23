@@ -1,0 +1,38 @@
+groups:
+  - name: train_simulator.rules
+    rules:
+      - alert: HighTSCReadRetries
+        expr: tsc_io_read_total_retries > 5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "TSC read retries high"
+          description: "The Train Simulator integration performed more than 5 read retries in total (node={{ $labels.instance }})."
+
+      - alert: HighTSCWriteRetries
+        expr: tsc_io_write_total_retries > 5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "TSC write retries high"
+          description: "The Train Simulator integration performed more than 5 write retries in total (node={{ $labels.instance }})."
+
+      - alert: HighIADecisionLatency
+        expr: autopilot_ia_decision_last_latency_ms > 200
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "IA decision latency high"
+          description: "Autopilot AI decision last latency exceeded 200 ms (value={{ $value }} ms)."
+
+      - alert: ElevatedAlertsRate
+        expr: increase(alerts_total_generated[5m]) > 3
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Multiple alerts generated"
+          description: "More than 3 alerts were generated in the last 5 minutes."

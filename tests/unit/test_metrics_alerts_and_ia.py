@@ -1,9 +1,10 @@
 import os
 import tempfile
-from web_dashboard import app
+
 from alert_system import AlertSystem
 from autopilot_system import AutopilotSystem
 from tsc_integration import TSCIntegration
+from web_dashboard import app
 
 
 def test_alert_metrics_reflect_generated_alert(tmp_path, monkeypatch):

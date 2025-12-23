@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 30s
+
+rule_files:
+  - "rules.yml"
+
+scrape_configs:
+  - job_name: 'train_simulator_autopilot'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['localhost:5001']
+        labels:
+          service: train-simulator-autopilot
+
+  # Optional: scrape the dashboard on host network for containerized setups
+  - job_name: 'train_simulator_autopilot_local'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['web_dashboard:5001']
+        labels:
+          service: train-simulator-autopilot

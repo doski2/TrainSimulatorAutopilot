@@ -21,6 +21,16 @@ except ImportError:
 
     logger = logging.getLogger(__name__)
 
+# Intentar usar portalocker para bloqueo de archivo cuando esté disponible.
+# Si no está instalado, el código cae en el comportamiento de reintentos existente.
+try:
+    import portalocker
+
+    HAS_PORTALOCKER = True
+except Exception:
+    portalocker = None
+    HAS_PORTALOCKER = False
+
 
 class TSCIntegration:
     """Clase principal para la integración con Train Simulator Classic."""
@@ -214,8 +224,18 @@ class TSCIntegration:
         start = time.time()
         for attempt in range(1, retries + 1):
             try:
-                with open(self.ruta_archivo, encoding="utf-8") as f:
-                    lines = f.readlines()
+                # Try to use portalocker to obtain a short shared/read lock when available
+                if HAS_PORTALOCKER:
+                    try:
+                        with portalocker.Lock(self.ruta_archivo, 'r', timeout=0.1) as f:
+                            lines = f.readlines()
+                    except Exception as _e:
+                        # Fallback to plain open if lock acquisition fails quickly
+                        with open(self.ruta_archivo, encoding="utf-8") as f:
+                            lines = f.readlines()
+                else:
+                    with open(self.ruta_archivo, encoding="utf-8") as f:
+                        lines = f.readlines()
                 if lines:
                     # Normalizar BOM si existe
                     if lines[0].startswith("\ufeff"):
@@ -778,7 +798,21 @@ class TSCIntegration:
                 with open(tmp, "w", encoding="utf-8") as f:
                     for linea in lines:
                         f.write(linea + "\n")
-                os.replace(tmp, file_path)
+                # If portalocker is available, try to acquire a short exclusive lock on the
+                # destination file before replacing it, to reduce the window where a reader
+                # might see an inconsistent state on platforms with strong locking semantics.
+                if HAS_PORTALOCKER:
+                    try:
+                        # Acquire an exclusive append-mode lock on the destination file
+                        # (this will create the file if it does not exist) and then replace.
+                        with portalocker.Lock(file_path, 'a', timeout=0.25):
+                            os.replace(tmp, file_path)
+                    except Exception:
+                        # If locking fails, fall back to a direct replace
+                        os.replace(tmp, file_path)
+                else:
+                    os.replace(tmp, file_path)
+
                 elapsed_ms = (time.time() - start) * 1000.0
                 # update metrics
                 self.io_metrics["write_attempts_last"] = attempt

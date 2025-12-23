@@ -1,0 +1,78 @@
+name: Integration Tests (Prometheus)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Prepare Prometheus CI config
+      run: |
+        python - <<'PY'
+import io,sys
+p='prometheus/prometheus.yml'
+s=open(p).read()
+s=s.replace('localhost:5001','host.docker.internal:5001')
+open('prometheus/ci_prometheus.yml','w').write(s)
+print('WROTE prometheus/ci_prometheus.yml')
+PY
+
+    - name: Start Prometheus container
+      run: |
+        docker run -d --name prometheus-ci -p 9090:9090 -v ${{ github.workspace }}/prometheus:/etc/prometheus prom/prometheus --config.file=/etc/prometheus/ci_prometheus.yml
+
+    - name: Wait for Prometheus ready
+      run: |
+        for i in {1..30}; do curl --silent --fail http://localhost:9090/-/ready && exit 0 || sleep 1; done; exit 1
+
+    - name: Start web dashboard
+      run: |
+        nohup python web_dashboard.py &>/dev/null &
+        sleep 2
+
+    - name: Wait for dashboard /metrics
+      run: |
+        for i in {1..30}; do curl --silent --fail http://127.0.0.1:5001/metrics && exit 0 || sleep 1; done; exit 1
+
+    - name: Check Prometheus sees the target
+      run: |
+        for i in {1..30}; do
+          python - <<'PY'
+import sys, requests
+r = requests.get('http://localhost:9090/api/v1/targets', timeout=5).json()
+for t in r.get('data',{}).get('activeTargets',[]):
+    addr = t.get('discoveredLabels',{}).get('__address__')
+    if addr in ('host.docker.internal:5001','127.0.0.1:5001','localhost:5001') and t.get('health') == 'up':
+        sys.exit(0)
+sys.exit(1)
+PY
+          if [ $? -eq 0 ]; then exit 0; fi
+          sleep 1
+done
+        echo "Prometheus did not see healthy target" && exit 1
+
+    - name: Run integration tests
+      run: |
+        python -m pytest tests/integration -q
+
+    - name: Stop Prometheus container
+      if: always()
+      run: docker rm -f prometheus-ci || true
