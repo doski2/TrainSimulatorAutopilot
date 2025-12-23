@@ -28,5 +28,179 @@
     },
     "acknowledged": true,
     "acknowledged_at": "2025-12-15T21:32:39.168330"
+  },
+  {
+    "alert_id": "brake_pipe_diff_20251220_232537",
+    "alert_type": "brake_pressure_discrepancy",
+    "severity": "high",
+    "title": "Discrepancia Presión Tubo de Freno (Frente/Cola)",
+    "message": "Diferencia de presión del tubo de freno entre frente (64.0 PSI) y cola (90.0 PSI): 26.0 PSI",
+    "timestamp": "2025-12-20T23:25:37.689728",
+    "data": {
+      "front": 64.0,
+      "tail": 90.0,
+      "diff": 26.0,
+      "threshold": 20.0
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "brake_pipe_diff_20251220_232637",
+    "alert_type": "brake_pressure_discrepancy",
+    "severity": "high",
+    "title": "Discrepancia Presión Tubo de Freno (Frente/Cola)",
+    "message": "Diferencia de presión del tubo de freno entre frente (64.0 PSI) y cola (90.0 PSI): 26.0 PSI",
+    "timestamp": "2025-12-20T23:26:37.694993",
+    "data": {
+      "front": 64.0,
+      "tail": 90.0,
+      "diff": 26.0,
+      "threshold": 20.0
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "brake_pipe_diff_20251220_233057",
+    "alert_type": "brake_pressure_discrepancy",
+    "severity": "high",
+    "title": "Discrepancia Presión Tubo de Freno (Frente/Cola)",
+    "message": "Diferencia de presión del tubo de freno entre frente (64.0 PSI) y cola (90.0 PSI): 26.0 PSI",
+    "timestamp": "2025-12-20T23:30:57.200086",
+    "data": {
+      "front": 64.0,
+      "tail": 90.0,
+      "diff": 26.0,
+      "threshold": 20.0
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "brake_pipe_diff_20251220_233157",
+    "alert_type": "brake_pressure_discrepancy",
+    "severity": "high",
+    "title": "Discrepancia Presión Tubo de Freno (Frente/Cola)",
+    "message": "Diferencia de presión del tubo de freno entre frente (64.0 PSI) y cola (90.0 PSI): 26.0 PSI",
+    "timestamp": "2025-12-20T23:31:57.206095",
+    "data": {
+      "front": 64.0,
+      "tail": 90.0,
+      "diff": 26.0,
+      "threshold": 20.0
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "brake_pipe_diff_20251220_233312",
+    "alert_type": "brake_pressure_discrepancy",
+    "severity": "high",
+    "title": "Discrepancia Presión Tubo de Freno (Frente/Cola)",
+    "message": "Diferencia de presión del tubo de freno entre frente (64.0 PSI) y cola (90.0 PSI): 26.0 PSI",
+    "timestamp": "2025-12-20T23:33:12.696109",
+    "data": {
+      "front": 64.0,
+      "tail": 90.0,
+      "diff": 26.0,
+      "threshold": 20.0
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "brake_pipe_diff_20251221_001627",
+    "alert_type": "brake_pressure_discrepancy",
+    "severity": "high",
+    "title": "Discrepancia Presión Tubo de Freno (Frente/Cola)",
+    "message": "Diferencia de presión del tubo de freno entre frente (64.0 PSI) y cola (90.0 PSI): 26.0 PSI",
+    "timestamp": "2025-12-21T00:16:27.572315",
+    "data": {
+      "front": 64.0,
+      "tail": 90.0,
+      "diff": 26.0,
+      "threshold": 20.0
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "brake_pipe_diff_20251221_001727",
+    "alert_type": "brake_pressure_discrepancy",
+    "severity": "high",
+    "title": "Discrepancia Presión Tubo de Freno (Frente/Cola)",
+    "message": "Diferencia de presión del tubo de freno entre frente (64.0 PSI) y cola (90.0 PSI): 26.0 PSI",
+    "timestamp": "2025-12-21T00:17:27.576753",
+    "data": {
+      "front": 64.0,
+      "tail": 90.0,
+      "diff": 26.0,
+      "threshold": 20.0
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "brake_pipe_diff_20251221_001827",
+    "alert_type": "brake_pressure_discrepancy",
+    "severity": "high",
+    "title": "Discrepancia Presión Tubo de Freno (Frente/Cola)",
+    "message": "Diferencia de presión del tubo de freno entre frente (64.0 PSI) y cola (90.0 PSI): 26.0 PSI",
+    "timestamp": "2025-12-21T00:18:27.585614",
+    "data": {
+      "front": 64.0,
+      "tail": 90.0,
+      "diff": 26.0,
+      "threshold": 20.0
+    },
+    "acknowledged": false,
+    "acknowledged_at": null
+  },
+  {
+    "alert_id": "brake_pipe_diff_20251221_002119",
+    "alert_type": "brake_pressure_discrepancy",
+    "severity": "high",
+    "title": "Discrepancia Presión Tubo de Freno (Frente/Cola)",
+    "message": "Diferencia de presión del tubo de freno entre frente (69.8 PSI) y cola (90.0 PSI): 20.2 PSI",
+    "timestamp": "2025-12-21T00:21:19.519109",
+    "data": {
+      "front": 69.8,
+      "tail": 90.0,
+      "diff": 20.200000000000003,
+      "threshold": 20.0
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-22T22:40:19.593325"
+  },
+  {
+    "alert_id": "wheelslip_20251222_223955",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-22T22:39:55.222302",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-22T22:41:27.864269"
+  },
+  {
+    "alert_id": "wheelslip_20251222_224055",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-22T22:40:55.224833",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-22T22:41:27.864275"
   }
 ]

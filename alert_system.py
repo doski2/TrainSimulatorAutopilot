@@ -5,6 +5,7 @@ import json
 import os
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+import time
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
@@ -146,6 +147,14 @@ class AlertSystem:
         self.last_check_time = None
         self.last_telemetry: Optional[Dict] = None
         self.baseline_data = {}  # Datos baseline para comparación
+
+        # Métricas de alertas
+        self.metrics = {
+            "alerts_total_generated": 0,
+            "alerts_last_cycle_count": 0,
+            "alerts_active_count": len(self.alerts),
+            "last_check_duration_ms": 0.0,
+        }
 
         print("Sistema de alertas inicializado")
 
@@ -510,6 +519,7 @@ class AlertSystem:
         """Realizar verificación completa de salud del sistema"""
         alerts = []
 
+        start = time.time()
         try:
             # Obtener datos actuales
             raw_data = self.tsc_integration.leer_datos_archivo()
@@ -560,6 +570,13 @@ class AlertSystem:
                     data={"error": str(e), "traceback": tb},
                 )
             )
+        finally:
+            elapsed_ms = (time.time() - start) * 1000.0
+            # Update metrics
+            self.metrics["last_check_duration_ms"] = round(elapsed_ms, 3)
+            self.metrics["alerts_last_cycle_count"] = len(alerts)
+            self.metrics["alerts_total_generated"] += len(alerts)
+            self.metrics["alerts_active_count"] = len(self.alerts) + len(alerts)
 
         return alerts
 

@@ -21,6 +21,16 @@ except ImportError:
 
     logger = logging.getLogger(__name__)
 
+# Intentar usar portalocker para bloqueo de archivo cuando esté disponible.
+# Si no está instalado, el código cae en el comportamiento de reintentos existente.
+try:
+    import portalocker
+
+    HAS_PORTALOCKER = True
+except Exception:
+    portalocker = None
+    HAS_PORTALOCKER = False
+
 
 class TSCIntegration:
     """Clase principal para la integración con Train Simulator Classic."""
@@ -83,18 +93,11 @@ class TSCIntegration:
             "AirBrakePipePressurePSI": "presion_tubo_freno",
             "LocoBrakeCylinderPressurePSI": "presion_freno_loco",
             "TrainBrakeCylinderPressurePSI": "presion_freno_tren",
-            "EqReservoirPressurePSIAdvanced": "presion_deposito_equalizacion",
-            "MainReservoirPressurePSIDisplayed": "presion_deposito_principal",
-            "AirBrakePipePressurePSIDisplayed": "presion_tubo_freno_mostrada",
-            "AuxReservoirPressure": "presion_deposito_auxiliar",
+            # Brake pipe tail end (some mods report this separately)
             "BrakePipePressureTailEnd": "presion_tubo_freno_cola",
-            "LocoBrakeCylinderPressurePSIDisplayed": "presion_freno_loco_mostrada",
-            "LocoBrakeCylinderPressurePSIAdvanced": "presion_freno_loco_avanzada",
             # Engine Control Mappings
-            "EngineBrakeControl": "freno_motor_control",
             "Regulator": "acelerador",
             "Reverser": "reverser",
-            "TrainBrakeControl": "posicion_freno_tren",
             "VirtualBrake": "posicion_freno_tren",
             "DynamicBrake": "freno_dinamico",
             "HandBrake": "freno_mano",
@@ -110,7 +113,6 @@ class TSCIntegration:
         self.mapeo_comandos = {
             "acelerador": "Regulator",  # Para SD40
             "freno_tren": "TrainBrakeControl",
-            "freno_motor": "EngineBrakeControl",
             "freno_dinamico": "DynamicBrake",
             "reverser": "Reverser",  # Changed to Reverser
             # Nuevos controles de locomotora
@@ -127,6 +129,19 @@ class TSCIntegration:
         # Default matches common locomotive max RPM (configurable via API/back-end)
         self.max_engine_rpm = 5000.0
         # Fuel capacity option ignored by integration; configuration removed
+
+        # I/O metrics for monitoring and diagnostics
+        # - read_total_retries/write_total_retries: cumulative retry counts
+        # - read_last_latency_ms/write_last_latency_ms: latency of last successful op in ms
+        # - read_attempts_last/write_attempts_last: attempts used in last call
+        self.io_metrics = {
+            "read_total_retries": 0,
+            "read_last_latency_ms": 0.0,
+            "read_attempts_last": 0,
+            "write_total_retries": 0,
+            "write_last_latency_ms": 0.0,
+            "write_attempts_last": 0,
+        }
 
     def _to_float(self, val: Any, default: float = 0.0) -> float:
         """Safely convert a value to float, returning default on failure."""
@@ -197,6 +212,58 @@ class TSCIntegration:
             time.sleep(0.1)
         return False
 
+    def _robust_read_lines(self, retries: int = 3, wait: float = 0.05) -> list[str]:
+        """Leer líneas del archivo GetData.txt con reintentos y saneamiento.
+
+        - Reintenta ante errores de E/S (ej. PermissionError por bloqueo del simulador)
+        - Normaliza BOM UTF-8 en la primera línea
+        - Retorna la lista de líneas leídas (puede estar incompleta; el parser
+          ignorará entradas parciales)
+        """
+        last_exc = None
+        start = time.time()
+        for attempt in range(1, retries + 1):
+            try:
+                # Try to use portalocker to obtain a short shared/read lock when available
+                if HAS_PORTALOCKER:
+                    try:
+                        with portalocker.Lock(self.ruta_archivo, 'r', timeout=0.1) as f:
+                            lines = f.readlines()
+                    except Exception as _e:
+                        # Fallback to plain open if lock acquisition fails quickly
+                        with open(self.ruta_archivo, encoding="utf-8") as f:
+                            lines = f.readlines()
+                else:
+                    with open(self.ruta_archivo, encoding="utf-8") as f:
+                        lines = f.readlines()
+                if lines:
+                    # Normalizar BOM si existe
+                    if lines[0].startswith("\ufeff"):
+                        lines[0] = lines[0].lstrip("\ufeff")
+                elapsed_ms = (time.time() - start) * 1000.0
+                # update metrics
+                self.io_metrics["read_attempts_last"] = attempt
+                if attempt > 1:
+                    self.io_metrics["read_total_retries"] += (attempt - 1)
+                self.io_metrics["read_last_latency_ms"] = round(elapsed_ms, 3)
+                return lines
+            except Exception as e:
+                last_exc = e
+                logger.warning(
+                    "Attempt %d to read %s failed: %s", attempt, self.ruta_archivo, e
+                )
+                try:
+                    time.sleep(wait * attempt)
+                except Exception:
+                    pass
+        # All attempts failed: record attempts and total retries
+        elapsed_ms = (time.time() - start) * 1000.0
+        self.io_metrics["read_attempts_last"] = retries
+        self.io_metrics["read_total_retries"] += retries
+        self.io_metrics["read_last_latency_ms"] = round(elapsed_ms, 3)
+        logger.exception("Failed to read file %s after %d attempts", self.ruta_archivo, retries)
+        raise last_exc
+
     def leer_datos_archivo(self) -> Optional[Dict[str, Any]]:
         """
         Leer datos del archivo GetData.txt.
@@ -208,14 +275,7 @@ class TSCIntegration:
             return None
 
         try:
-            with open(self.ruta_archivo, encoding="utf-8") as f:
-                lineas = f.readlines()
-
-            # Normalizar y remover BOM UTF-8 si existe en la primera línea
-            if lineas:
-                # ".lstrip('\ufeff')" remueve el carácter BOM (si está presente)
-                if lineas[0].startswith("\ufeff"):
-                    lineas[0] = lineas[0].lstrip("\ufeff")
+            lineas = self._robust_read_lines()
 
             datos = {}
             i = 0
@@ -223,11 +283,10 @@ class TSCIntegration:
                 linea = lineas[i].strip()
                 if linea.startswith("ControlName:"):
                     nombre_control = linea.split(":", 1)[1].strip()
-                    # Buscar el valor correspondiente
+                    # Buscar el valor correspondiente (si falta, ignorar la entrada)
                     j = i + 1
                     while j < len(lineas) and not lineas[j].strip().startswith("ControlValue:"):
                         j += 1
-
                     if j < len(lineas):
                         valor_str = lineas[j].strip().split(":", 1)[1].strip()
                         try:
@@ -235,13 +294,15 @@ class TSCIntegration:
                             datos[nombre_control] = valor
                         except ValueError:
                             datos[nombre_control] = valor_str
-
+                    else:
+                        # Valor faltante: registrar y continuar (evita crash por escrituras parciales)
+                        logger.debug("Ignoring ControlName '%s' without ControlValue (partial write)", nombre_control)
                 i += 1
 
             return datos
 
         except Exception as e:
-            print(f"Error leyendo archivo GetData.txt: {e}")
+            logger.exception("Error leyendo archivo GetData.txt: %s", e)
             return None
 
     def convertir_datos_ia(self, datos_archivo: Dict[str, Any]) -> Dict[str, Any]:
@@ -321,12 +382,24 @@ class TSCIntegration:
             if "RPMSource" in datos_archivo:
                 datos_ia["rpm_fuente"] = datos_archivo.get("RPMSource")
 
-        # Priorizar control de freno real (TrainBrakeControl/VirtualBrake) si está disponible
+        # Si se proporciona TrainBrakeControl directamente, mapearlo a posicion_freno_tren
+        # para unificar el manejo con VirtualBrake y permitir inferencias posteriores.
+        try:
+            if "TrainBrakeControl" in datos_archivo and "posicion_freno_tren" not in datos_ia:
+                try:
+                    datos_ia["posicion_freno_tren"] = self._to_float(datos_archivo.get("TrainBrakeControl", 0.0))
+                except Exception:
+                    datos_ia["posicion_freno_tren"] = 0.0
+        except Exception:
+            # No bloquear si falla el mapeo; continuar
+            pass
+
+        # Priorizar control de freno real (posicion_freno_tren/VirtualBrake) si está disponible
         try:
             if datos_ia.get("posicion_freno_tren") is not None:
                 val = datos_ia.get("posicion_freno_tren")
                 try:
-                        val = self._to_float(val)
+                    val = self._to_float(val)
                 except Exception:
                     val = 0.0
                 # Clamp entre 0 y 1
@@ -709,6 +782,59 @@ class TSCIntegration:
 
         return datos_ia
 
+    def _atomic_write_lines(self, file_path: str, lines: list[str], retries: int = 3, wait: float = 0.1) -> None:
+        """Escribir una lista de líneas en `file_path` de forma atómica.
+
+        Implementa escritura a fichero temporal en el mismo directorio y `os.replace`
+        para minimizar ventanas de inconsistencia y reintenta en caso de errores de
+        E/S (por ejemplo, PermissionError por bloqueo del archivo por el simulador).
+        """
+        dirname = os.path.dirname(file_path) or os.getcwd()
+        tmp = os.path.join(dirname, os.path.basename(file_path) + ".tmp")
+        last_exc = None
+        start = time.time()
+        for attempt in range(1, retries + 1):
+            try:
+                with open(tmp, "w", encoding="utf-8") as f:
+                    for linea in lines:
+                        f.write(linea + "\n")
+                # If portalocker is available, try to acquire a short exclusive lock on the
+                # destination file before replacing it, to reduce the window where a reader
+                # might see an inconsistent state on platforms with strong locking semantics.
+                if HAS_PORTALOCKER:
+                    try:
+                        # Acquire an exclusive append-mode lock on the destination file
+                        # (this will create the file if it does not exist) and then replace.
+                        with portalocker.Lock(file_path, 'a', timeout=0.25):
+                            os.replace(tmp, file_path)
+                    except Exception:
+                        # If locking fails, fall back to a direct replace
+                        os.replace(tmp, file_path)
+                else:
+                    os.replace(tmp, file_path)
+
+                elapsed_ms = (time.time() - start) * 1000.0
+                # update metrics
+                self.io_metrics["write_attempts_last"] = attempt
+                if attempt > 1:
+                    self.io_metrics["write_total_retries"] += (attempt - 1)
+                self.io_metrics["write_last_latency_ms"] = round(elapsed_ms, 3)
+                return
+            except Exception as e:
+                last_exc = e
+                logger.warning("Attempt %d to write %s failed: %s", attempt, file_path, e)
+                try:
+                    time.sleep(wait * attempt)
+                except Exception:
+                    pass
+        # All attempts failed: record attempts and total retries
+        elapsed_ms = (time.time() - start) * 1000.0
+        self.io_metrics["write_attempts_last"] = retries
+        self.io_metrics["write_total_retries"] += retries
+        self.io_metrics["write_last_latency_ms"] = round(elapsed_ms, 3)
+        logger.exception("Failed to write file %s after %d attempts", file_path, retries)
+        raise last_exc
+
     def enviar_comandos(self, comandos: Dict[str, Any]) -> bool:
         """
         Enviar comandos de control al juego escribiendo al archivo autopilot_commands.txt.
@@ -741,7 +867,6 @@ class TSCIntegration:
                 fallback_map = {
                     "Regulator": ["Regulator", "VirtualThrottle", "SimpleThrottle"],
                     "TrainBrakeControl": ["TrainBrakeControl", "VirtualBrake"],
-                    "EngineBrakeControl": ["EngineBrakeControl", "VirtualEngineBrakeControl"],
                     "DynamicBrake": ["DynamicBrake", "VirtualEngineBrakeControl"],
                 }
                 if self.datos_anteriores and comando_raildriver in fallback_map:
@@ -792,10 +917,12 @@ class TSCIntegration:
             if not comandos_texto:
                 return True
 
-            # Escribir al archivo autopilot_commands.txt
-            with open(self.ruta_archivo_comandos, "w", encoding="utf-8") as f:
-                for linea in comandos_texto:
-                    f.write(linea + "\n")
+            # Escribir al archivo autopilot_commands.txt de forma atómica con reintentos
+            try:
+                self._atomic_write_lines(self.ruta_archivo_comandos, comandos_texto)
+            except Exception as e:
+                logger.warning("[TSC] No se pudo escribir %s: %s", self.ruta_archivo_comandos, e)
+                # No abortar inmediatamente; seguir intentando escribir archivos auxiliares
 
             print(f"[TSC] Comandos enviados al Lua: {len(comandos_texto)} comandos")
             for linea in comandos_texto:
@@ -811,10 +938,11 @@ class TSCIntegration:
                     # If the configured commands file and the Lua file are the same path,
                     # skip the second write to avoid duplicate writes.
                     if os.path.abspath(lua_commands_file) != os.path.abspath(self.ruta_archivo_comandos):
-                        with open(lua_commands_file, "w", encoding="utf-8") as lf:
-                            for linea in comandos_texto:
-                                lf.write(linea + "\n")
-                        logger.info(f"[TSC] También escrito archivo de comandos Lua: {lua_commands_file}")
+                        try:
+                            self._atomic_write_lines(lua_commands_file, comandos_texto)
+                            logger.info(f"[TSC] También escrito archivo de comandos Lua: {lua_commands_file}")
+                        except Exception as e:
+                            logger.warning(f"[TSC] No se pudo escribir archivo de comandos Lua: {e}")
                     else:
                         logger.debug(
                             f"[TSC] Ruta de comandos configurada ya es el archivo Lua ({lua_commands_file}); omitida escritura duplicada"
@@ -827,12 +955,14 @@ class TSCIntegration:
             try:
                 directorio = os.path.dirname(self.ruta_archivo_comandos)
                 lower_send_file = os.path.join(directorio, "sendcommand.txt")
-                with open(lower_send_file, "w", encoding="utf-8") as sf:
-                    for linea in comandos_texto:
-                        # For sendcommand.txt keep only control:value lines - filter out raw text commands like 'start_autopilot'
-                        if ":" in linea:
-                            sf.write(linea + "\n")
-                logger.info(f"[TSC] También escrito archivo legacy sendcommand: {lower_send_file}")
+                try:
+                    # Filter only control:value lines
+                    filtered = [l for l in comandos_texto if ":" in l]
+                    if filtered:
+                        self._atomic_write_lines(lower_send_file, filtered)
+                    logger.info(f"[TSC] También escrito archivo legacy sendcommand: {lower_send_file}")
+                except Exception as e:
+                    logger.warning(f"[TSC] No se pudo escribir archivo legacy sendcommand: {e}")
             except Exception as e:
                 logger.warning(f"[TSC] No se pudo escribir archivo legacy sendcommand: {e}")
 
@@ -849,7 +979,7 @@ class TSCIntegration:
         Returns:
             Dict con información del estado
         """
-        return {
+        state = {
             "archivo_existe": self.archivo_existe(),
             "ultima_lectura": (
                 datetime.fromtimestamp(self.timestamp_ultima_lectura).isoformat()
@@ -859,6 +989,14 @@ class TSCIntegration:
             "datos_disponibles": len(self.datos_anteriores) > 0,
             "controles_leidos": len(self.datos_anteriores),
         }
+        # Añadir métricas I/O al estado para fácil acceso desde endpoints/monitoreo
+        state.setdefault("io_metrics", {})
+        state["io_metrics"].update(self.io_metrics)
+        return state
+
+    def get_io_metrics(self) -> Dict[str, Any]:
+        """Retornar una copia de las métricas I/O actuales."""
+        return dict(self.io_metrics)
 
     def conectar(self) -> bool:
         """

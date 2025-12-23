@@ -16,6 +16,9 @@ print(f"[BOOT] Directorio actual: {os.getcwd()}")
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 print(f"[BOOT] Path agregado: {os.path.dirname(os.path.dirname(os.path.abspath(__file__)))}")
 
+# Global variable for stub request json data
+_current_json_data = None
+
 # Standard library imports
 import configparser  # noqa: E402
 import json  # noqa: E402
@@ -50,7 +53,7 @@ logger.info("Imports estándar completados")
 # Third-party imports
 try:
     from bokeh.embed import server_document  # noqa: E402
-    from flask import Flask, jsonify, render_template, request  # noqa: E402
+    from flask import Flask, jsonify, render_template, request, Response  # noqa: E402
     from flask_socketio import SocketIO, emit  # noqa: E402
 
     print("[BOOT] Imports de terceros completados")
@@ -60,16 +63,17 @@ except Exception as e:
 
     # Minimal request stub
     class _SimpleRequest:
-        _json = None
-
         def get_json(self):
-            return self._json
+            return _current_json_data
 
     request = _SimpleRequest()
 
     # Simple jsonify
     def jsonify(obj):
         return obj
+
+    def render_template(template_name_or_list, **context):
+        return f"<rendered {template_name_or_list}>"
 
     # Simple Flask-like test harness
     class _SimpleResponse:
@@ -83,6 +87,7 @@ except Exception as e:
     class _SimpleClient:
         def __init__(self, app):
             self.app = app
+            self._json_data = None
 
         def __enter__(self):
             return self
@@ -91,7 +96,9 @@ except Exception as e:
             return False
 
         def post(self, path, json=None):
-            request._json = json
+            # Set the json data for the stub request
+            global _current_json_data
+            _current_json_data = json
             func = self.app._routes.get(path)
             if not func:
                 return _SimpleResponse(404, {"error": "not found"})
@@ -108,6 +115,16 @@ except Exception as e:
             self._routes = {}
             self.config = {}
             self._after_request = None
+            self.static_folder = kw.get("static_folder", "web/static")
+            self.template_folder = kw.get("template_folder", "web/templates")
+            self.name = "web_dashboard"
+            self.import_name = "web_dashboard"
+
+            class _MockUrlMap:
+                def __init__(self):
+                    self._rules = []
+
+            self.url_map = _MockUrlMap()
 
         def route(self, path, methods=None):
             def decorator(f):
@@ -144,8 +161,13 @@ except Exception as e:
 
             return decorator
 
+        def run(self, *args, **kwargs):
+            pass
+
     SocketIO = _SimpleSocketIO
-    emit = lambda *args, **kwargs: None
+
+    def emit(*args, **kwargs):
+        pass
 
 
 # Local imports
@@ -223,6 +245,13 @@ app.config["SESSION_COOKIE_SECURE"] = False  # Para desarrollo local
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["PERMANENT_SESSION_LIFETIME"] = 3600  # 1 hora
 
+# Timeout para esperar ACK del plugin autopilot (segundos). Puede sobreescribirse
+# por variable de entorno AUTOPILOT_ACK_TIMEOUT
+try:
+    AUTOPILOT_ACK_TIMEOUT = float(os.getenv("AUTOPILOT_ACK_TIMEOUT", "3.0"))
+except Exception:
+    AUTOPILOT_ACK_TIMEOUT = 3.0
+
 # Configuración SocketIO
 SOCKETIO_CORS_ORIGINS = "*"
 SOCKETIO_ASYNC_MODE = "threading"
@@ -252,6 +281,12 @@ system_status = {
     "reports_active": False,
     "autobrake_by_signal": True,
     "performance_monitoring": False,
+}
+
+# Métricas relacionadas con el plugin Autopilot (visibilidad y reintentos)
+autopilot_metrics = {
+    "retry_total": 0,
+    "unacked_total": 0,
 }
 
 # Estado de controles de locomotora
@@ -485,18 +520,23 @@ def telemetry_update_loop():
             # Siempre enviar actualización (con datos reales o simulados)
             if last_telemetry:
                 # Comprimir datos antes de enviar - FASE 4
-                compressed_telemetry = data_compressor.compress_data(last_telemetry)
+                compressed_telemetry = (
+                    data_compressor.compress_data(last_telemetry)
+                    if data_compressor
+                    else last_telemetry
+                )
 
                 # Cache inteligente para predicciones - FASE 4
                 cache_key = f"predictions_{int(time.time() // 60)}"  # Cache por minuto
-                cached_predictions = smart_cache.get(cache_key)
+                cached_predictions = smart_cache.get(cache_key) if smart_cache else None
                 if cached_predictions is None:
                     # Obtener predicciones actuales del analizador predictivo
                     predictions = (
                         predictive_analyzer.get_current_predictions() if predictive_analyzer else {}
                     )
                     cached_predictions = predictions
-                    smart_cache.put(cache_key, predictions)
+                    if smart_cache:
+                        smart_cache.put(cache_key, predictions)
 
                 # Obtener datos de multi-locomotora
                 multi_loco_data = (
@@ -509,7 +549,11 @@ def telemetry_update_loop():
                 active_alerts = check_alerts()
 
                 # Obtener métricas de rendimiento
-                performance_report = performance_monitor.get_performance_report()
+                performance_report = (
+                    performance_monitor.get_performance_report()
+                    if performance_monitor
+                    else {}
+                )
 
                 # Obtener estado de reportes
                 reports_status = {
@@ -542,7 +586,8 @@ def telemetry_update_loop():
 
                     # Aplicar optimizaciones de latencia si latencia es alta
                     if ws_latency > 50:  # Más de 50ms
-                        latency_optimizer.apply_optimization("websocket_batching")
+                        if latency_optimizer:
+                            latency_optimizer.apply_optimization("websocket_batching")
 
                     # Debug: show wheelslip raw and intensity for diagnostic
                     try:
@@ -765,6 +810,8 @@ def validate_config():
 def get_performance_report():
     """API para obtener reporte de rendimiento."""
     try:
+        if performance_monitor is None:
+            return jsonify({"error": "Performance monitor not available"}), 503
         report = performance_monitor.get_performance_report()
         return jsonify(report)
     except Exception as e:
@@ -875,7 +922,7 @@ def api_commands():
         "retries": 3          # opcional
     }
 
-    Si `wait_for_ack` es true, el endpoint esperará hasta `timeout` 
+    Si `wait_for_ack` es true, el endpoint esperará hasta `timeout`
     por un ACK y devolverá 200 con el ACK si lo recibe, o 504/500 si falla.
     Si `wait_for_ack` es false, devolverá 202 Accepted inmediatamente.
     """
@@ -896,10 +943,22 @@ def api_commands():
 
         # If not waiting for ack, just write atomically and return 202
         if not wait_for_ack_flag:
+            if atomic_write_cmd is None:
+                return (
+                    jsonify(
+                        {"status": "error", "error": "atomic command writer unavailable"}
+                    ),
+                    503,
+                )
             cmd_id = atomic_write_cmd(plugins_dir, payload)
             return jsonify({"status": "queued", "id": cmd_id}), 202
 
         # else, send with retries and wait for ack
+        if send_command_with_retries is None:
+            return (
+                jsonify({"status": "error", "error": "ACK sender unavailable"}),
+                503,
+            )
         ack = send_command_with_retries(plugins_dir, payload, timeout=timeout, retries=retries)
         if ack is not None:
             return jsonify({"status": "applied", "ack": ack}), 200
@@ -941,15 +1000,36 @@ def control_action(action):
                         "system_message",
                         {"message": "Piloto automático iniciado", "type": "success"},
                     )
+                    # Determinar si el cliente pidió esperar por ACK (por defecto: True)
+                    payload = request.get_json(silent=True) or {}
+                    wait_for_ack = bool(payload.get("wait_for_ack", True))
+
                     # Intentar confirmar estado desde el plugin Lua
                     plugin_state = None
                     try:
                         if tsc_integration:
                             # Primer intento: comprobar estado actual
                             plugin_state = tsc_integration.get_autopilot_plugin_state()
-                            # Si no hay ack inmediato, esperar brevemente por la confirmación
-                            if plugin_state is None and tsc_integration.wait_for_autopilot_state("on", timeout=2.0):
-                                plugin_state = "on"
+                            # Si no hay ack inmediato y el cliente quiere esperar, hacerlo con timeout configurado
+                            if plugin_state is None and wait_for_ack:
+                                if tsc_integration.wait_for_autopilot_state("on", timeout=AUTOPILOT_ACK_TIMEOUT):
+                                    plugin_state = "on"
+                                else:
+                                    # No llegó ACK en tiempo: registrar métrica y responder con 504 (Gateway Timeout)
+                                    try:
+                                        autopilot_metrics["unacked_total"] += 1
+                                    except Exception:
+                                        pass
+                                    return (
+                                        jsonify(
+                                            {
+                                                "success": False,
+                                                "error": "Autopilot plugin did not confirm start within timeout",
+                                                "action": action,
+                                            }
+                                        ),
+                                        504,
+                                    )
                     except Exception:
                         plugin_state = None
 
@@ -962,6 +1042,11 @@ def control_action(action):
                         500,
                     )
             else:
+                return (
+                    jsonify({"success": False, "error": "Sistema autopilot no inicializado"}),
+                    500,
+                )
+
                 return (
                     jsonify({"success": False, "error": "Sistema autopilot no inicializado"}),
                     500,
@@ -1222,7 +1307,11 @@ def handle_telemetry_request():
                 ),
                 "system_status": system_status,
                 "active_alerts": check_alerts(),
-                "performance": performance_monitor.get_performance_report(),
+                "performance": (
+                    performance_monitor.get_performance_report()
+                    if performance_monitor
+                    else {}
+                ),
                 "reports": get_automated_reports().get_reports_status(),
             },
         )
@@ -1232,6 +1321,40 @@ def handle_telemetry_request():
 
 
 @app.route("/bokeh")
+
+
+@app.route('/api/control/retry_autopilot', methods=['POST'])
+def retry_autopilot():
+    """Endpoint para reintentar iniciar Autopilot sin esperar por ACK.
+
+    - Incrementa un contador de reintentos
+    - Envía comando de inicio y devuelve el estado conocido del plugin (no espera ACK)
+    """
+    global autopilot_metrics
+    try:
+        if not autopilot_system:
+            return jsonify({"success": False, "error": "Sistema autopilot no inicializado"}), 500
+
+        # Incrementar contador de reintentos
+        try:
+            autopilot_metrics["retry_total"] += 1
+        except Exception:
+            pass
+
+        # Forzar start sin esperar ACK
+        try:
+            autopilot_system.start()
+            autopilot_system.activar_modo_automatico()
+            # Intentar leer estado conocido del plugin (no esperar)
+            plugin_state = None
+            if tsc_integration:
+                plugin_state = tsc_integration.get_autopilot_plugin_state()
+            return jsonify({"success": True, "action": "retry_autopilot", "autopilot_plugin_state": plugin_state}), 200
+        except Exception as e:
+            return jsonify({"success": False, "error": str(e)}), 500
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
 def bokeh_dashboard():
     """Servir el dashboard interactivo de Bokeh."""
     try:
@@ -1550,7 +1673,11 @@ def get_dashboard_metrics():
         from performance_monitor import performance_monitor
 
         # Obtener métricas del monitor de rendimiento
-        perf_report = performance_monitor.get_performance_report()
+        perf_report = (
+            performance_monitor.get_performance_report()
+            if performance_monitor
+            else {}
+        )
 
         # Calcular métricas adicionales
         uptime = time.time() - (globals().get("start_time", time.time()))
@@ -1585,7 +1712,114 @@ def get_dashboard_metrics():
         return jsonify({"success": False, "error": "Módulos de métricas no disponibles"}), 503
     except Exception as e:
         print(f"[ERROR] Error obteniendo métricas del dashboard: {e}")
-        return jsonify({"success": False, "error": f"Error interno del servidor: {str(e)}"}), 500
+        logger.exception("Error collecting dashboard metrics: %s", e)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/metrics/io")
+def get_io_metrics_endpoint():
+    """Endpoint que devuelve métricas I/O del TSC Integration (lectura/escritura)."""
+    try:
+        if tsc_integration:
+            return jsonify({"tsc_io_metrics": tsc_integration.get_io_metrics()}), 200
+        else:
+            return jsonify({"error": "TSC integration not configured"}), 200
+    except Exception as e:
+        logger.exception("Error obtaining I/O metrics: %s", e)
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/metrics')
+def prometheus_metrics_endpoint():
+    """Export simple Prometheus text metrics (no depende de prometheus_client).
+
+    Exponemos métricas de I/O del TSC integration y métricas básicas del dashboard.
+    Formato: texto plano compatible con el colector Prometheus (type=gauge).
+    """
+    try:
+        lines = []
+        # TSC I/O metrics
+        io = tsc_integration.get_io_metrics() if tsc_integration else {}
+        for k, v in io.items():
+            name = f"tsc_io_{k}"
+            lines.append(f"# HELP {name} TSC I/O metric {k}")
+            lines.append(f"# TYPE {name} gauge")
+            # Ensure numeric formatting
+            try:
+                val = float(v)
+            except Exception:
+                val = 0.0
+            lines.append(f"{name} {val}")
+        # Alert system metrics (if available)
+        try:
+            if alert_system:
+                a_metrics = getattr(alert_system, "metrics", {})
+                for k, v in a_metrics.items():
+                    name = f"alerts_{k}"
+                    lines.append(f"# HELP {name} Alert system metric {k}")
+                    lines.append(f"# TYPE {name} gauge")
+                    try:
+                        val = float(v)
+                    except Exception:
+                        val = 0.0
+                    lines.append(f"{name} {val}")
+        except Exception:
+            pass
+
+        # Autopilot IA metrics (if available)
+        try:
+            if autopilot_system and getattr(autopilot_system, "ia", None):
+                ia_metrics = getattr(autopilot_system.ia, "metrics", {})
+                for k, v in ia_metrics.items():
+                    name = f"autopilot_ia_{k}"
+                    lines.append(f"# HELP {name} Autopilot IA metric {k}")
+                    lines.append(f"# TYPE {name} gauge")
+                    try:
+                        val = float(v)
+                    except Exception:
+                        val = 0.0
+                    lines.append(f"{name} {val}")
+        except Exception:
+            pass
+
+        # Dashboard uptime
+        uptime = time.time() - globals().get("start_time", time.time())
+        lines.append("# HELP dashboard_uptime_seconds Uptime of dashboard in seconds")
+        lines.append("# TYPE dashboard_uptime_seconds gauge")
+        lines.append(f"dashboard_uptime_seconds {uptime}")
+
+        # Autopilot plugin metrics (reintentos y ACKs faltantes)
+        try:
+            am = globals().get("autopilot_metrics", {})
+            for k, v in am.items():
+                name = f"autopilot_plugin_{k}"
+                lines.append(f"# HELP {name} Autopilot plugin metric {k}")
+                lines.append(f"# TYPE {name} gauge")
+                try:
+                    val = float(v)
+                except Exception:
+                    val = 0.0
+                lines.append(f"{name} {val}")
+        except Exception:
+            pass
+
+        # Exponer estado del plugin como métric gauge (1 = on, 0 = off/unknown)
+        try:
+            plugin_state = None
+            if tsc_integration:
+                plugin_state = tsc_integration.get_autopilot_plugin_state()
+            state_val = 1.0 if plugin_state == "on" else 0.0
+            lines.append("# HELP autopilot_plugin_state_up 1 if autopilot plugin reports 'on'")
+            lines.append("# TYPE autopilot_plugin_state_up gauge")
+            lines.append(f"autopilot_plugin_state_up {state_val}")
+        except Exception:
+            pass
+
+        body = "\n".join(lines) + "\n"
+        return Response(body, mimetype="text/plain; version=0.0.4")
+    except Exception as e:
+        logger.exception("Error producing prometheus metrics: %s", e)
+        return Response("", status=500, mimetype="text/plain")
 
 
 def start_bokeh_server():
