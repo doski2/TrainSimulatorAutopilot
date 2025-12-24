@@ -558,9 +558,30 @@ function readPythonCommands()
             elseif line == "lights_off" then
                 pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: processing lights_off\n"); f:close() end end)
                 SetLightsState(false)
-            else
-                -- Unrecognized command - write to debug
-                pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: unrecognized command -> "..tostring(line).."\n"); f:close() end end)
+            elseif line:find(":") then
+                -- Parse control:value pairs and apply directly
+                local name, value = line:match("^%s*([^:]+):%s*([^:]+)%s*$")
+                if name and value then
+                    -- Try numeric value first
+                    local num = tonumber(value)
+                    if num then
+                        pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: parsed control -> "..name..":"..tostring(num).."\n"); f:close() end end)
+                        -- Apply control value to player engine (index 0)
+                        pcall(function() SysCall("PlayerEngineSetControlValue", name, 0, num) end)
+                    else
+                        -- Check for boolean values (true/false)
+                        local low = value:lower()
+                        if low == 'true' or low == 'false' then
+                            local b = (low == 'true') and 1 or 0
+                            pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: parsed control -> "..name..":"..low.."\n"); f:close() end end)
+                            pcall(function() SysCall("PlayerEngineSetControlValue", name, 0, b) end)
+                        else
+                            pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: unrecognized control format -> "..tostring(line).."\n"); f:close() end end)
+                        end
+                    end
+                else
+                    pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: failed to parse control line -> "..tostring(line).."\n"); f:close() end end)
+                end
             end
         end
         commandFile:close()
