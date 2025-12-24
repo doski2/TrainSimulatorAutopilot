@@ -70,6 +70,21 @@ end
 
 -- Main update loop (called every frame)
 function Update(time)
+    -- HEARTBEAT: ensure presence file exists so external tools can detect plugin loaded and running
+    pcall(function()
+        local pf = io.open("plugins/autopilot_plugin_loaded.txt", "r")
+        if not pf then
+            local w = io.open("plugins/autopilot_plugin_loaded.txt", "w")
+            if w then
+                w:write(os.date("%Y-%m-%d %H:%M:%S") .. " - heartbeat\n")
+                w:close()
+                pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - Update: wrote heartbeat file autopilot_plugin_loaded.txt\n"); f:close() end end)
+            end
+        else
+            pf:close()
+        end
+    end)
+
     if Call("GetIsEngineWithKey") == 1 then
         -- Read commands from Python system
         pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - Update: engine key ON - attempting to read Python commands\n"); f:close() end end)
