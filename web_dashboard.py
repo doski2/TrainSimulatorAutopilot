@@ -16,8 +16,29 @@ print(f"[BOOT] Directorio actual: {os.getcwd()}")
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 print(f"[BOOT] Path agregado: {os.path.dirname(os.path.dirname(os.path.abspath(__file__)))}")
 
-# Global variable for stub request json data
-_current_json_data = None
+# Thread-local storage for stub request JSON data to avoid cross-request races
+# We initialize lazily so module import order does not require `threading` to be available immediately.
+_thread_local = None
+
+
+def _get_current_json_data():
+    """Return the thread-local current JSON data for stub requests."""
+    global _thread_local
+    if _thread_local is None:
+        import threading
+
+        _thread_local = threading.local()
+    return getattr(_thread_local, "current_json_data", None)
+
+
+def _set_current_json_data(val):
+    """Set the thread-local current JSON data for stub requests."""
+    global _thread_local
+    if _thread_local is None:
+        import threading
+
+        _thread_local = threading.local()
+    _thread_local.current_json_data = val
 
 # Standard library imports
 import configparser  # noqa: E402
@@ -64,7 +85,7 @@ except Exception as e:
     # Minimal request stub
     class _SimpleRequest:
         def get_json(self):
-            return _current_json_data
+            return _get_current_json_data()
 
     request = _SimpleRequest()
 
@@ -96,19 +117,22 @@ except Exception as e:
             return False
 
         def post(self, path, json=None):
-            # Set the json data for the stub request
-            global _current_json_data
-            _current_json_data = json
-            func = self.app._routes.get(path)
-            if not func:
-                return _SimpleResponse(404, {"error": "not found"})
-            # Call view function without arguments (compatible with Flask view signature)
-            result = func() if callable(func) else (None, 500)
-            if isinstance(result, tuple):
-                data, code = result
-            else:
-                data, code = result, 200
-            return _SimpleResponse(code, data)
+            # Thread-safe: set the thread-local json data for the stub request
+            _set_current_json_data(json)
+            try:
+                func = self.app._routes.get(path)
+                if not func:
+                    return _SimpleResponse(404, {"error": "not found"})
+                # Call view function without arguments (compatible with Flask view signature)
+                result = func() if callable(func) else (None, 500)
+                if isinstance(result, tuple):
+                    data, code = result
+                else:
+                    data, code = result, 200
+                return _SimpleResponse(code, data)
+            finally:
+                # Clear thread-local storage after handling to avoid leakage between requests
+                _set_current_json_data(None)
 
     class Flask:
         def __init__(self, *a, **kw):
