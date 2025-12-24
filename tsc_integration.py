@@ -981,18 +981,21 @@ class TSCIntegration:
             try:
                 lower_cmds = [c.lower() for c in comandos_texto]
                 if any("start_autopilot" in c for c in lower_cmds):
+                    # Prefer explicit plugin state file (autopilot_state.txt) to determine whether
+                    # the plugin has acknowledged 'on'. Only apply fallback if plugin_state != 'on'.
                     try:
-                        plugin_loaded = self.is_autopilot_plugin_loaded()
+                        plugin_state = self.get_autopilot_plugin_state()
                     except Exception:
-                        plugin_loaded = False
-                    if not plugin_loaded:
+                        plugin_state = None
+
+                    if plugin_state != "on":
                         fallback_notch = 0.125
                         fallback_lines = [f"Regulator:{fallback_notch:.3f}", f"VirtualThrottle:{fallback_notch:.3f}"]
                         for fl in fallback_lines:
                             if fl not in comandos_texto:
                                 comandos_texto.append(fl)
                         logger.warning(
-                            "[TSC] 'start_autopilot' issued but Lua plugin not loaded; applying fallback controls: %s",
+                            "[TSC] 'start_autopilot' issued but plugin state not 'on'; applying fallback controls: %s",
                             fallback_lines,
                         )
             except Exception:
@@ -1037,11 +1040,19 @@ class TSCIntegration:
                 directorio = os.path.dirname(self.ruta_archivo_comandos)
                 lower_send_file = os.path.join(directorio, "sendcommand.txt")
                 try:
-                    # Filter only control:value lines
-                    filtered = [l for l in comandos_texto if ":" in l]
-                    if filtered:
-                        self._atomic_write_lines(lower_send_file, filtered)
-                    logger.info(f"[TSC] También escrito archivo legacy sendcommand: {lower_send_file}")
+                    # If legacy lowercase path resolves to the same file as the configured
+                    # commands file on case-insensitive filesystems, skip the filtered write
+                    # to avoid overwriting directives that must be preserved.
+                    if os.path.normcase(os.path.abspath(lower_send_file)) == os.path.normcase(os.path.abspath(self.ruta_archivo_comandos)):
+                        logger.debug(
+                            f"[TSC] Legacy sendcommand path {lower_send_file} equals configured commands file; skipping filtered legacy write"
+                        )
+                    else:
+                        # Filter only control:value lines
+                        filtered = [l for l in comandos_texto if ":" in l]
+                        if filtered:
+                            self._atomic_write_lines(lower_send_file, filtered)
+                        logger.info(f"[TSC] También escrito archivo legacy sendcommand: {lower_send_file}")
                 except Exception as e:
                     logger.warning(f"[TSC] No se pudo escribir archivo legacy sendcommand: {e}")
             except Exception as e:
@@ -1054,14 +1065,22 @@ class TSCIntegration:
                     tsc_file = os.path.join(os.path.dirname(self.ruta_archivo_comandos), "SendCommand.txt")
                     # store for future
                     self.tsc_interface_file = tsc_file
-                # Write only control:value lines (TSClassic Interface expects that format)
-                filtered_interface = [l for l in comandos_texto if ":" in l]
-                if filtered_interface:
-                    try:
-                        self._atomic_write_lines(tsc_file, filtered_interface)
-                        logger.info(f"[TSC] Also written TSClassic Interface file: {tsc_file}")
-                    except Exception as e:
-                        logger.warning(f"[TSC] Could not write TSClassic Interface file {tsc_file}: {e}")
+                # If TSClassic interface file is the same path as configured commands file,
+                # do not overwrite it with filtered colon-only lines (this would remove
+                # directive tokens like 'start_autopilot'); skip the extra write instead.
+                if os.path.normcase(os.path.abspath(tsc_file)) == os.path.normcase(os.path.abspath(self.ruta_archivo_comandos)):
+                    logger.debug(
+                        f"[TSC] TSClassic interface file {tsc_file} matches configured commands file; skipping filtered write to avoid overwriting full commands"
+                    )
+                else:
+                    # Write only control:value lines (TSClassic Interface expects that format)
+                    filtered_interface = [l for l in comandos_texto if ":" in l]
+                    if filtered_interface:
+                        try:
+                            self._atomic_write_lines(tsc_file, filtered_interface)
+                            logger.info(f"[TSC] Also written TSClassic Interface file: {tsc_file}")
+                        except Exception as e:
+                            logger.warning(f"[TSC] Could not write TSClassic Interface file {tsc_file}: {e}")
             except Exception as e:
                 logger.warning(f"[TSC] Error handling TSClassic Interface file write: {e}")
 
