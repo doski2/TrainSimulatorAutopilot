@@ -1257,6 +1257,43 @@ def send_tsc_command(command_name, value):
         return False
 
 
+@app.route("/api/control/set", methods=["POST"])
+def control_set():
+    """Set a control value on the train via TSCIntegration.
+
+    Expected JSON body: {"control": "Regulator", "value": 0.5}
+    The `control` name can be either a RailDriver control or a supported Spanish alias defined in the TSCIntegration mapping.
+    """
+    try:
+        try:
+            payload = request.get_json(silent=True) or {}
+        except TypeError:
+            # Some test stubs implement get_json() without keyword args
+            try:
+                payload = request.get_json() or {}
+            except Exception:
+                return jsonify({"success": False, "error": "Invalid JSON payload"}), 400
+        except Exception:
+            return jsonify({"success": False, "error": "Invalid JSON payload"}), 400
+        control = payload.get("control")
+        value = payload.get("value")
+        if not control or value is None:
+            logger.warning("control_set: invalid payload: control=%s (%s) value=%s (%s)", control, type(control), value, type(value))
+            return jsonify({"success": False, "error": "Invalid payload, expected 'control' and 'value'"}), 400
+
+        # Use TSCIntegration to map and write control commands
+        if tsc_integration is None:
+            return jsonify({"success": False, "error": "TSC integration not available"}), 500
+
+        ok = tsc_integration.enviar_comandos({control: value})
+        if ok:
+            return jsonify({"success": True, "control": control, "value": value}), 200
+        else:
+            return jsonify({"success": False, "error": "Failed to send command to TSC"}), 500
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
 # Eventos WebSocket
 @socketio.on("connect")
 def handle_connect():

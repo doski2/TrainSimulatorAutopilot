@@ -70,6 +70,21 @@ end
 
 -- Main update loop (called every frame)
 function Update(time)
+    -- HEARTBEAT: ensure presence file exists so external tools can detect plugin loaded and running
+    pcall(function()
+        local pf = io.open("plugins/autopilot_plugin_loaded.txt", "r")
+        if not pf then
+            local w = io.open("plugins/autopilot_plugin_loaded.txt", "w")
+            if w then
+                w:write(os.date("%Y-%m-%d %H:%M:%S") .. " - heartbeat\n")
+                w:close()
+                pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - Update: wrote heartbeat file autopilot_plugin_loaded.txt\n"); f:close() end end)
+            end
+        else
+            pf:close()
+        end
+    end)
+
     if Call("GetIsEngineWithKey") == 1 then
         -- Read commands from Python system
         pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - Update: engine key ON - attempting to read Python commands\n"); f:close() end end)
@@ -558,9 +573,30 @@ function readPythonCommands()
             elseif line == "lights_off" then
                 pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: processing lights_off\n"); f:close() end end)
                 SetLightsState(false)
-            else
-                -- Unrecognized command - write to debug
-                pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: unrecognized command -> "..tostring(line).."\n"); f:close() end end)
+            elseif line:find(":") then
+                -- Parse control:value pairs and apply directly
+                local name, value = line:match("^%s*([^:]+):%s*([^:]+)%s*$")
+                if name and value then
+                    -- Try numeric value first
+                    local num = tonumber(value)
+                    if num then
+                        pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: parsed control -> "..name..":"..tostring(num).."\n"); f:close() end end)
+                        -- Apply control value to player engine (index 0)
+                        pcall(function() SysCall("PlayerEngineSetControlValue", name, 0, num) end)
+                    else
+                        -- Check for boolean values (true/false)
+                        local low = value:lower()
+                        if low == 'true' or low == 'false' then
+                            local b = (low == 'true') and 1 or 0
+                            pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: parsed control -> "..name..":"..low.."\n"); f:close() end end)
+                            pcall(function() SysCall("PlayerEngineSetControlValue", name, 0, b) end)
+                        else
+                            pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: unrecognized control format -> "..tostring(line).."\n"); f:close() end end)
+                        end
+                    end
+                else
+                    pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: failed to parse control line -> "..tostring(line).."\n"); f:close() end end)
+                end
             end
         end
         commandFile:close()

@@ -202,7 +202,8 @@ def test_enviar_comandos_retries_on_permission_error(tmp_path, monkeypatch):
     assert tsc.enviar_comandos({"acelerador": 0.4}) is True
     assert send_cmd.exists()
     contenido = send_cmd.read_text(encoding="utf-8")
-    assert "Regulator:0.400" in contenido
+    # snap-to-notch behavior: 0.4 snaps to 0.375
+    assert "Regulator:0.375" in contenido
     # Metrics should show that a write retry happened and latency recorded
     metrics = tsc.get_io_metrics()
     assert metrics["write_total_retries"] >= 1
