@@ -1,5 +1,3 @@
-import tempfile
-
 from alert_system import AlertSystem
 from autopilot_system import AutopilotSystem
 from tsc_integration import TSCIntegration
