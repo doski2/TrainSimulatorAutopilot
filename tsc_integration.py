@@ -284,6 +284,8 @@ class TSCIntegration:
                 try:
                     time.sleep(wait * attempt)
                 except Exception:
+                    # Intentionally ignore sleep/interrupt errors (e.g., KeyboardInterrupt)
+                    # so that the retry loop continues even if the backoff sleep fails.
                     pass
         # All attempts failed: record attempts and total retries
         elapsed_ms = (time.time() - start) * 1000.0
@@ -873,6 +875,8 @@ class TSCIntegration:
                 try:
                     time.sleep(wait * attempt)
                 except Exception:
+                    # Intentionally ignore sleep/interrupt errors (e.g., KeyboardInterrupt)
+                    # so that the retry loop continues even if the backoff sleep fails.
                     pass
         # All attempts failed: record attempts and total retries
         elapsed_ms = (time.time() - start) * 1000.0
