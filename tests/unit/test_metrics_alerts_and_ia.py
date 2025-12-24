@@ -1,4 +1,3 @@
-import os
 import tempfile
 
 from alert_system import AlertSystem
