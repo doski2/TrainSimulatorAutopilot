@@ -812,35 +812,47 @@ class TSCIntegration:
         return datos_ia
 
     def _atomic_write_lines(self, file_path: str, lines: list[str], retries: int = 3, wait: float = 0.1) -> None:
-        """Escribir una lista de líneas en `file_path` de forma atómica.
+        """Write list of lines to `file_path` atomically using a unique temporary file.
 
-        Implementa escritura a fichero temporal en el mismo directorio y `os.replace`
-        para minimizar ventanas de inconsistencia y reintenta en caso de errores de
-        E/S (por ejemplo, PermissionError por bloqueo del archivo por el simulador).
+        This implementation uses a uniquely-named temporary file in the same
+        directory (via tempfile.NamedTemporaryFile(delete=False, dir=dirname)) to
+        avoid collisions when multiple writers operate on the same target file.
+        The temporary file is fsynced (when possible) and then atomically
+        replaced with ``os.replace``. Retries are attempted on failure.
         """
+        import tempfile
+
         dirname = os.path.dirname(file_path) or os.getcwd()
-        tmp = os.path.join(dirname, os.path.basename(file_path) + ".tmp")
         last_exc = None
         start = time.time()
         for attempt in range(1, retries + 1):
+            tmp_name = None
             try:
-                with open(tmp, "w", encoding="utf-8") as f:
+                # Create a unique temp file in the target directory to avoid cross-writer collisions
+                # Use prefix based on the basename for easier debugging
+                with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", delete=False, dir=dirname, prefix=os.path.basename(file_path) + ".", suffix=".tmp") as f:
+                    tmp_name = f.name
                     for linea in lines:
                         f.write(linea + "\n")
+                    try:
+                        f.flush()
+                        os.fsync(f.fileno())
+                    except Exception:
+                        # Best-effort: continue even if fsync is not supported
+                        pass
+
                 # If portalocker is available, try to acquire a short exclusive lock on the
                 # destination file before replacing it, to reduce the window where a reader
                 # might see an inconsistent state on platforms with strong locking semantics.
                 if HAS_PORTALOCKER:
                     try:
-                        # Acquire an exclusive append-mode lock on the destination file
-                        # (this will create the file if it does not exist) and then replace.
                         with portalocker.Lock(file_path, 'a', timeout=0.25):
-                            os.replace(tmp, file_path)
+                            os.replace(tmp_name, file_path)
                     except Exception:
                         # If locking fails, fall back to a direct replace
-                        os.replace(tmp, file_path)
+                        os.replace(tmp_name, file_path)
                 else:
-                    os.replace(tmp, file_path)
+                    os.replace(tmp_name, file_path)
 
                 elapsed_ms = (time.time() - start) * 1000.0
                 # update metrics
@@ -852,6 +864,12 @@ class TSCIntegration:
             except Exception as e:
                 last_exc = e
                 logger.warning("Attempt %d to write %s failed: %s", attempt, file_path, e)
+                # Cleanup temporary file if it exists
+                try:
+                    if tmp_name and os.path.exists(tmp_name):
+                        os.remove(tmp_name)
+                except Exception:
+                    logger.debug("Failed to remove temporary file %s", tmp_name, exc_info=True)
                 try:
                     time.sleep(wait * attempt)
                 except Exception:
