@@ -7,9 +7,12 @@ Integra TSC + IA + Control de comandos
 
 from datetime import datetime
 import time
+import logging
 from typing import Any, Dict, Optional
 
 from tsc_integration import TSCIntegration
+
+logger = logging.getLogger(__name__)
 
 
 class IASistema:
@@ -266,10 +269,13 @@ class AutopilotSystem:
         # Update IA metrics
         try:
             self.ia.metrics["decision_last_latency_ms"] = round(elapsed_ms, 3)
-            self.ia.metrics["decision_total"] += 1
-            self.ia.metrics["decision_total_time_ms"] += elapsed_ms
-        except Exception:
-            pass
+            # Increment counters defensively; initialize if missing
+            self.ia.metrics["decision_total"] = int(self.ia.metrics.get("decision_total", 0)) + 1
+            self.ia.metrics["decision_total_time_ms"] = float(self.ia.metrics.get("decision_total_time_ms", 0.0)) + elapsed_ms
+        except Exception as e:
+            # Log the exception so we can debug issues with metrics storage without
+            # interrupting the control loop (metrics must be non-fatal)
+            logger.exception("Failed to update IA metrics after decision: %s", e)
 
         # Reglas de seguridad por señal - overrides (solo si autobrake_by_signal está activado)
         try:
