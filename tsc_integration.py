@@ -161,6 +161,35 @@ class TSCIntegration:
         except Exception:
             return None
 
+    def _snap_to_notch(self, val: float) -> float:
+        """Snap a throttle value to the nearest notch (discrete throttle steps).
+
+        Rounds to the closest notch defined in `self.throttle_notches`. On a tie,
+        the higher notch is chosen to favour positive movement.
+        """
+        # Default throttle notches (muescas) if not configured
+        if not hasattr(self, "throttle_notches") or not self.throttle_notches:
+            # Common 8-step increments plus 0 and 1
+            self.throttle_notches = [0.0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1.0]
+
+        try:
+            v = float(val)
+        except Exception:
+            return val
+
+        # Clamp into 0..1
+        v = max(0.0, min(1.0, v))
+
+        best = self.throttle_notches[0]
+        best_diff = abs(v - best)
+        for n in self.throttle_notches[1:]:
+            d = abs(v - n)
+            # Prefer the closer notch; on exact tie, prefer the higher notch
+            if d < best_diff or (d == best_diff and n > best):
+                best = n
+                best_diff = d
+        return best
+
     def archivo_existe(self) -> bool:
         """Verificar si el archivo GetData.txt existe."""
         return os.path.exists(self.ruta_archivo)
@@ -903,11 +932,42 @@ class TSCIntegration:
                 else:
                     # Para valores numéricos, mapear nombre de comando si es necesario
                     try:
-                        commands_line = f"{comando_raildriver}:{float(valor):.3f}"
-                        comandos_texto.append(commands_line)
+                        val_f = float(valor)
                     except Exception:
-                        commands_line = f"{comando_raildriver}:{valor}"
-                        comandos_texto.append(commands_line)
+                        val_f = None
+
+                    # Special-case: when AI sends 'acelerador' we write both Regulator and VirtualThrottle
+                    # to support assets that consume one or the other (notches/virtual throttle).
+                    if comando == "acelerador":
+                        try:
+                            if val_f is not None:
+                                # Snap to nearest notch for physical/virtual throttle compatibility
+                                snapped = self._snap_to_notch(val_f)
+                                reg_line = f"Regulator:{snapped:.3f}"
+                                vt_line = f"VirtualThrottle:{snapped:.3f}"
+                                comandos_texto.append(reg_line)
+                                comandos_texto.append(vt_line)
+                                commands_line = f"Regulator/VirtualThrottle:{snapped:.3f}"
+                            else:
+                                comandos_texto.append(f"Regulator:{valor}")
+                                comandos_texto.append(f"VirtualThrottle:{valor}")
+                                commands_line = f"Regulator/VirtualThrottle:{valor}"
+                        except Exception:
+                            # Fallback to single mapped command
+                            try:
+                                commands_line = f"{comando_raildriver}:{float(valor):.3f}"
+                                comandos_texto.append(commands_line)
+                            except Exception:
+                                commands_line = f"{comando_raildriver}:{valor}"
+                                comandos_texto.append(commands_line)
+                    else:
+                        try:
+                            commands_line = f"{comando_raildriver}:{float(valor):.3f}"
+                            comandos_texto.append(commands_line)
+                        except Exception:
+                            commands_line = f"{comando_raildriver}:{valor}"
+                            comandos_texto.append(commands_line)
+
                     # Debug print if we remapped the command
                     if comando_raildriver != comando:
                         logger.info(
@@ -916,6 +976,27 @@ class TSCIntegration:
 
             if not comandos_texto:
                 return True
+
+            # If 'start_autopilot' exists but the Lua plugin is not loaded, append fallback control lines
+            try:
+                lower_cmds = [c.lower() for c in comandos_texto]
+                if any("start_autopilot" in c for c in lower_cmds):
+                    try:
+                        plugin_loaded = self.is_autopilot_plugin_loaded()
+                    except Exception:
+                        plugin_loaded = False
+                    if not plugin_loaded:
+                        fallback_notch = 0.125
+                        fallback_lines = [f"Regulator:{fallback_notch:.3f}", f"VirtualThrottle:{fallback_notch:.3f}"]
+                        for fl in fallback_lines:
+                            if fl not in comandos_texto:
+                                comandos_texto.append(fl)
+                        logger.warning(
+                            "[TSC] 'start_autopilot' issued but Lua plugin not loaded; applying fallback controls: %s",
+                            fallback_lines,
+                        )
+            except Exception:
+                logger.exception("[TSC] Error evaluating start_autopilot fallback logic")
 
             # Escribir al archivo autopilot_commands.txt de forma atómica con reintentos
             try:
@@ -964,21 +1045,33 @@ class TSCIntegration:
                 except Exception as e:
                     logger.warning(f"[TSC] No se pudo escribir archivo legacy sendcommand: {e}")
             except Exception as e:
-                logger.warning(f"[TSC] No se pudo escribir archivo legacy sendcommand: {e}")
+                logger.warning(f"[TSC] No se pudo preparar archivo legacy sendcommand: {e}")
 
+            # Also write to TSClassic Interface file (configurable). Default points to SendCommand.txt
+            try:
+                tsc_file = getattr(self, "tsc_interface_file", None)
+                if not tsc_file:
+                    tsc_file = os.path.join(os.path.dirname(self.ruta_archivo_comandos), "SendCommand.txt")
+                    # store for future
+                    self.tsc_interface_file = tsc_file
+                # Write only control:value lines (TSClassic Interface expects that format)
+                filtered_interface = [l for l in comandos_texto if ":" in l]
+                if filtered_interface:
+                    try:
+                        self._atomic_write_lines(tsc_file, filtered_interface)
+                        logger.info(f"[TSC] Also written TSClassic Interface file: {tsc_file}")
+                    except Exception as e:
+                        logger.warning(f"[TSC] Could not write TSClassic Interface file {tsc_file}: {e}")
+            except Exception as e:
+                logger.warning(f"[TSC] Error handling TSClassic Interface file write: {e}")
+
+            # If we've reached here, consider the send successful
             return True
-
         except Exception as e:
-            print(f"[ERROR] Error enviando comandos: {e}")
+            logger.exception("[TSC] Error sending commands: %s", e)
             return False
-
     def estado_conexion(self) -> Dict[str, Any]:
-        """
-        Obtener el estado actual de la conexión.
-
-        Returns:
-            Dict con información del estado
-        """
+        """Retornar estado de conexión y métricas básicas para monitoreo."""
         state = {
             "archivo_existe": self.archivo_existe(),
             "ultima_lectura": (

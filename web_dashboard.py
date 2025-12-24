@@ -1267,11 +1267,18 @@ def control_set():
     try:
         try:
             payload = request.get_json(silent=True) or {}
+        except TypeError:
+            # Some test stubs implement get_json() without keyword args
+            try:
+                payload = request.get_json() or {}
+            except Exception:
+                return jsonify({"success": False, "error": "Invalid JSON payload"}), 400
         except Exception:
             return jsonify({"success": False, "error": "Invalid JSON payload"}), 400
         control = payload.get("control")
         value = payload.get("value")
         if not control or value is None:
+            logger.warning("control_set: invalid payload: control=%s (%s) value=%s (%s)", control, type(control), value, type(value))
             return jsonify({"success": False, "error": "Invalid payload, expected 'control' and 'value'"}), 400
 
         # Use TSCIntegration to map and write control commands

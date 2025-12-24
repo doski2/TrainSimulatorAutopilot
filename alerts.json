@@ -202,5 +202,20 @@
     },
     "acknowledged": true,
     "acknowledged_at": "2025-12-22T22:41:27.864275"
+  },
+  {
+    "alert_id": "wheelslip_20251224_225346",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-24T22:53:46.203752",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-24T22:53:47.545174"
   }
 ]

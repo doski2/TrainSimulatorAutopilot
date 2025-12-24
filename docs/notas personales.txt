@@ -10,6 +10,8 @@ hacer eso
 .revisar tema semaforos
 .arrancar IA
 .la alertartas revisar si funcionan bien 
+.vamos a modificar lua scripts para que controlen IA
+.hay que limpiar codigos innecesarios 
 
 
 
