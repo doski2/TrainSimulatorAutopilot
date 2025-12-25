@@ -20,16 +20,23 @@ telemetría disponible en `GetData.txt` y los datos/alias de `debug.txt` y
 
 ## Objetivos inmediatos
 
-1. Permitir recolección de datos (snapshots) normalizados en JSONL con metadatos
-  comunes: timestamp, asset, engine index y sample index.
-2. Implementar un etiquetador por heurística (rules-based) para extraer eventos de
-  frenado y liberación.
-3. Crear pipelines de preprocesamiento (normalización y generación de ventanas
-  temporales) y dataset splits (train/val/test).
-4. Entrenar un modelo baseline (LSTM/TCN) para predecir la intención de freno: "apli-
-  car" / "liberar" o regresión para un valor suave de freno.
-5. Implementar servicio de inferencia (FastAPI) que lea `GetData.txt`, normalice
-  la entrada, ejecute el modelo y publique comandos seguros en `SendCommand.txt`.
+1. Permitir recolección de datos (snapshots) normalizados en JSONL.
+  Cada snapshot incluirá metadatos comunes como:
+
+- timestamp
+- asset
+- engine index
+- sample index.
+
+1. Implementar un etiquetador por heurística (rules-based).
+  Extraer eventos de frenado y liberación.
+2. Crear pipelines de preprocesamiento (normalización).
+  Generar ventanas temporales y dataset splits (train/val/test).
+3. Entrenar un modelo baseline (LSTM/TCN) para predecir la intención de freno
+  (aplicar / liberar) o entrenar una regresión para un valor suave de freno.
+4. Implementar servicio de inferencia (FastAPI) que lea `GetData.txt`, normalice
+  la entrada y ejecute el modelo. Si la predicción es segura, publicar comandos
+  en `SendCommand.txt`.
 
 ## Requisitos previos (setup)
 
@@ -71,12 +78,14 @@ Cada snapshot en `data/` será una línea JSON con este formato:
 
 ## Recomendaciones para recolección y normalización
 
-- Convertir todas las unidades a un esquema único (Speed: km/h, Pressure: Pa o PSI,
-  Current: Amps).
-- Añadir campos `AssetName` y `EngineIndex` para poder agrupar o adaptar modelos
-  por asset/locomotora.
-- Guardar secuencias temporales en JSONL por sesión para usar en entrenamientos de
-  series temporales.
+- Convertir todas las unidades a un esquema único (por ejemplo:
+  - Speed: km/h
+  - Pressure: Pa o PSI
+  - Current: Amps)
+- Añadir campos `AssetName` y `EngineIndex` para poder agrupar o adaptar
+  modelos por asset/locomotora.
+- Guardar secuencias temporales en JSONL por sesión.
+  - Usarlas para entrenamientos de series temporales.
 
 ## Etiqueta de freno (ejemplos heurísticos)
 
@@ -102,9 +111,9 @@ Cada snapshot en `data/` será una línea JSON con este formato:
   - Entrenamiento (LSTM/TCN) con Keras/TensorFlow; guarda checkpoints en `models/`.
 
 - `scripts/inference_service.py`:
-  - Servicio FastAPI que consume `GetData.txt`, normaliza la entrada, ejecuta el
-    modelo y, si la predicción está dentro de rangos seguros, escribe `SendCommand.txt`
-    y graba un log en `SendCommandDebug.txt`.
+  - Servicio FastAPI que consume `GetData.txt`, normaliza la entrada y ejecuta
+    el modelo. Si la predicción está dentro de rangos seguros, escribe
+    `SendCommand.txt` y graba un log en `SendCommandDebug.txt`.
 
 - `tests/`:
   - `test_record_session.py`, `test_labeler.py`, `test_preprocess.py` y
@@ -112,8 +121,9 @@ Cada snapshot en `data/` será una línea JSON con este formato:
 
 ## Seguridad y validación (runtime)
 
-- Implementar validaciones para evitar comandos fuera de rango, acciones que con-
-  travengan reglas de seguridad y límites de cambio por segundo.
+- Implementar validaciones para evitar comandos fuera de rango.
+- Evitar acciones que contravengan reglas de seguridad y aplicar límites de tasa
+  (p. ej., límites de cambio por segundo).
 - Hacer "pair" con override humano: si el operador toma control, la IA no debe
   enviar comandos.
 
@@ -132,8 +142,8 @@ métricas.
 `docs/INFERENCE.md` — cómo ejecutar el servicio, tuning de seguridad y
 endpoints API.
 
-¿Te parece si creo ahora los `_stubs_` de scripts y el `requirements-ai.txt`, y luego
-continúo con `record_session.py`?
+¿Te parece si creo ahora los `_stubs_` de los scripts y el
+`requirements-ai.txt`? Luego puedo continuar con `record_session.py`.
 
 Si quieres que empiece ya con `record_session.py` y `labeler.py`, dímelo y los
 genero con un README en `docs/` que incluya instrucciones paso a paso y comandos

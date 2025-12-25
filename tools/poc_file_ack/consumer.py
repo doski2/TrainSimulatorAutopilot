@@ -15,13 +15,26 @@ class _OrderedSetDict(OrderedDict):
     implementation prefers an OrderedDict to maintain insertion order and
     timestamps. This small subclass preserves OrderedDict behaviour while
     adding an `add()` convenience method used in tests.
+
+    NOTE: Historically `add(key, value=None)` treated *omitted* `value` the
+    same as explicit `None` and stored the current timestamp. To make the
+    API deterministic we use a sentinel default to distinguish omitted
+    parameters from `None` explicitly passed by the caller.
     """
 
-    def add(self, key, value=None):
-        # If value is omitted, store current timestamp to preserve previous behaviour
-        if value is None:
+    _UNSET = object()
+
+    def add(self, key, value=_UNSET):
+        """Add key with an associated value.
+
+        - If `value` is not provided, store the current timestamp (int(time.time())).
+        - If `value` is provided and is `None`, store `None` explicitly.
+        """
+        if value is self._UNSET:
+            # Value omitted: preserve previous behavior of recording a timestamp
             self[key] = int(time.time())
         else:
+            # Explicit value given (including None): store it as-is
             self[key] = value
 
 

@@ -13,18 +13,20 @@ def test_api_metrics_io_writes_and_reads(tmp_path, monkeypatch):
     tsc = TSCIntegration()
     tsc.ruta_archivo_comandos = str(send_cmd)
 
-    # Simular PermissionError en la primera escritura al archivo temporal
-    orig_open = open
-    calls = {"count": 0}
+    # Simular PermissionError en la primera creación del archivo temporal
+    import tempfile
 
-    def fake_open(path, mode="r", *args, **kwargs):
-        tmp_path_str = os.path.abspath(str(tsc.ruta_archivo_comandos) + ".tmp")
-        if os.path.abspath(path) == tmp_path_str and "w" in mode and calls["count"] == 0:
+    calls = {"count": 0}
+    orig_named_tmp = tempfile.NamedTemporaryFile
+
+    def fake_named_tmp(*args, **kwargs):
+        # On the first attempt, raise PermissionError to simulate a locked file
+        if calls["count"] == 0:
             calls["count"] += 1
             raise PermissionError("file locked")
-        return orig_open(path, mode, *args, **kwargs)
+        return orig_named_tmp(*args, **kwargs)
 
-    monkeypatch.setattr("builtins.open", fake_open)
+    monkeypatch.setattr(tempfile, "NamedTemporaryFile", fake_named_tmp, raising=True)
 
     # Ejecutar acción para que haya métricas de escritura
     assert tsc.enviar_comandos({"acelerador": 0.5}) is True

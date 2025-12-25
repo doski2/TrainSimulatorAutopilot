@@ -1,6 +1,3 @@
-import os
-import tempfile
-
 from alert_system import AlertSystem
 from autopilot_system import AutopilotSystem
 from tsc_integration import TSCIntegration
@@ -45,7 +42,9 @@ def test_ia_metrics_update_and_exposed(monkeypatch):
     def fake_leer():
         return {'CurrentSpeed': 5.0, 'CurrentSpeedLimit': 20.0}
 
-    monkeypatch.setattr(tsci, 'leer_datos_archivo', lambda: {'CurrentSpeed': 5.0, 'CurrentSpeedLimit': 20.0})
+    # Use the named fake_leer function instead of an inline lambda so the test can be
+    # extended or inspected more easily.
+    monkeypatch.setattr(tsci, 'leer_datos_archivo', fake_leer)
     monkeypatch.setattr(tsci, 'convertir_datos_ia', lambda x: {'velocidad_actual': 18.0, 'limite_velocidad': 20.0})
 
     # Ensure session active so ejecutar_ciclo_control proceeds

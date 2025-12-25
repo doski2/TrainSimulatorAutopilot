@@ -1,31 +1,45 @@
-# Prometheus configuration for Train Simulator Autopilot ✅
+# Configuración de Prometheus para Train Simulator Autopilot ✅
 
-This folder contains a minimal Prometheus configuration to scrape the project's `/metrics` endpoint and a small set of alerting rules useful for development and local testing.
+Esta carpeta contiene una configuración mínima de Prometheus para "scrapear"
+el endpoint `/metrics` del proyecto y un conjunto reducido de reglas de alerta
+útiles para desarrollo y pruebas locales.
 
-Files:
-- `prometheus.yml` - Prometheus main configuration (scrapes `localhost:5001/metrics` by default)
-- `rules.yml` - Example alert rules (read/write retries, IA latency, alert rate)
+Archivos:
 
-Quick start (Docker):
+- `prometheus.yml` - Configuración principal de Prometheus (raspa
+  `localhost:5001/metrics` por defecto).
+- `rules.yml` - Reglas de alerta de ejemplo (reintentos de lectura/escritura,
+  latencia de IA, tasa de alertas).
+
+Arranque rápido (Docker):
+
 ```bash
-# Run Prometheus using official image and mount this directory as /etc/prometheus
-docker run --rm -p 9090:9090 -v $(pwd)/prometheus:/etc/prometheus prom/prometheus \
-  --config.file=/etc/prometheus/prometheus.yml
+# Ejecutar Prometheus con la imagen oficial y montar esta carpeta
+docker run --rm -p 9090:9090 \
+  -v $(pwd)/prometheus:/etc/prometheus \
+  prom/prometheus --config.file=/etc/prometheus/prometheus.yml
 ```
 
-Quick start with docker-compose (recommended for local dev):
+Arranque rápido con docker-compose (recomendado para dev local):
+
 ```bash
-# Start Prometheus service defined in project docker-compose
+# Levantar el servicio Prometheus definido en docker-compose
 docker-compose up -d prometheus
-# Check readiness
+# Verificar que Prometheus esté listo
 curl http://localhost:9090/-/ready
 ```
 
-Notes:
-- Adjust the `targets` list in `prometheus.yml` if your dashboard runs on a different host or port (e.g., `host.docker.internal:5001`).
-- The alert rules are intentionally conservative; tune thresholds for your environment before enabling them in production.
-- To test alerts locally you can use `promtool` or trigger synthetic conditions by calling `/metrics` endpoints with mocked metric values.
+Notas:
 
-Suggested next steps:
-- Add Grafana for visualization and rule evaluation.
-- Consider adding a lightweight Prometheus container to CI for rules validation (e.g., use promtool).
+- Ajusta la lista `targets` en `prometheus.yml` si el dashboard se ejecuta en
+  otro host o puerto (p. ej., `host.docker.internal:5001`).
+- Las reglas de alerta son intencionalmente conservadoras; ajústalas a tu
+  entorno antes de activarlas en producción.
+- Para probar alertas localmente puedes usar `promtool` o generar condiciones
+  sintéticas invocando `/metrics` con valores simulados.
+
+Siguientes pasos sugeridos:
+
+- Añadir Grafana para visualización y evaluación de reglas.
+- Considerar añadir un contenedor ligero de Prometheus en CI para validar
+  las reglas (p. ej., usando `promtool`).

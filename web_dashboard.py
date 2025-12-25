@@ -16,8 +16,29 @@ print(f"[BOOT] Directorio actual: {os.getcwd()}")
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 print(f"[BOOT] Path agregado: {os.path.dirname(os.path.dirname(os.path.abspath(__file__)))}")
 
-# Global variable for stub request json data
-_current_json_data = None
+# Thread-local storage for stub request JSON data to avoid cross-request races
+# We initialize lazily so module import order does not require `threading` to be available immediately.
+_thread_local = None
+
+
+def _get_current_json_data():
+    """Return the thread-local current JSON data for stub requests."""
+    global _thread_local
+    if _thread_local is None:
+        import threading
+
+        _thread_local = threading.local()
+    return getattr(_thread_local, "current_json_data", None)
+
+
+def _set_current_json_data(val):
+    """Set the thread-local current JSON data for stub requests."""
+    global _thread_local
+    if _thread_local is None:
+        import threading
+
+        _thread_local = threading.local()
+    _thread_local.current_json_data = val
 
 # Standard library imports
 import configparser  # noqa: E402
@@ -53,7 +74,7 @@ logger.info("Imports estándar completados")
 # Third-party imports
 try:
     from bokeh.embed import server_document  # noqa: E402
-    from flask import Flask, jsonify, render_template, request, Response  # noqa: E402
+    from flask import Flask, Response, jsonify, render_template, request  # noqa: E402
     from flask_socketio import SocketIO, emit  # noqa: E402
 
     print("[BOOT] Imports de terceros completados")
@@ -64,7 +85,7 @@ except Exception as e:
     # Minimal request stub
     class _SimpleRequest:
         def get_json(self):
-            return _current_json_data
+            return _get_current_json_data()
 
     request = _SimpleRequest()
 
@@ -96,19 +117,22 @@ except Exception as e:
             return False
 
         def post(self, path, json=None):
-            # Set the json data for the stub request
-            global _current_json_data
-            _current_json_data = json
-            func = self.app._routes.get(path)
-            if not func:
-                return _SimpleResponse(404, {"error": "not found"})
-            # Call view function without arguments (compatible with Flask view signature)
-            result = func() if callable(func) else (None, 500)
-            if isinstance(result, tuple):
-                data, code = result
-            else:
-                data, code = result, 200
-            return _SimpleResponse(code, data)
+            # Thread-safe: set the thread-local json data for the stub request
+            _set_current_json_data(json)
+            try:
+                func = self.app._routes.get(path)
+                if not func:
+                    return _SimpleResponse(404, {"error": "not found"})
+                # Call view function without arguments (compatible with Flask view signature)
+                result = func() if callable(func) else (None, 500)
+                if isinstance(result, tuple):
+                    data, code = result
+                else:
+                    data, code = result, 200
+                return _SimpleResponse(code, data)
+            finally:
+                # Clear thread-local storage after handling to avoid leakage between requests
+                _set_current_json_data(None)
 
     class Flask:
         def __init__(self, *a, **kw):
@@ -1801,6 +1825,10 @@ def prometheus_metrics_endpoint():
                         val = 0.0
                     lines.append(f"{name} {val}")
         except Exception:
+            # Intentionally ignore errors while collecting alert system metrics.
+            # The alert system may be uninitialized or return non-numeric values; we
+            # prefer to continue returning other metrics rather than failing the
+            # whole /metrics endpoint for a non-critical subsystem.
             pass
 
         # Autopilot IA metrics (if available)
@@ -1817,6 +1845,11 @@ def prometheus_metrics_endpoint():
                         val = 0.0
                     lines.append(f"{name} {val}")
         except Exception:
+            # Intentionally ignore errors while collecting IA metrics (e.g., IA not initialized
+            # or unexpected metric types). We do not want a problem in metrics collection to
+            # make the /metrics endpoint fail. Log at debug level so we can diagnose if
+            # unexpected errors become frequent in user environments.
+            logger.debug("Ignoring exception while collecting IA metrics", exc_info=True)
             pass
 
         # Dashboard uptime
@@ -1838,6 +1871,8 @@ def prometheus_metrics_endpoint():
                     val = 0.0
                 lines.append(f"{name} {val}")
         except Exception:
+            # Intentionally ignore errors while collecting autopilot plugin metrics to
+            # ensure /metrics remains available even if plugin metrics are malformed.
             pass
 
         # Exponer estado del plugin como métric gauge (1 = on, 0 = off/unknown)
@@ -1942,9 +1977,17 @@ def start_dashboard(host="127.0.0.1", port=5001):
     """Iniciar el dashboard web."""
     global dashboard_active, telemetry_thread
 
+    # Si estamos en CI, enlazamos en 0.0.0.0 para que contenedores (Prometheus)
+    # puedan acceder al servicio del runner.
+    effective_host = host
+    # If running in CI or when ALLOW_UNSAFE_WERKZEUG is enabled, bind to 0.0.0.0
+    # so containers (Prometheus) can access the service on the runner host.
+    if os.getenv("CI", "").lower() == "true" or os.getenv("ALLOW_UNSAFE_WERKZEUG", "").lower() in ("1", "true", "yes"):
+        effective_host = "0.0.0.0"
+
     print("[START] Iniciando Train Simulator Autopilot Dashboard...")
-    print(f"[WEB] Servidor web en http://{host}:{port}")
-    print(f"[LOG] Host: {host}, Port: {port}")
+    print(f"[WEB] Servidor web en http://{effective_host}:{port}")
+    print(f"[LOG] Host: {effective_host}, Port: {port}")
     print(f"[LOG] Directorio actual: {os.getcwd()}")
     print(f"[LOG] Python executable: {sys.executable}")
     print(f"[LOG] Python version: {sys.version}")
@@ -1977,15 +2020,23 @@ def start_dashboard(host="127.0.0.1", port=5001):
 
     try:
         print("[SERVER] Iniciando servidor SocketIO...")
-        print(f"[SERVER] Configuración: host={host}, port={port}")
+        print(f"[SERVER] Configuración: host={effective_host}, port={port}")
         print(f"[SERVER] App configurada: {app is not None}")
         print(f"[SERVER] SocketIO configurado: {socketio is not None}")
 
         # Verificar que las rutas están registradas
         logger.info(f"Rutas registradas: {len(app.url_map._rules)}")
 
+        # Permitir el uso de Werkzeug explícitamente en CI o cuando se requiera
+        allow_unsafe = os.getenv("ALLOW_UNSAFE_WERKZEUG", "").lower() in ("1", "true", "yes")
+        # GitHub Actions sets CI=true automatically; respetamos ese caso también
+        allow_unsafe = allow_unsafe or os.getenv("CI", "").lower() == "true"
+        if allow_unsafe:
+            logger.warning("allow_unsafe_werkzeug enabled via ALLOW_UNSAFE_WERKZEUG or CI environment")
+
         logger.info("Ejecutando socketio.run()...")
-        socketio.run(app, host=host, port=port, debug=False)
+        # Use the computed effective_host (may be 0.0.0.0 in CI or when ALLOW_UNSAFE_WERKZEUG is set)
+        socketio.run(app, host=effective_host, port=port, debug=False, allow_unsafe_werkzeug=allow_unsafe)
         logger.debug("Servidor SocketIO terminó normalmente")
     except KeyboardInterrupt:
         logger.info("Dashboard detenido por el usuario")

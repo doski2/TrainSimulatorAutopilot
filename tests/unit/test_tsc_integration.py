@@ -185,18 +185,18 @@ def test_enviar_comandos_retries_on_permission_error(tmp_path, monkeypatch):
     send_cmd = send_dir / "SendCommand.txt"
     tsc.ruta_archivo_comandos = str(send_cmd)
 
-    orig_open = open
+    import tempfile
+    orig_NamedTemporaryFile = tempfile.NamedTemporaryFile
     calls = {"count": 0}
 
-    def fake_open(path, mode="r", *args, **kwargs):
-        # Simular PermissionError solo durante la primera escritura al archivo temporal SendCommand.txt.tmp
-        tmp_path = os.path.abspath(str(tsc.ruta_archivo_comandos) + ".tmp")
-        if os.path.abspath(path) == tmp_path and "w" in mode and calls["count"] == 0:
+    def fake_NamedTemporaryFile(*args, **kwargs):
+        # Simulate PermissionError only on first attempt to create the temp file
+        if calls["count"] == 0:
             calls["count"] += 1
             raise PermissionError("file locked")
-        return orig_open(path, mode, *args, **kwargs)
+        return orig_NamedTemporaryFile(*args, **kwargs)
 
-    monkeypatch.setattr("builtins.open", fake_open)
+    monkeypatch.setattr(tempfile, "NamedTemporaryFile", fake_NamedTemporaryFile)
 
     # No debe lanzar, debe retornar True y terminar escribiendo el archivo
     assert tsc.enviar_comandos({"acelerador": 0.4}) is True
