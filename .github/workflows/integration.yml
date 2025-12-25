@@ -81,24 +81,8 @@ jobs:
 
     - name: Check Prometheus sees the target
       run: |
-        python - <<'PY'
-        import requests, sys, time
+        python .github/scripts/check_prometheus_targets.py --retries 30 --sleep 1 --timeout 5
 
-        def check():
-            r = requests.get('http://localhost:9090/api/v1/targets', timeout=5).json()
-            for t in r.get('data', {}).get('activeTargets', []):
-                addr = t.get('discoveredLabels', {}).get('__address__')
-                if addr in ('127.0.0.1:5001', 'localhost:5001', 'host.docker.internal:5001') and t.get('health') == 'up':
-                    return True
-            return False
-
-        for _ in range(30):
-            if check():
-                sys.exit(0)
-            time.sleep(1)
-        print('Prometheus did not see healthy target')
-        sys.exit(1)
-        PY
 
     - name: Run integration tests
       run: |
