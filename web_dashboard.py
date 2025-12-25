@@ -76,6 +76,12 @@ try:
     from bokeh.embed import server_document  # noqa: E402
     from flask import Flask, Response, jsonify, render_template, request  # noqa: E402
     from flask_socketio import SocketIO, emit  # noqa: E402
+    try:
+        # Werkzeug BadRequest used when request.get_json() receives malformed JSON
+        from werkzeug.exceptions import BadRequest  # noqa: E402
+    except Exception:
+        class BadRequest(Exception):
+            pass
 
     print("[BOOT] Imports de terceros completados")
 except Exception as e:
@@ -1289,7 +1295,10 @@ def control_set():
     The `control` name can be either a RailDriver control or a supported Spanish alias defined in the TSCIntegration mapping.
     """
     try:
-        payload = request.get_json(silent=True) or {}
+        try:
+            payload = request.get_json() or {}
+        except BadRequest:
+            return jsonify({"success": False, "error": "Invalid JSON payload"}), 400
         control = payload.get("control")
         value = payload.get("value")
         # Reject payloads where value is missing or control is missing/empty/only whitespace
