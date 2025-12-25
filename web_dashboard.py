@@ -1289,16 +1289,7 @@ def control_set():
     The `control` name can be either a RailDriver control or a supported Spanish alias defined in the TSCIntegration mapping.
     """
     try:
-        try:
-            payload = request.get_json(silent=True) or {}
-        except TypeError:
-            # Some test stubs implement get_json() without keyword args
-            try:
-                payload = request.get_json() or {}
-            except Exception:
-                return jsonify({"success": False, "error": "Invalid JSON payload"}), 400
-        except Exception:
-            return jsonify({"success": False, "error": "Invalid JSON payload"}), 400
+        payload = request.get_json(silent=True) or {}
         control = payload.get("control")
         value = payload.get("value")
         if not control or value is None:
