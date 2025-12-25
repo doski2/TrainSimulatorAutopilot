@@ -38,15 +38,15 @@ jobs:
         import io,sys
         p='prometheus/prometheus.yml'
         s=open(p).read()
-        # Use localhost for the runner environment
-        s=s.replace('localhost:5001','localhost:5001')
+        # Use host.docker.internal to reach host from Prometheus container
+        s=s.replace('localhost:5001','host.docker.internal:5001')
         open('prometheus/ci_prometheus.yml','w').write(s)
         print('WROTE prometheus/ci_prometheus.yml')
         PY
 
     - name: Start Prometheus container (pinned image)
       run: |
-        docker run -d --name prometheus-ci -p 9090:9090 -v ${{ github.workspace }}/prometheus:/etc/prometheus prom/prometheus:v3.8.1 --config.file=/etc/prometheus/ci_prometheus.yml
+        docker run -d --name prometheus-ci -p 9090:9090 -v ${{ github.workspace }}/prometheus:/etc/prometheus --add-host=host.docker.internal:host-gateway prom/prometheus:v3.8.1 --config.file=/etc/prometheus/ci_prometheus.yml
 
     - name: Wait for Prometheus ready
       run: |
@@ -86,7 +86,7 @@ jobs:
             r = requests.get('http://localhost:9090/api/v1/targets', timeout=5).json()
             for t in r.get('data', {}).get('activeTargets', []):
                 addr = t.get('discoveredLabels', {}).get('__address__')
-                if addr in ('127.0.0.1:5001', 'localhost:5001') and t.get('health') == 'up':
+                if addr in ('127.0.0.1:5001', 'localhost:5001', 'host.docker.internal:5001') and t.get('health') == 'up':
                     return True
             return False
 
