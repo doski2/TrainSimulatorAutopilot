@@ -49,7 +49,7 @@ Usuario → Electron App → Flask Server → Python Backend → Raildriver → 
 
 TrainSimulatorAutopilot/ ├── 🖥️ main.js # Aplicación Electron ├── 🌐
 web_dashboard.py # Servidor Flask principal ├── 🐍 tsc_integration.py #
-Integración con TSC ├── 🤖 autopilot_system.py # Lógica de IA ├── 📊 dashboard/ #
+Integración con TSC ├── 🤖 autopilot_system.py # Lógica de IA ├── 📊 dashboard/
 Componentes del dashboard ├── 🔧 scripts/ # Scripts de automatización ├── 🧪
 tests/ # Suite de testing completa ├── 📚 docs/ # Documentación completa └── ⚙️
 config.ini # Configuración del sistema

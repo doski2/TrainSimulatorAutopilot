@@ -13,7 +13,7 @@ for ($i = 0; $i -lt 60; $i++) {
     Start-Sleep -Seconds 2
 }
 if ($found) {
-    Get-ChildItem $plugins | Where-Object { $_.Name -in @('autopilot_state.txt','autopilot_debug.log') } | Select Name, LastWriteTime, Length | Format-Table -AutoSize
+    Get-ChildItem $plugins | Where-Object { $_.Name -in @('autopilot_state.txt','autopilot_debug.log') } | Select-Object Name, LastWriteTime, Length | Format-Table -AutoSize
     if (Test-Path (Join-Path $plugins 'autopilot_state.txt')) {
         Write-Output 'autopilot_state.txt content:'
         Get-Content (Join-Path $plugins 'autopilot_state.txt') -ErrorAction SilentlyContinue
