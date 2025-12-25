@@ -74,7 +74,7 @@ logger.info("Imports estándar completados")
 # Third-party imports
 try:
     from bokeh.embed import server_document  # noqa: E402
-    from flask import Flask, jsonify, render_template, request, Response  # noqa: E402
+    from flask import Flask, Response, jsonify, render_template, request  # noqa: E402
     from flask_socketio import SocketIO, emit  # noqa: E402
 
     print("[BOOT] Imports de terceros completados")
@@ -1980,7 +1980,9 @@ def start_dashboard(host="127.0.0.1", port=5001):
     # Si estamos en CI, enlazamos en 0.0.0.0 para que contenedores (Prometheus)
     # puedan acceder al servicio del runner.
     effective_host = host
-    if os.getenv("CI", "").lower() == "true":
+    # If running in CI or when ALLOW_UNSAFE_WERKZEUG is enabled, bind to 0.0.0.0
+    # so containers (Prometheus) can access the service on the runner host.
+    if os.getenv("CI", "").lower() == "true" or os.getenv("ALLOW_UNSAFE_WERKZEUG", "").lower() in ("1", "true", "yes"):
         effective_host = "0.0.0.0"
 
     print("[START] Iniciando Train Simulator Autopilot Dashboard...")
@@ -2033,7 +2035,8 @@ def start_dashboard(host="127.0.0.1", port=5001):
             logger.warning("allow_unsafe_werkzeug enabled via ALLOW_UNSAFE_WERKZEUG or CI environment")
 
         logger.info("Ejecutando socketio.run()...")
-        socketio.run(app, host=host, port=port, debug=False, allow_unsafe_werkzeug=allow_unsafe)
+        # Use the computed effective_host (may be 0.0.0.0 in CI or when ALLOW_UNSAFE_WERKZEUG is set)
+        socketio.run(app, host=effective_host, port=port, debug=False, allow_unsafe_werkzeug=allow_unsafe)
         logger.debug("Servidor SocketIO terminó normalmente")
     except KeyboardInterrupt:
         logger.info("Dashboard detenido por el usuario")
