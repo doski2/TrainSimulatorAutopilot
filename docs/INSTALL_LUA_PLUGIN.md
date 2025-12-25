@@ -6,7 +6,9 @@ en la carpeta `plugins` de Train Simulator en Windows.
 Precauciones:
 
 - Requiere permisos de administrador para escribir en `C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins`.
-- Recomiendo cerrar Train Simulator antes de copiar para evitar problemas de archivo bloqueado. Si no puedes cerrar el juego, copia y luego reinícialo.
+- Recomiendo cerrar Train Simulator antes de copiar para evitar
+  problemas de archivo bloqueado.
+  Si no puedes cerrar el juego, copia los archivos y reinícialo.
 
 Pasos manuales (rápido):
 
@@ -17,8 +19,8 @@ Pasos manuales (rápido):
 Copy-Item .\complete_autopilot_lua.lua "C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins\complete_autopilot_lua.lua"
 ```
 
-3. Inicia Train Simulator o reinícialo.
-4. Verifica la creación de `autopilot_state.txt` y `autopilot_debug.log`
+1. Inicia Train Simulator o reinícialo.
+2. Verifica la creación de `autopilot_state.txt` y `autopilot_debug.log`
    dentro de la carpeta `plugins`.
 
 Uso del script automatizado (recomendado):
