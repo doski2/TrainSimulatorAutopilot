@@ -24,12 +24,15 @@ Formato de comandos para control directo
      - Este endpoint usa `TSCIntegration.enviar_comandos`.
      - Escribe atómicamente el archivo que lee el plugin Lua.
 
-  2. Escribir directamente en `plugins/autopilot_commands.txt` (solo para pruebas).
-     Cada línea será procesada por el plugin cuando el motor esté en ejecución.
+  2. Escribir directamente en `plugins/autopilot_commands.txt`.
+     (solo para pruebas).
+     Cada línea será procesada por el plugin cuando el motor
+     esté en ejecución.
 
 Notas de seguridad y robustez
 
-- El plugin intenta parsear valores numéricos (tonumber) y booleanos (`true`/`false`).
+- El plugin intenta parsear valores numéricos (tonumber) y
+  booleanos (`true`/`false`).
 - Aplica internamente `PlayerEngineSetControlValue` para aplicar los valores.
 - Asegúrate de que el simulador esté cargado y la escena tenga `engine key`.
   Esto permite que el plugin procese las líneas.
@@ -58,8 +61,10 @@ discretas para compatibilidad con activos que esperan pasos discretos.
 - Escritura múltiple de destinos de control:
   - `plugins/SendCommand.txt` (TSClassic Interface) — ahora se escribe para
     compatibilidad con la interfaz x64.
-  - `plugins/sendcommand.txt` — archivo legacy también escrito por compatibilidad.
-  - `plugins/autopilot_commands.txt` — usado por el plugin Lua cuando está activo.
+  - `plugins/sendcommand.txt` — archivo legacy también escrito por
+    compatibilidad.
+  - `plugins/autopilot_commands.txt` — usado por el plugin Lua cuando
+    está activo.
     (Opcional: controlado por `write_lua_commands`).
 
 - Fallback `start_autopilot`:
@@ -125,8 +130,10 @@ python -m pytest tests/unit/test_tsc_interface_write.py -q
 
 ---
 
-> **Nota:** Estas medidas mejoran la robustez cuando el plugin Lua no responde o no está cargado.
-> En entornos con el plugin activo, la comunicación preferible es `autopilot_commands.txt`.
+> **Nota:** Estas medidas mejoran la robustez cuando el plugin Lua
+> no responde o no está cargado.
+> En entornos con el plugin activo, la comunicación preferible es
+> `autopilot_commands.txt`. 
 
 ---
 
