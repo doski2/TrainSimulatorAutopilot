@@ -1,0 +1,29 @@
+import threading
+
+from web_dashboard import _get_current_json_data, _set_current_json_data
+
+
+def worker(i, results):
+    # set a unique value and then read it back
+    _set_current_json_data(f"value-{i}")
+    # small busy-wait to increase chance of interleaving
+    for _ in range(1000000):
+        pass
+    results[i] = _get_current_json_data()
+
+
+def test_thread_local_is_isolated_and_race_free():
+    threads = []
+    results = {}
+    n = 8
+    for i in range(n):
+        t = threading.Thread(target=worker, args=(i, results))
+        threads.append(t)
+        t.start()
+
+    for t in threads:
+        t.join()
+
+    # Each thread should have its own stored value
+    for i in range(n):
+        assert results[i] == f"value-{i}"

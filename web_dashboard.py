@@ -17,27 +17,23 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 print(f"[BOOT] Path agregado: {os.path.dirname(os.path.dirname(os.path.abspath(__file__)))}")
 
 # Thread-local storage for stub request JSON data to avoid cross-request races
-# We initialize lazily so module import order does not require `threading` to be available immediately.
-_thread_local = None
+# Initialize at module import time to avoid races during first access.
+# Try to create the thread-local storage now; if threading isn't available,
+# fall back to lazy init in the accessors (keeps test stubs working).
+try:
+    import threading  # noqa: F401
+    _thread_local = threading.local()
+except Exception:
+    _thread_local = None
 
 
 def _get_current_json_data():
     """Return the thread-local current JSON data for stub requests."""
-    global _thread_local
-    if _thread_local is None:
-        import threading
-
-        _thread_local = threading.local()
     return getattr(_thread_local, "current_json_data", None)
 
 
 def _set_current_json_data(val):
     """Set the thread-local current JSON data for stub requests."""
-    global _thread_local
-    if _thread_local is None:
-        import threading
-
-        _thread_local = threading.local()
     _thread_local.current_json_data = val
 
 # Standard library imports
