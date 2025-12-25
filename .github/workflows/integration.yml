@@ -77,6 +77,15 @@ jobs:
     - name: Ensure requests installed for checks
       run: python -m pip install requests
 
+    - name: Debug Prometheus container and connectivity
+      run: |
+        echo "-- prometheus config --"
+        docker exec prometheus-ci cat /etc/prometheus/ci_prometheus.yml || true
+        echo "-- prometheus logs (tail 200) --"
+        docker logs prometheus-ci | tail -n 200 || true
+        echo "-- attempt curl to host.docker.internal:5001 from prometheus container --"
+        docker exec prometheus-ci sh -c "apk add --no-cache curl >/dev/null 2>&1 || true; curl --silent --fail http://host.docker.internal:5001/metrics | head -n 50" || true
+
     - name: Check Prometheus sees the target
       run: |
         python - <<'PY'
