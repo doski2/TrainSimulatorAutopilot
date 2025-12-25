@@ -34,15 +34,8 @@ jobs:
 
     - name: Prepare Prometheus CI config
       run: |
-        python - <<'PY'
-        import io,sys
-        p='prometheus/prometheus.yml'
-        s=open(p).read()
-        # Use host.docker.internal to reach host from Prometheus container
-        s=s.replace('localhost:5001','host.docker.internal:5001')
-        open('prometheus/ci_prometheus.yml','w').write(s)
-        print('WROTE prometheus/ci_prometheus.yml')
-        PY
+        python .github/scripts/generate_ci_prometheus.py
+
 
     - name: Start Prometheus container (pinned image)
       run: |
