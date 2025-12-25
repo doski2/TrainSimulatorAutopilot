@@ -46,7 +46,7 @@ jobs:
 
     - name: Start Prometheus container (pinned image)
       run: |
-        docker run -d --name prometheus-ci -p 9090:9090 -v ${{ github.workspace }}/prometheus:/etc/prometheus prom/prometheus:2.44.0 --config.file=/etc/prometheus/ci_prometheus.yml
+        docker run -d --name prometheus-ci -p 9090:9090 -v ${{ github.workspace }}/prometheus:/etc/prometheus prom/prometheus:v3.8.1 --config.file=/etc/prometheus/ci_prometheus.yml
 
     - name: Wait for Prometheus ready
       run: |
