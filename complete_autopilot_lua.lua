@@ -575,7 +575,8 @@ function readPythonCommands()
                 SetLightsState(false)
             elseif line:find(":") then
                 -- Parse control:value pairs and apply directly
-                local name, value = line:match("^%s*([^:]+):%s*([^:]+)%s*$")
+                -- Trim surrounding whitespace from both name and value captures using non-greedy matches
+                local name, value = line:match("^%s*(.-)%s*:%s*(.-)%s*$")
                 if name and value then
                     -- Try numeric value first
                     local num = tonumber(value)

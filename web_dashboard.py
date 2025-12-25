@@ -1305,6 +1305,16 @@ def control_set():
             logger.warning("control_set: invalid payload: control=%s (%s) value=%s (%s)", control, type(control), value, type(value))
             return jsonify({"success": False, "error": "Invalid payload, expected 'control' and 'value'"}), 400
 
+        # Validate control name to prevent injection into file-based command protocol.
+        # Reject control names containing ':' or control characters like newlines or NUL.
+        if not isinstance(control, str):
+            logger.warning("control_set: control name not a string: %r", control)
+            return jsonify({"success": False, "error": "Invalid control name"}), 400
+        forbidden = {":", "\n", "\r", "\x00"}
+        if any(ch in control for ch in forbidden) or not control.isprintable() or len(control) > 100:
+            logger.warning("control_set: rejected control name with forbidden characters: %r", control)
+            return jsonify({"success": False, "error": "Invalid control name"}), 400
+
         # Use TSCIntegration to map and write control commands
         if tsc_integration is None:
             return jsonify({"success": False, "error": "TSC integration not available"}), 500

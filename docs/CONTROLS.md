@@ -34,6 +34,9 @@ Notas de seguridad y robustez
 - El plugin intenta parsear valores numéricos (tonumber) y
   booleanos (`true`/`false`).
 - Aplica internamente `PlayerEngineSetControlValue` para aplicar los valores.
+- El endpoint REST `POST /api/control/set` valida el nombre del control y rechazará
+  nombres que contengan `:` o caracteres de control (por ejemplo `\n`, `\r`, NUL)
+  para prevenir inyección en el protocolo basado en archivos.
 - Asegúrate de que el simulador esté cargado y la escena tenga `engine key`.
   Esto permite que el plugin procese las líneas.
 - El plugin escribe logs en `plugins/autopilot_debug.log`.
@@ -133,7 +136,7 @@ python -m pytest tests/unit/test_tsc_interface_write.py -q
 > **Nota:** Estas medidas mejoran la robustez cuando el plugin Lua
 > no responde o no está cargado.
 > En entornos con el plugin activo, la comunicación preferible es
-> `autopilot_commands.txt`. 
+> `autopilot_commands.txt`.
 
 ---
 
