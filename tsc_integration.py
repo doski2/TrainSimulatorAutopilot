@@ -24,7 +24,7 @@ except ImportError:
 # Intentar usar portalocker para bloqueo de archivo cuando esté disponible.
 # Si no está instalado, el código cae en el comportamiento de reintentos existente.
 try:
-    import portalocker
+    import portalocker  # type: ignore[reportMissingImports]
 
     HAS_PORTALOCKER = True
 except Exception:
@@ -204,7 +204,7 @@ class TSCIntegration:
             plugins_dir = os.path.dirname(self.ruta_archivo_comandos)
             state_file = os.path.join(plugins_dir, "autopilot_state.txt")
             if os.path.exists(state_file):
-                with open(state_file, "r", encoding="utf-8") as f:
+                with open(state_file, encoding="utf-8") as f:
                     val = f.read().strip().lower()
                     if val in ("on", "off"):
                         return val
@@ -254,7 +254,7 @@ class TSCIntegration:
         for attempt in range(1, retries + 1):
             try:
                 # Try to use portalocker to obtain a short shared/read lock when available
-                if HAS_PORTALOCKER:
+                if HAS_PORTALOCKER and portalocker is not None:
                     try:
                         with portalocker.Lock(self.ruta_archivo, 'r', timeout=0.1) as f:
                             lines = f.readlines()
@@ -293,7 +293,10 @@ class TSCIntegration:
         self.io_metrics["read_total_retries"] += retries
         self.io_metrics["read_last_latency_ms"] = round(elapsed_ms, 3)
         logger.exception("Failed to read file %s after %d attempts", self.ruta_archivo, retries)
-        raise last_exc
+        if last_exc is None:
+            raise RuntimeError(f"Failed to read file {self.ruta_archivo}")
+        else:
+            raise last_exc
 
     def leer_datos_archivo(self) -> Optional[Dict[str, Any]]:
         """
@@ -846,7 +849,7 @@ class TSCIntegration:
                 # If portalocker is available, try to acquire a short exclusive lock on the
                 # destination file before replacing it, to reduce the window where a reader
                 # might see an inconsistent state on platforms with strong locking semantics.
-                if HAS_PORTALOCKER:
+                if HAS_PORTALOCKER and portalocker is not None:
                     try:
                         with portalocker.Lock(file_path, 'a', timeout=0.25):
                             os.replace(tmp_name, file_path)
@@ -884,7 +887,10 @@ class TSCIntegration:
         self.io_metrics["write_total_retries"] += retries
         self.io_metrics["write_last_latency_ms"] = round(elapsed_ms, 3)
         logger.exception("Failed to write file %s after %d attempts", file_path, retries)
-        raise last_exc
+        if last_exc is None:
+            raise RuntimeError(f"Failed to write file {file_path}")
+        else:
+            raise last_exc
 
     def enviar_comandos(self, comandos: Dict[str, Any]) -> bool:
         """
@@ -1071,7 +1077,7 @@ class TSCIntegration:
                         )
                     else:
                         # Filter only control:value lines
-                        filtered = [l for l in comandos_texto if ":" in l]
+                        filtered = [line for line in comandos_texto if ":" in line]
                         if filtered:
                             self._atomic_write_lines(lower_send_file, filtered)
                         logger.info(f"[TSC] También escrito archivo legacy sendcommand: {lower_send_file}")
@@ -1096,7 +1102,7 @@ class TSCIntegration:
                     )
                 else:
                     # Write only control:value lines (TSClassic Interface expects that format)
-                    filtered_interface = [l for l in comandos_texto if ":" in l]
+                    filtered_interface = [line for line in comandos_texto if ":" in line]
                     if filtered_interface:
                         try:
                             self._atomic_write_lines(tsc_file, filtered_interface)

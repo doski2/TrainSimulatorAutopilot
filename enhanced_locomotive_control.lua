@@ -40,7 +40,7 @@ end
 function OnControlValueChange(name, index, value)
     -- Handle control changes with feedback
     -- Door control events removed; handled by AI in future
-    elseif name == "LightSwitch" then
+    if name == "LightSwitch" then
         lightsState = value
         if value == 1 then
             Call("ScenarioManager:ShowMessage", "Lights ON", 3, 1)
