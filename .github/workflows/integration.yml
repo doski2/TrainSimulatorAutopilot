@@ -57,9 +57,20 @@ jobs:
         nohup python web_dashboard.py > web_dashboard.log 2>&1 &
         sleep 2
 
-    - name: Wait for dashboard /metrics
+    - name: Wait for dashboard /metrics (and print logs on failure)
       run: |
-        for i in {1..30}; do curl --silent --fail http://127.0.0.1:5001/metrics && exit 0 || sleep 1; done; exit 1
+        set -e
+        for i in {1..60}; do
+          if curl --silent --fail http://127.0.0.1:5001/metrics; then
+            echo "dashboard /metrics is ready"
+            exit 0
+          fi
+          sleep 1
+        done
+        echo "ERROR: /metrics not responding after 60s, dumping last 500 lines of web_dashboard.log"
+        tail -n 500 web_dashboard.log || true
+        echo "--- End log dump ---"
+        exit 1
 
     - name: Ensure requests installed for checks
       run: python -m pip install requests
