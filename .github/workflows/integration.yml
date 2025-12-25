@@ -66,14 +66,24 @@ jobs:
 
     - name: Check Prometheus sees the target
       run: |
-        for i in {1..30}; do
-          python -c "import sys,requests; r=requests.get('http://localhost:9090/api/v1/targets', timeout=5).json(); ok=False; \
-for t in r.get('data',{}).get('activeTargets',[]): addr=t.get('discoveredLabels',{}).get('__address__'); \
-if addr in ('127.0.0.1:5001','localhost:5001') and t.get('health')=='up': ok=True; break; sys.exit(0 if ok else 1)"
-          if [ $? -eq 0 ]; then exit 0; fi
-          sleep 1
-        done
-        echo "Prometheus did not see healthy target" && exit 1
+        python - <<'PY'
+        import requests, sys, time
+
+        def check():
+            r = requests.get('http://localhost:9090/api/v1/targets', timeout=5).json()
+            for t in r.get('data', {}).get('activeTargets', []):
+                addr = t.get('discoveredLabels', {}).get('__address__')
+                if addr in ('127.0.0.1:5001', 'localhost:5001') and t.get('health') == 'up':
+                    return True
+            return False
+
+        for _ in range(30):
+            if check():
+                sys.exit(0)
+            time.sleep(1)
+        print('Prometheus did not see healthy target')
+        sys.exit(1)
+        PY
 
     - name: Run integration tests
       run: |
