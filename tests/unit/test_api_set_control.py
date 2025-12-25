@@ -146,3 +146,19 @@ def test_control_set_string_value(monkeypatch):
     j = resp.get_json()
     assert j["success"] is True
     assert dummy.last == {"command": "emergency_brake"}
+
+
+def test_control_set_zero_value(monkeypatch):
+    """Aceptar el valor numérico 0 como válido."""
+    dummy = DummyTSC()
+    import web_dashboard as wd
+
+    monkeypatch.setattr(wd, "tsc_integration", dummy)
+    client = app.test_client()
+
+    payload = {"control": "Regulator", "value": 0}
+    resp = client.post("/api/control/set", json=payload)
+    assert resp.status_code == 200
+    j = resp.get_json()
+    assert j["success"] is True
+    assert dummy.last == {"Regulator": 0}
