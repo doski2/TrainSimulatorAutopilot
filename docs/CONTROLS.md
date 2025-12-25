@@ -115,10 +115,10 @@ python -m pytest tests/unit/test_tsc_interface_write.py -q
 
 3. Comprueba los archivos `plugins/SendCommand.txt` y
    `plugins/sendcommand.txt` para ver las líneas escritas.
-4. Si el plugin Lua no está cargado, verás líneas de fallback
-   (`Regulator:0.125` y `VirtualThrottle:0.125`).
-   Cuando el plugin está cargado, la directiva `start_autopilot`
-   la gestionará directamente.
+4. Si el plugin Lua no está cargado, verás líneas de
+   fallback (`Regulator:0.125` y `VirtualThrottle:0.125`).
+   Cuando el plugin está cargado, la directiva
+   `start_autopilot` la gestionará directamente.
 5. Confirma en el juego que la muesca aplicada produce movimiento.
    Si no funciona, revisa `plugins/autopilot_debug.log` y
    confirma si `autopilot_plugin_loaded.txt` existe.
