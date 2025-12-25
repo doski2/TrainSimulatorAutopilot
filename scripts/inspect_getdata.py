@@ -1,9 +1,16 @@
 import os
 import sys
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if ROOT not in sys.path:
-    sys.path.insert(0, ROOT)
-from tsc_integration import TSCIntegration
+
+try:
+    # Prefer direct import at module top for linters; fall back to adding
+    # repository root to sys.path if import fails when running as script.
+    from tsc_integration import TSCIntegration
+except ImportError:
+    ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    if ROOT not in sys.path:
+        sys.path.insert(0, ROOT)
+    from tsc_integration import TSCIntegration
+
 integ = TSCIntegration()
 raw = integ.leer_datos_archivo()
 print('Leidos del archivo:', list(raw.keys()) if raw else raw)
