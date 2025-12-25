@@ -246,6 +246,7 @@ FullEngineData/
 
 # Test data
 test_*.json
+.test_*.json
 *_historial.json
 
 # Ruff cache
