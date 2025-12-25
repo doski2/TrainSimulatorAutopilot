@@ -60,7 +60,8 @@ try {
     $acl = Get-Acl $pluginsDir
     Write-Host "Plugins dir owner: $($acl.Owner)"
 } catch {
-    Write-Warning "Could not read ACL for $pluginsDir: $($_.Exception.Message)"
+    # Use explicit format to avoid variable interpolation parsing issues
+    Write-Warning ("Could not read ACL for {0}: {1}" -f $pluginsDir, $_.Exception.Message)
 }
 
 Write-Host "== Verification: waiting up to $TimeoutSeconds sec for plugin outputs =="
