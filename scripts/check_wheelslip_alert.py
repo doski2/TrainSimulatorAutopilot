@@ -1,10 +1,17 @@
-import os, sys
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if ROOT not in sys.path:
-    sys.path.insert(0, ROOT)
+import os
+import sys
 
-from tsc_integration import TSCIntegration
-from alert_system import AlertSystem
+try:
+    from alert_system import AlertSystem
+    from tsc_integration import TSCIntegration
+except ImportError:
+    # If local package imports fail (e.g., running script directly),
+    # add the repository root to sys.path and retry.
+    ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    if ROOT not in sys.path:
+        sys.path.insert(0, ROOT)
+    from alert_system import AlertSystem
+    from tsc_integration import TSCIntegration
 
 integ = TSCIntegration()
 raw = integ.leer_datos_archivo()
