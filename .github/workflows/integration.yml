@@ -27,13 +27,13 @@ jobs:
     - name: Prepare Prometheus CI config
       run: |
         python - <<'PY'
-import io,sys
-p='prometheus/prometheus.yml'
-s=open(p).read()
-s=s.replace('localhost:5001','host.docker.internal:5001')
-open('prometheus/ci_prometheus.yml','w').write(s)
-print('WROTE prometheus/ci_prometheus.yml')
-PY
+        import io,sys
+        p='prometheus/prometheus.yml'
+        s=open(p).read()
+        s=s.replace('localhost:5001','host.docker.internal:5001')
+        open('prometheus/ci_prometheus.yml','w').write(s)
+        print('WROTE prometheus/ci_prometheus.yml')
+        PY
 
     - name: Start Prometheus container
       run: |
@@ -56,17 +56,17 @@ PY
       run: |
         for i in {1..30}; do
           python - <<'PY'
-import sys, requests
-r = requests.get('http://localhost:9090/api/v1/targets', timeout=5).json()
-for t in r.get('data',{}).get('activeTargets',[]):
-    addr = t.get('discoveredLabels',{}).get('__address__')
-    if addr in ('host.docker.internal:5001','127.0.0.1:5001','localhost:5001') and t.get('health') == 'up':
-        sys.exit(0)
-sys.exit(1)
-PY
+          import sys, requests
+          r = requests.get('http://localhost:9090/api/v1/targets', timeout=5).json()
+          for t in r.get('data',{}).get('activeTargets',[]):
+              addr = t.get('discoveredLabels',{}).get('__address__')
+              if addr in ('host.docker.internal:5001','127.0.0.1:5001','localhost:5001') and t.get('health') == 'up':
+                  sys.exit(0)
+          sys.exit(1)
+          PY
           if [ $? -eq 0 ]; then exit 0; fi
           sleep 1
-done
+        done
         echo "Prometheus did not see healthy target" && exit 1
 
     - name: Run integration tests

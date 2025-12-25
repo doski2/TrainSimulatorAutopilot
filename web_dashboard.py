@@ -1825,6 +1825,10 @@ def prometheus_metrics_endpoint():
                         val = 0.0
                     lines.append(f"{name} {val}")
         except Exception:
+            # Intentionally ignore errors while collecting alert system metrics.
+            # The alert system may be uninitialized or return non-numeric values; we
+            # prefer to continue returning other metrics rather than failing the
+            # whole /metrics endpoint for a non-critical subsystem.
             pass
 
         # Autopilot IA metrics (if available)
@@ -1841,6 +1845,11 @@ def prometheus_metrics_endpoint():
                         val = 0.0
                     lines.append(f"{name} {val}")
         except Exception:
+            # Intentionally ignore errors while collecting IA metrics (e.g., IA not initialized
+            # or unexpected metric types). We do not want a problem in metrics collection to
+            # make the /metrics endpoint fail. Log at debug level so we can diagnose if
+            # unexpected errors become frequent in user environments.
+            logger.debug("Ignoring exception while collecting IA metrics", exc_info=True)
             pass
 
         # Dashboard uptime
@@ -1862,6 +1871,8 @@ def prometheus_metrics_endpoint():
                     val = 0.0
                 lines.append(f"{name} {val}")
         except Exception:
+            # Intentionally ignore errors while collecting autopilot plugin metrics to
+            # ensure /metrics remains available even if plugin metrics are malformed.
             pass
 
         # Exponer estado del plugin como métric gauge (1 = on, 0 = off/unknown)

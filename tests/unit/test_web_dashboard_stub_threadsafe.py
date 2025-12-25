@@ -1,8 +1,12 @@
 import threading
-from web_dashboard import app, request, jsonify
+from flask import Flask, request, jsonify
 
 
 def test_simpleclient_post_is_thread_safe():
+    # Use a fresh Flask app so route registration is safe even if other tests
+    # have already exercised the global app and triggered its first request.
+    app = Flask(__name__)
+
     # Register a simple echo route that returns the JSON body
     @app.route('/echo', methods=['POST'])
     def echo():
