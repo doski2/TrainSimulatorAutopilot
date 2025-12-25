@@ -3,8 +3,9 @@ import sys
 
 # Ensure project root is on sys.path so we can import modules
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from web_dashboard import app, tsc_integration
 from flask.testing import FlaskClient
+
+from web_dashboard import app, tsc_integration
 
 print('TSCIntegration object:', bool(tsc_integration))
 if tsc_integration:
@@ -23,7 +24,8 @@ if tsc_integration:
             print('--- end ---')
 
 # Annotate the test client to satisfy static type checkers (Pylance)
-c: FlaskClient = app.test_client()
+from typing import cast
+c = cast(FlaskClient, app.test_client())
 with c:
     r = c.get('/api/status')
     print('/api/status ->', r.status_code, r.get_json())
