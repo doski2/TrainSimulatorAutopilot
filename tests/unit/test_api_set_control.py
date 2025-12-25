@@ -1,5 +1,3 @@
-import pytest
-
 from web_dashboard import app
 
 
