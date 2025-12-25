@@ -37,6 +37,20 @@ def test_control_set_invalid_payload():
     assert j["success"] is False
 
 
+def test_control_set_reject_whitespace_control(monkeypatch):
+    dummy = DummyTSC()
+    import web_dashboard as wd
+
+    monkeypatch.setattr(wd, "tsc_integration", dummy)
+    client = app.test_client()
+
+    payload = {"control": "   ", "value": 0.5}
+    resp = client.post("/api/control/set", json=payload)
+    assert resp.status_code == 400
+    j = resp.get_json()
+    assert j["success"] is False
+
+
 def test_control_set_tsc_unavailable(monkeypatch):
     import web_dashboard as wd
 

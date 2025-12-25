@@ -1292,7 +1292,8 @@ def control_set():
         payload = request.get_json(silent=True) or {}
         control = payload.get("control")
         value = payload.get("value")
-        if not control or value is None:
+        # Reject payloads where value is missing or control is missing/empty/only whitespace
+        if value is None or control is None or not str(control).strip():
             logger.warning("control_set: invalid payload: control=%s (%s) value=%s (%s)", control, type(control), value, type(value))
             return jsonify({"success": False, "error": "Invalid payload, expected 'control' and 'value'"}), 400
 
