@@ -53,6 +53,8 @@ jobs:
         for i in {1..30}; do curl --silent --fail http://localhost:9090/-/ready && exit 0 || sleep 1; done; exit 1
 
     - name: Start web dashboard (capture logs)
+      env:
+        ALLOW_UNSAFE_WERKZEUG: 'true'
       run: |
         nohup python web_dashboard.py > web_dashboard.log 2>&1 &
         sleep 2

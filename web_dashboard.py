@@ -2019,8 +2019,15 @@ def start_dashboard(host="127.0.0.1", port=5001):
         # Verificar que las rutas están registradas
         logger.info(f"Rutas registradas: {len(app.url_map._rules)}")
 
+        # Permitir el uso de Werkzeug explícitamente en CI o cuando se requiera
+        allow_unsafe = os.getenv("ALLOW_UNSAFE_WERKZEUG", "").lower() in ("1", "true", "yes")
+        # GitHub Actions sets CI=true automatically; respetamos ese caso también
+        allow_unsafe = allow_unsafe or os.getenv("CI", "").lower() == "true"
+        if allow_unsafe:
+            logger.warning("allow_unsafe_werkzeug enabled via ALLOW_UNSAFE_WERKZEUG or CI environment")
+
         logger.info("Ejecutando socketio.run()...")
-        socketio.run(app, host=host, port=port, debug=False)
+        socketio.run(app, host=host, port=port, debug=False, allow_unsafe_werkzeug=allow_unsafe)
         logger.debug("Servidor SocketIO terminó normalmente")
     except KeyboardInterrupt:
         logger.info("Dashboard detenido por el usuario")
