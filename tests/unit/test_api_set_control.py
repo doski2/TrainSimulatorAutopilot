@@ -64,6 +64,30 @@ def test_control_set_tsc_unavailable(monkeypatch):
     assert j["success"] is False
 
 
+def test_control_set_tsc_send_fails(monkeypatch):
+    """Si TSCIntegration.enviar_comandos devuelve False, el endpoint debe devolver 500."""
+    class FailingTSC:
+        def __init__(self):
+            self.last = None
+
+        def enviar_comandos(self, comandos):
+            self.last = comandos
+            return False
+
+    failing = FailingTSC()
+    import web_dashboard as wd
+
+    monkeypatch.setattr(wd, "tsc_integration", failing)
+    client = app.test_client()
+
+    payload = {"control": "Regulator", "value": 0.5}
+    resp = client.post("/api/control/set", json=payload)
+    assert resp.status_code == 500
+    j = resp.get_json()
+    assert j["success"] is False
+    assert failing.last == {"Regulator": 0.5}
+
+
 def test_control_set_reject_colon(monkeypatch):
     dummy = DummyTSC()
     import web_dashboard as wd
