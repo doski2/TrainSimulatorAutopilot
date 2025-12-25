@@ -1977,9 +1977,15 @@ def start_dashboard(host="127.0.0.1", port=5001):
     """Iniciar el dashboard web."""
     global dashboard_active, telemetry_thread
 
+    # Si estamos en CI, enlazamos en 0.0.0.0 para que contenedores (Prometheus)
+    # puedan acceder al servicio del runner.
+    effective_host = host
+    if os.getenv("CI", "").lower() == "true":
+        effective_host = "0.0.0.0"
+
     print("[START] Iniciando Train Simulator Autopilot Dashboard...")
-    print(f"[WEB] Servidor web en http://{host}:{port}")
-    print(f"[LOG] Host: {host}, Port: {port}")
+    print(f"[WEB] Servidor web en http://{effective_host}:{port}")
+    print(f"[LOG] Host: {effective_host}, Port: {port}")
     print(f"[LOG] Directorio actual: {os.getcwd()}")
     print(f"[LOG] Python executable: {sys.executable}")
     print(f"[LOG] Python version: {sys.version}")
@@ -2012,7 +2018,7 @@ def start_dashboard(host="127.0.0.1", port=5001):
 
     try:
         print("[SERVER] Iniciando servidor SocketIO...")
-        print(f"[SERVER] Configuración: host={host}, port={port}")
+        print(f"[SERVER] Configuración: host={effective_host}, port={port}")
         print(f"[SERVER] App configurada: {app is not None}")
         print(f"[SERVER] SocketIO configurado: {socketio is not None}")
 
