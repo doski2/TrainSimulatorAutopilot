@@ -132,5 +132,6 @@ python -m pytest tests/unit/test_tsc_interface_write.py -q
 
 Documentación actualizada por **GitHub Copilot** en la rama
 `copilot/implement-plugin-controls`.
-Si quieres, puedo agregar una sección en `config.ini.example` para exponer la
-tabla de muescas como opción configurable.
+
+Si quieres, puedo agregar una sección en `config.ini.example`
+para exponer la tabla de muescas como opción configurable.
