@@ -7,12 +7,19 @@ Defaults:
 
 This script is small and intentionally deterministic for CI. It exits with
 non-zero code on errors so it can be used directly from GitHub Actions.
+
+Requires: Python 3.9+ (typing annotations use typing.Optional/typing.List for
+backwards-compatible annotations).
 """
 from __future__ import annotations
 
 import argparse
 import sys
 from pathlib import Path
+
+# Enforce a minimum Python version so CI failures are explicit and visible.
+if sys.version_info < (3, 9):
+    raise SystemExit("generate_ci_prometheus.py requires Python 3.9 or newer")
 
 
 def generate(src: Path, dest: Path) -> None:
