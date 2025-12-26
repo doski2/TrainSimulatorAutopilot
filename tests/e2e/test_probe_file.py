@@ -16,7 +16,7 @@ def test_probe_file_written():
             while time.time() < end and not os.path.exists(probe):
                 time.sleep(0.01)
             assert os.path.exists(probe), 'probe file not found'
-            with open(probe, 'r', encoding='utf-8') as f:
+            with open(probe, encoding='utf-8') as f:
                 content = f.read().strip()
             assert content.startswith('loaded:'), 'probe content invalid'
         finally:

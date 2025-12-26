@@ -1,7 +1,6 @@
-import os
 
-from web_dashboard import app, tsc_integration as global_tsc
 from tsc_integration import TSCIntegration
+from web_dashboard import app
 
 
 def test_api_status_includes_plugin_fields(tmp_path, monkeypatch):

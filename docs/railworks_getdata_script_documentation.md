@@ -19,7 +19,11 @@ de `TrainSimulatorAutopilot`) para monitorear y controlar el tren.
 
 ## Funcionalidad
 
-El script se ejecuta automáticamente dentro del simulador cuando el jugador conduce una locomotora. Recopila datos como velocidad, RPM, esfuerzo de tracción, presiones de freno, etc., y los formatea en un archivo de texto plano.
+El script se ejecuta automáticamente dentro del simulador cuando el jugador conduce
+una locomotora.
+
+Recopila datos como velocidad, RPM, esfuerzo de tracción y presiones de freno,
+entre otros, y los formatea en un archivo de texto plano.
 
 ### Funciones Principales
 

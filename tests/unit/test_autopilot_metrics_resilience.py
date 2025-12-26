@@ -12,7 +12,7 @@ def test_metrics_update_failure_does_not_raise(monkeypatch):
     monkeypatch.setattr(tsci, 'obtener_datos_telemetria', lambda: {'velocidad': 10.0, 'limite_velocidad_actual': 20.0})
 
     # Simulate broken metrics container (e.g., None or wrong type)
-    ap.ia.metrics = None
+    ap.ia.metrics = None  # type: ignore[assignment]
 
     # Ensure session active so ejecutar_ciclo_control proceeds
     ap.sesion_activa = True

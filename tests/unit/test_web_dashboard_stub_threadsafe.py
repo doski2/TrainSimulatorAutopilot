@@ -1,5 +1,6 @@
 import threading
-from flask import Flask, request, jsonify
+
+from flask import Flask, jsonify, request
 
 
 def test_simpleclient_post_is_thread_safe():

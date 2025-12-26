@@ -1,15 +1,15 @@
 import os
 import sys
 import tempfile
-import time
 
 # Avoid importing heavy 3rd-party modules during unit tests by providing
 # a minimal stub for bokeh if it's not installed in the test env.
 import types
+
 if 'bokeh' not in sys.modules:
     bokeh_stub = types.ModuleType('bokeh')
     bokeh_embed = types.ModuleType('bokeh.embed')
-    bokeh_embed.server_document = lambda *args, **kwargs: ''
+    bokeh_embed.server_document = lambda *args, **kwargs: ''  # type: ignore[attr-defined]
     sys.modules['bokeh'] = bokeh_stub
     sys.modules['bokeh.embed'] = bokeh_embed
 

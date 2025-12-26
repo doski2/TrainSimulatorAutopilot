@@ -5,9 +5,9 @@ Sistema completo de piloto automático para Train Simulator Classic
 Integra TSC + IA + Control de comandos
 """
 
-from datetime import datetime
-import time
 import logging
+import time
+from datetime import datetime
 from typing import Any, Dict, Optional
 
 from tsc_integration import TSCIntegration
@@ -268,6 +268,11 @@ class AutopilotSystem:
         elapsed_ms = (time.time() - start) * 1000.0
         # Update IA metrics
         try:
+            # Ensure metrics storage is a dict; if it's None or a wrong type, initialize
+            if not isinstance(self.ia.metrics, dict):
+                logger.warning("IA metrics container missing or invalid (%r); initializing to empty dict", self.ia.metrics)
+                self.ia.metrics = {}
+
             self.ia.metrics["decision_last_latency_ms"] = round(elapsed_ms, 3)
             # Increment counters defensively; initialize if missing
             self.ia.metrics["decision_total"] = int(self.ia.metrics.get("decision_total", 0)) + 1

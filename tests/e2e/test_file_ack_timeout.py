@@ -1,4 +1,3 @@
-import tempfile
 from tools.poc_file_ack.enqueue import atomic_write_cmd, wait_for_ack
 
 

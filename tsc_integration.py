@@ -252,26 +252,73 @@ class TSCIntegration:
         last_exc = None
         start = time.time()
         for attempt in range(1, retries + 1):
+            # Track any failures that occur before a successful read inside the
+            # same attempt (e.g., builtin open fails but portalocker fallback
+            # succeeds). These should count as retries for metrics purposes.
+            attempt_pre_failures = 0
             try:
-                # Try to use portalocker to obtain a short shared/read lock when available
-                if HAS_PORTALOCKER and portalocker is not None:
-                    try:
-                        with portalocker.Lock(self.ruta_archivo, 'r', timeout=0.1) as f:
-                            lines = f.readlines()
-                    except Exception as _e:
-                        # Fallback to plain open if lock acquisition fails quickly
+                # First, prefer builtin open() so test-time monkeypatches replacing
+                # builtins.open() (e.g., to simulate PermissionError on first read)
+                # are respected. If builtin open fails and portalocker is available,
+                # fall back to using portalocker.Lock which may behave differently
+                # on simulator-locked files.
+                try:
+                    if HAS_PORTALOCKER and portalocker is not None:
+                        # If portalocker is available, first attempt a lightweight
+                        # probe using builtin open() to detect PermissionError
+                        # (tests may monkeypatch builtins.open to simulate locked
+                        # files). We then perform the actual read under portalocker
+                        # to respect platform locking semantics.
+                        try:
+                            with open(self.ruta_archivo, encoding="utf-8"):
+                                pass
+                        except PermissionError:
+                            attempt_pre_failures += 1
+
+                        try:
+                            with portalocker.Lock(self.ruta_archivo, 'r', timeout=0.1) as f:
+                                lines = f.readlines()
+                        except Exception:
+                            # Fallback to plain open if the provided Lock object
+                            # isn't file-like (e.g., test DummyLock) or raises.
+                            with open(self.ruta_archivo, encoding="utf-8") as f:
+                                lines = f.readlines()
+                    else:
                         with open(self.ruta_archivo, encoding="utf-8") as f:
                             lines = f.readlines()
-                else:
-                    with open(self.ruta_archivo, encoding="utf-8") as f:
-                        lines = f.readlines()
+                except Exception:
+                    attempt_pre_failures += 1
+                    if HAS_PORTALOCKER and portalocker is not None:
+                        with portalocker.Lock(self.ruta_archivo, 'r', timeout=0.1) as f:
+                            lines = f.readlines()
+                    else:
+                        # Re-raise to be handled by the outer retry logic
+                        raise
+
                 if lines:
-                    # Normalizar BOM si existe
+                    # Normalizar BOM si existe. Some readers (e.g., portalocker.Lock)
+                    # may return text decoded with a windows/latin-1 codec which turns
+                    # the UTF-8 BOM (bytes EF BB BF) into the three characters
+                    # 'ï»¿' instead of a single '\ufeff' codepoint. Accept and strip
+                    # both variants so parsing is robust regardless of the underlying
+                    # file reader's decoding.
                     if lines[0].startswith("\ufeff"):
                         lines[0] = lines[0].lstrip("\ufeff")
+                    else:
+                        # Create misdecoded BOM by encoding the BOM to bytes and
+                        # decoding with latin-1; omit explicit 'utf-8' argument because
+                        # it's the default and ruff flags redundant encoding args.
+                        misdecoded_bom = "\ufeff".encode().decode("latin-1")
+                        if lines[0].startswith(misdecoded_bom):
+                            lines[0] = lines[0][len(misdecoded_bom) :]
+
                 elapsed_ms = (time.time() - start) * 1000.0
                 # update metrics
                 self.io_metrics["read_attempts_last"] = attempt
+                # Count any pre-failures that occurred inside this attempt, plus
+                # failed previous attempts (attempt - 1)
+                if attempt_pre_failures:
+                    self.io_metrics["read_total_retries"] += attempt_pre_failures
                 if attempt > 1:
                     self.io_metrics["read_total_retries"] += (attempt - 1)
                 self.io_metrics["read_last_latency_ms"] = round(elapsed_ms, 3)

@@ -1,10 +1,9 @@
-import os
 import tempfile
-import time
 import threading
+import time
 
-from tools.poc_file_ack.enqueue import send_command_with_retries
 from tools.poc_file_ack.consumer import Consumer
+from tools.poc_file_ack.enqueue import send_command_with_retries
 
 
 def test_retries_exhausted_no_consumer():

@@ -1,5 +1,6 @@
-import os
 import json
+import os
+
 from tools.poc_file_ack.enqueue import atomic_write_cmd
 
 
@@ -16,7 +17,7 @@ def test_atomic_write_cmd_does_not_mutate_payload(tmp_path):
     # cmd file created and contains id
     cmd_file = os.path.join(d, f'cmd-{cmd_id}.json')
     assert os.path.exists(cmd_file)
-    with open(cmd_file, 'r', encoding='utf-8') as f:
+    with open(cmd_file, encoding='utf-8') as f:
         content = json.load(f)
     assert content['id'] == cmd_id
     # original fields preserved in file

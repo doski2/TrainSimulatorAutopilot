@@ -1,5 +1,5 @@
-from web_dashboard import app
 from tsc_integration import TSCIntegration
+from web_dashboard import app
 
 
 def test_metrics_endpoint_includes_tsc_io_and_uptime(monkeypatch):

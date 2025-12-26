@@ -1,4 +1,3 @@
-import os
 
 from tsc_integration import TSCIntegration
 

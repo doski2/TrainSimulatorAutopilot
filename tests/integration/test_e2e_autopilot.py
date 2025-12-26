@@ -11,8 +11,8 @@ def test_e2e_autopilot_writes_commands(tmp_path, monkeypatch):
     - Verifica que los archivos de comandos existen y contienen las líneas esperadas
     - Verifica que las métricas de I/O y IA se actualizaron
     """
-    from tsc_integration import TSCIntegration
     from autopilot_system import AutopilotSystem
+    from tsc_integration import TSCIntegration
 
     # Preparar GetData.txt con datos simples
     getdata = tmp_path / "GetData.txt"
