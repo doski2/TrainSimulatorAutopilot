@@ -24,7 +24,9 @@ def generate(src: Path, dest: Path) -> None:
     print(f"WROTE {dest}")
 
 
-def main(argv: list[str] | None = None) -> int:
+from typing import Optional, List
+
+def main(argv: Optional[List[str]] = None) -> int:
     p = argparse.ArgumentParser(description="Generate CI Prometheus config")
     p.add_argument("--src", default="prometheus/prometheus.yml", help="source prometheus.yml")
     p.add_argument("--dest", default="prometheus/ci_prometheus.yml", help="destination file to write")

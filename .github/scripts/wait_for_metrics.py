@@ -10,7 +10,7 @@ from __future__ import annotations
 import argparse
 import sys
 import time
-from typing import Tuple
+from typing import Tuple, Optional, List
 
 import requests
 
@@ -35,7 +35,7 @@ def check_once(url: str, timeout: float = 5.0) -> Tuple[bool, str]:
     return False, f"status={r.status_code} body={body}"
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: Optional[List[str]] = None) -> int:
     p = argparse.ArgumentParser(description="Wait for a metrics endpoint to respond 2xx")
     p.add_argument("--url", default=DEFAULT_URL, help="URL to poll")
     p.add_argument("--retries", type=int, default=120, help="number of retries")

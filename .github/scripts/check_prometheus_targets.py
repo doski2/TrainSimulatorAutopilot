@@ -33,7 +33,9 @@ def check_once(url: str, allowed: Iterable[str], timeout: float = 5.0) -> bool:
     return False
 
 
-def main(argv: list[str] | None = None) -> int:
+from typing import Optional, List
+
+def main(argv: Optional[List[str]] = None) -> int:
     p = argparse.ArgumentParser(description="Check Prometheus discovered targets")
     p.add_argument("--url", default=DEFAULT_URL, help="Prometheus targets API URL")
     p.add_argument("--retries", type=int, default=30, help="Number of retries")
