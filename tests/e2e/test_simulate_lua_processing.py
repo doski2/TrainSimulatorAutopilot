@@ -1,13 +1,18 @@
-from pathlib import Path
 import importlib.util
-import sys
+from pathlib import Path
 
 # The tests use the helper function implemented in .github/scripts/simulate_lua.py
 
 
 # Dynamically import the simulate_lua module from .github/scripts
-spec = importlib.util.spec_from_file_location("simulate_lua", Path(__file__).resolve().parents[2] / ".github" / "scripts" / "simulate_lua.py")
-simulate_lua = importlib.util.module_from_spec(spec)
+spec = importlib.util.spec_from_file_location(
+    "simulate_lua",
+    Path(__file__).resolve().parents[2] / ".github" / "scripts" / "simulate_lua.py",
+)
+# spec_from_file_location can return None on failure; assert to satisfy type checkers
+assert spec is not None, "unable to locate simulate_lua script"
+# module_from_spec requires a non-None ModuleSpec
+simulate_lua = importlib.util.module_from_spec(spec)  # type: ignore[arg-type]
 spec.loader.exec_module(simulate_lua)  # type: ignore
 
 
