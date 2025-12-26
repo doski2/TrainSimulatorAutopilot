@@ -28,12 +28,30 @@ except Exception:
 
 
 def _get_current_json_data():
-    """Return the thread-local current JSON data for stub requests."""
+    """Return the thread-local current JSON data for stub requests.
+
+    If the module-level thread-local storage wasn't initialized at import time
+    (e.g., threading wasn't available), initialize it lazily here so tests and
+    environments that import this module without `threading` still work.
+    """
+    global _thread_local
+    if _thread_local is None:
+        import threading
+
+        _thread_local = threading.local()
     return getattr(_thread_local, "current_json_data", None)
 
 
 def _set_current_json_data(val):
-    """Set the thread-local current JSON data for stub requests."""
+    """Set the thread-local current JSON data for stub requests.
+
+    Lazily initialize the module-level thread-local storage if needed.
+    """
+    global _thread_local
+    if _thread_local is None:
+        import threading
+
+        _thread_local = threading.local()
     _thread_local.current_json_data = val
 
 # Standard library imports
@@ -1330,10 +1348,34 @@ def control_set_impl():
                 return True, ""
             return False, "Invalid value type"
 
-        ok, reason = _validate_control_and_value(control, value)
-        if not ok:
-            logger.warning("control_set: invalid payload: control=%r value=%r reason=%s", control, value, reason)
-            return jsonify({"success": False, "error": "Invalid payload: %s" % reason}), 400
+        # Prefer JSON Schema based validation (if available)
+        try:
+            from web_validators import validate_control_set
+
+            valid, reason = validate_control_set(payload)
+            if not valid:
+                # If validator isn't available, it returns (False, "jsonschema not available") and tests will skip
+                logger.warning("control_set: validation failed: %s", reason)
+                return jsonify({"success": False, "error": f"Invalid payload: {reason}"}), 400
+        except Exception as e:
+            # Fall back to previous defensive checks if validator import fails for any reason
+            logger.warning("control_set: validator not available, falling back to runtime checks: %s", e)
+            def _validate_control_and_value(control, value):
+                if not isinstance(control, str):
+                    return False, "Invalid control name"
+                if not control.strip():
+                    return False, "Invalid control name"
+                forbidden = {":", "\n", "\r", "\x00"}
+                if any(ch in control for ch in forbidden) or not control.isprintable() or len(control) > 100:
+                    return False, "Invalid control name"
+                if isinstance(value, (bool, str, int, float)):
+                    return True, ""
+                return False, "Invalid value type"
+
+            ok, reason = _validate_control_and_value(control, value)
+            if not ok:
+                logger.warning("control_set: invalid payload: control=%r value=%r reason=%s", control, value, reason)
+                return jsonify({"success": False, "error": "Invalid payload: %s" % reason}), 400
 
         # Use TSCIntegration to map and write control commands
         if tsc_integration is None:
