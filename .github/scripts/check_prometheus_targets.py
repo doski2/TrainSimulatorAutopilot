@@ -7,6 +7,8 @@ addresses and whose 'health' == 'up'.
 
 The script exits with 0 when such a target is found, and 1 otherwise.
 It supports retrying (default 30 attempts with 1s delay) to wait for Prometheus.
+
+Requires: Python 3.9+ (uses typing.Optional/List for CLI signature compatibility).
 """
 from __future__ import annotations
 
@@ -14,6 +16,10 @@ import argparse
 import sys
 import time
 from typing import Iterable
+
+# Explicit runtime check so CI failures are immediate and obvious
+if sys.version_info < (3, 9):
+    raise SystemExit("check_prometheus_targets.py requires Python 3.9 or newer")
 
 import requests
 
