@@ -13,7 +13,6 @@ interactions without requiring a running Lua environment.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Iterable
 
 
 def _append_debug_log(plugins_dir: Path, message: str) -> None:

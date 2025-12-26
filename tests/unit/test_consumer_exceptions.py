@@ -1,8 +1,6 @@
-import os
 import json
-import time
 import logging
-from pathlib import Path
+import time
 
 from tools.poc_file_ack.consumer import Consumer
 

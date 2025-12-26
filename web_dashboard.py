@@ -85,14 +85,40 @@ except ImportError:
 
 logger.info("Imports estándar completados")
 
+from typing import TYPE_CHECKING, Any, cast  # noqa: E402
+
+# Type-only imports for static checking. These avoid creating runtime symbols
+# that could clash with our test-mode stub classes below.
+if TYPE_CHECKING:
+    # Importing these only during type checking helps Pylance/typing understand
+    # the types without causing redeclaration issues at runtime.
+    try:
+        from flask import Flask as FlaskType  # type: ignore
+        from werkzeug.exceptions import BadRequest as BadRequestType  # type: ignore
+    except Exception:  # pragma: no cover - only used by type checkers
+        FlaskType = Any  # type: ignore
+        BadRequestType = Any  # type: ignore
+
+# Provide runtime Any-typed placeholders so static type checkers don't
+# complain when the runtime import provides a different concrete type.
+# Pylance may warn about redeclaration of these names later (stub/real
+# import); silence that check via a type-ignore comment to avoid noise.
+Flask: Any = None  # type: ignore[reportRedeclaration,reportAssignmentType]
+BadRequest: Any = Exception  # type: ignore[reportRedeclaration]
+
 # Third-party imports
 try:
     from bokeh.embed import server_document  # noqa: E402
-    from flask import Flask, Response, jsonify, render_template, request  # noqa: E402
+    from flask import Flask as _Flask, Response, jsonify, render_template, request  # noqa: E402
+    # Assign to the public name under Any to avoid Pylance reportAssignmentType
+    Flask = cast(Any, _Flask)
     from flask_socketio import SocketIO, emit  # noqa: E402
     try:
         # Werkzeug BadRequest used when request.get_json() receives malformed JSON
-        from werkzeug.exceptions import BadRequest  # noqa: E402
+        # Import under an alias to avoid direct assignment of a concrete class to
+        # the module-level `BadRequest` stub (prevents Pylance assignment-type warnings)
+        from werkzeug.exceptions import BadRequest as _WerkzeugBadRequest  # noqa: E402
+        BadRequest = cast(Any, _WerkzeugBadRequest)
     except Exception:
         class BadRequest(Exception):
             pass
@@ -142,6 +168,50 @@ except Exception as e:
             try:
                 func = self.app._routes.get(path)
                 if not func:
+                    # Attempt simple parameterized route matching (e.g., /api/control/<action>)
+                    for route_pattern, route_fn in self.app._routes.items():
+                        if "<" in route_pattern and "/" in route_pattern:
+                            # Build regex from pattern
+                            import re
+
+                            names = re.findall(r"<([^>]+)>", route_pattern)
+                            # Build regex by escaping static segments and replacing placeholders
+                            def _pattern_to_regex(pat: str) -> str:
+                                ph = re.compile(r"<[^>]+>")
+                                parts = []
+                                last = 0
+                                for mm in ph.finditer(pat):
+                                    static = pat[last:mm.start()]
+                                    parts.append(re.escape(static))
+                                    parts.append(r"([^/]+)")
+                                    last = mm.end()
+                                static = pat[last:]
+                                parts.append(re.escape(static))
+                                return "^" + "".join(parts) + "$"
+
+                            regex = _pattern_to_regex(route_pattern)
+                            logger.debug("[stub-route-match] pattern=%s regex=%s path=%s names=%s", route_pattern, regex, path, names)
+                            try:
+                                m = re.match(regex, path)
+                                logger.debug("[stub-route-match] re.match returned: %s", bool(m))
+                            except re.error as re_err:
+                                logger.debug("[stub-route-match] regex compilation error: %s", re_err)
+                                m = None
+                            if m:
+                                groups = m.groups()
+                                print(f"[stub-route-match] matched groups={groups}")
+                                # Map names to values and call function with kwargs
+                                kwargs = dict(zip(names, groups))
+                                try:
+                                    result = route_fn(**kwargs)
+                                except TypeError:
+                                    # Handler didn't accept kwargs; call without arguments
+                                    result = route_fn()
+                                if isinstance(result, tuple):
+                                    data, code = result
+                                else:
+                                    data, code = result, 200
+                                return _SimpleResponse(code, data)
                     return _SimpleResponse(404, {"error": "not found"})
                 # Call view function without arguments (compatible with Flask view signature)
                 result = func() if callable(func) else (None, 500)
@@ -153,6 +223,55 @@ except Exception as e:
             finally:
                 # Clear thread-local storage after handling to avoid leakage between requests
                 _set_current_json_data(None)
+
+        def get(self, path):
+            """Support simple GET requests in the test stub client."""
+            func = self.app._routes.get(path)
+            if not func:
+                # Attempt parameterized route matching similar to POST handling
+                import re
+
+                for route_pattern, route_fn in self.app._routes.items():
+                    if "<" in route_pattern and "/" in route_pattern:
+                        names = re.findall(r"<([^>]+)>", route_pattern)
+
+                        def _pattern_to_regex(pat: str) -> str:
+                            ph = re.compile(r"<[^>]+>")
+                            parts = []
+                            last = 0
+                            for mm in ph.finditer(pat):
+                                static = pat[last:mm.start()]
+                                parts.append(re.escape(static))
+                                parts.append(r"([^/]+)")
+                                last = mm.end()
+                            static = pat[last:]
+                            parts.append(re.escape(static))
+                            return "^" + "".join(parts) + "$"
+
+                        regex = _pattern_to_regex(route_pattern)
+                        try:
+                            m = re.match(regex, path)
+                        except re.error:
+                            m = None
+                        if m:
+                            groups = m.groups()
+                            kwargs = dict(zip(names, groups))
+                            try:
+                                result = route_fn(**kwargs)
+                            except TypeError:
+                                result = route_fn()
+                            if isinstance(result, tuple):
+                                data, code = result
+                            else:
+                                data, code = result, 200
+                            return _SimpleResponse(code, data)
+                return _SimpleResponse(404, {"error": "not found"})
+            result = func() if callable(func) else (None, 500)
+            if isinstance(result, tuple):
+                data, code = result
+            else:
+                data, code = result, 200
+            return _SimpleResponse(code, data)
 
     class Flask:
         def __init__(self, *a, **kw):
@@ -283,7 +402,7 @@ logger.info("Todos los imports completados exitosamente")
 # Configuración del servidor
 
 # Configuración del servidor
-app = Flask(__name__, template_folder="web/templates", static_folder="web/static")
+app = cast(Any, Flask)(__name__, template_folder="web/templates", static_folder="web/static")
 app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY", os.urandom(24).hex())
 app.config["SESSION_COOKIE_SECURE"] = False  # Para desarrollo local
 app.config["SESSION_COOKIE_HTTPONLY"] = True
@@ -304,13 +423,16 @@ socketio = SocketIO(app, cors_allowed_origins=SOCKETIO_CORS_ORIGINS, async_mode=
 # Rate limiter configuration (per-endpoint overrideable via app.config)
 app.config.setdefault("CONTROL_RATE_LIMIT", os.getenv("CONTROL_RATE_LIMIT", "60/minute"))
 
+# Declare limiter variable for type checkers and to avoid "undefined name" warnings
+limiter: Any = None
 try:
     from flask_limiter import Limiter
     from flask_limiter.util import get_remote_address
 
-    limiter = Limiter(app, key_func=get_remote_address)
+    limiter = cast(Any, Limiter)(app, key_func=get_remote_address)  # type: ignore[reportCallIssue]
 except Exception:
-    limiter = None  # In test environments without Flask-Limiter installed, continue without rate limiting
+    # In test environments without Flask-Limiter installed, continue without rate limiting
+    limiter = None
 
 # Componentes del sistema
 tsc_integration = None
@@ -443,10 +565,13 @@ def initialize_system():
             ruta_prueba = os.path.join(os.path.dirname(__file__), "test_data.txt")
             if os.path.exists(ruta_prueba):
                 logger.info(f"Usando archivo de prueba: {ruta_prueba}")
+                # Narrow type for static checkers: TSCIntegration is truthy when TSC_AVAILABLE
+                assert TSCIntegration is not None
                 tsc_integration = TSCIntegration(ruta_archivo=ruta_prueba)
                 system_status["telemetry_source"] = "test"
             else:
                 logger.info("Archivo de prueba no encontrado, usando ruta por defecto")
+                assert TSCIntegration is not None
                 tsc_integration = TSCIntegration()
                 system_status["telemetry_source"] = "GetData"
             print("[OK] Integración TSC inicializada (para telemetría)")
@@ -1048,16 +1173,28 @@ def control_action(action):
             # Lógica para iniciar piloto automático
             if autopilot_system:
                 try:
-                    autopilot_system.start()
-                    autopilot_system.activar_modo_automatico()  # Activar modo automático
+                    try:
+                        autopilot_system.start()
+                        autopilot_system.activar_modo_automatico()  # Activar modo automático
+                    except Exception as e:
+                        logger.exception("start_autopilot: autopilot system start/activate failed: %s", e)
+                        return jsonify({"success": False, "error": f"Autopilot start failed: {e}"}), 500
                     system_status["autopilot_active"] = True
                     socketio.emit(
                         "system_message",
                         {"message": "Piloto automático iniciado", "type": "success"},
                     )
+                    logger.info("start_autopilot: autopilot started and socket message emitted")
                     # Determinar si el cliente pidió esperar por ACK (por defecto: True)
-                    payload = request.get_json(silent=True) or {}
+                    # Use silent=True so non-JSON requests (or missing Content-Type)
+                    # do not raise an HTTP exception (e.g., 415 Unsupported Media Type)
+                    # and instead return None which we treat as an empty payload.
+                    # Use cast(Any, request).get_json(...) to avoid Pylance warning
+                    # `reportCallIssue` when the stub signature doesn't include
+                    # the `silent` parameter.
+                    payload = cast(Any, request).get_json(silent=True) or {}
                     wait_for_ack = bool(payload.get("wait_for_ack", True))
+                    logger.info("start_autopilot: wait_for_ack=%s", wait_for_ack)
 
                     # Intentar confirmar estado desde el plugin Lua
                     plugin_state = None
@@ -1067,7 +1204,13 @@ def control_action(action):
                             plugin_state = tsc_integration.get_autopilot_plugin_state()
                             # Si no hay ack inmediato y el cliente quiere esperar, hacerlo con timeout configurado
                             if plugin_state is None and wait_for_ack:
-                                if tsc_integration.wait_for_autopilot_state("on", timeout=AUTOPILOT_ACK_TIMEOUT):
+                                try:
+                                    ok = tsc_integration.wait_for_autopilot_state("on", timeout=AUTOPILOT_ACK_TIMEOUT)
+                                    logger.info("start_autopilot: wait_for_autopilot_state returned %s", ok)
+                                except Exception:
+                                    logger.exception("start_autopilot: exception while waiting for plugin ack")
+                                    ok = False
+                                if ok:
                                     plugin_state = "on"
                                 else:
                                     # No llegó ACK en tiempo: registrar métrica y responder con 504 (Gateway Timeout)
@@ -1295,8 +1438,9 @@ def control_action(action):
         return jsonify({"success": True, "action": action})
 
     except Exception as e:
-        print(f"[ERROR] Error en control_action '{action}': {e}")
-        return jsonify({"success": False, "error": f"Error interno del servidor: {str(e)}"}), 500
+        logger.exception("Error en control_action '%s': %s", action, e)
+        traceback.print_exc()
+        return jsonify({"success": False, "error": str(e)}), 500
 
 
 def send_tsc_command(command_name, value):
@@ -1375,7 +1519,7 @@ def control_set_impl():
             ok, reason = _validate_control_and_value(control, value)
             if not ok:
                 logger.warning("control_set: invalid payload: control=%r value=%r reason=%s", control, value, reason)
-                return jsonify({"success": False, "error": "Invalid payload: %s" % reason}), 400
+                return jsonify({"success": False, "error": f"Invalid payload: {reason}"}), 400
 
         # Use TSCIntegration to map and write control commands
         if tsc_integration is None:
@@ -1892,10 +2036,19 @@ def prometheus_metrics_endpoint():
             lines.append(f"{name} {val}")
         # Alert system metrics (if available)
         try:
-            if alert_system:
-                a_metrics = getattr(alert_system, "metrics", {})
+            # Prefer module-level `alert_system` (may be monkeypatched in tests); fallback
+            # to `get_alert_system()` if not present.
+            if 'alert_system' in globals() and globals().get('alert_system'):
+                _as = globals().get('alert_system')
+            else:
+                _as = get_alert_system()
+
+            if _as:
+                a_metrics = getattr(_as, "metrics", {})
                 for k, v in a_metrics.items():
-                    name = f"alerts_{k}"
+                    # Avoid double-prefixing metric names if they already include
+                    # the 'alerts_' prefix.
+                    name = k if str(k).startswith("alerts_") else f"alerts_{k}"
                     lines.append(f"# HELP {name} Alert system metric {k}")
                     lines.append(f"# TYPE {name} gauge")
                     try:

@@ -1,8 +1,8 @@
 import os
 
-from web_dashboard import app, autopilot_metrics
-from tsc_integration import TSCIntegration
 from autopilot_system import AutopilotSystem
+from tsc_integration import TSCIntegration
+from web_dashboard import app, autopilot_metrics
 
 
 def test_retry_autopilot_increments_metric_and_writes_command(tmp_path, monkeypatch):

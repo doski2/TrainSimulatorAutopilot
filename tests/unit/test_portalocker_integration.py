@@ -1,4 +1,3 @@
-import os
 
 
 def test_portalocker_is_used_when_available(tmp_path, monkeypatch):
@@ -35,7 +34,7 @@ def test_portalocker_is_used_when_available(tmp_path, monkeypatch):
     monkeypatch.setattr(tsc_integration, "portalocker", type("p", (), {"Lock": DummyLock}))
 
     # Ejecutar una lectura para invocar el lock en lectura
-    lines = tsci._robust_read_lines()
+    tsci._robust_read_lines()
     assert DummyLock.calls, "Expected portalocker.Lock to be called during read"
 
     # Limpiar registros y ejecutar escritura para invocar lock en escritura

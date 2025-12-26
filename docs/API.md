@@ -2,7 +2,6 @@
 
 ## POST /api/control/set
 
-
 Establece un valor para un control del tren.
 
 Request JSON schema (informal):
@@ -43,7 +42,6 @@ Responses:
 
 ## Examples
 
-
 - Set numeric value (regulator to 0.45):
 
   curl -X POST "<http://localhost:5001/api/control/set>" \
@@ -63,7 +61,6 @@ Responses:
     -d '{\n      "control": "command",\n      "value": "emergency_brake"\n    }'
 
 ## Notes
-
 
 - El endpoint aplica validaciones para evitar inyección en el protocolo de
   control en archivos (p. ej., `plugins/autopilot_commands.txt`).

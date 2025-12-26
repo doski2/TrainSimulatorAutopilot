@@ -1,7 +1,6 @@
-import os
 
-from web_dashboard import app
 from tsc_integration import TSCIntegration
+from web_dashboard import app
 
 
 def test_api_metrics_io_writes_and_reads(tmp_path, monkeypatch):

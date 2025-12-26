@@ -1,7 +1,7 @@
-import json
+import builtins
 import logging
 import time
-import builtins
+
 from tools.poc_file_ack.consumer import Consumer
 from tools.poc_file_ack.enqueue import atomic_write_cmd
 

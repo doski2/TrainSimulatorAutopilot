@@ -10,15 +10,13 @@ from __future__ import annotations
 import argparse
 import sys
 import time
-from typing import Tuple, Optional, List
 
 import requests
-
 
 DEFAULT_URL = "http://127.0.0.1:5001/metrics"
 
 
-def check_once(url: str, timeout: float = 5.0) -> Tuple[bool, str]:
+def check_once(url: str, timeout: float = 5.0) -> tuple[bool, str]:
     try:
         r = requests.get(url, timeout=timeout)
     except Exception as e:
@@ -35,7 +33,7 @@ def check_once(url: str, timeout: float = 5.0) -> Tuple[bool, str]:
     return False, f"status={r.status_code} body={body}"
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: list | None = None) -> int:
     p = argparse.ArgumentParser(description="Wait for a metrics endpoint to respond 2xx")
     p.add_argument("--url", default=DEFAULT_URL, help="URL to poll")
     p.add_argument("--retries", type=int, default=120, help="number of retries")

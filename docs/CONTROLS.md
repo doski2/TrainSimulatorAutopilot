@@ -23,6 +23,7 @@ Formato de comandos para control directo
        `{ "success": true, "control": "Regulator", "value": 0.5 }`.
      - Este endpoint usa `TSCIntegration.enviar_comandos`.
      - Escribe atómicamente el archivo que lee el plugin Lua.
+     - **Esquema y ejemplos detallados:** ver `docs/API.md` (nuevo).
 
   2. Escribir directamente en `plugins/autopilot_commands.txt`.
      (solo para pruebas).

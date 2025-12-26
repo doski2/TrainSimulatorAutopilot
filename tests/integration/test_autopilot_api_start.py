@@ -1,9 +1,8 @@
 import os
-import time
 
-from web_dashboard import app
-from tsc_integration import TSCIntegration
 from autopilot_system import AutopilotSystem
+from tsc_integration import TSCIntegration
+from web_dashboard import app, autopilot_metrics
 
 
 def test_start_autopilot_writes_commands_and_returns_ack_when_plugin_reports_on(tmp_path, monkeypatch):
@@ -67,12 +66,18 @@ def test_start_autopilot_returns_success_but_no_ack_when_plugin_unresponsive(tmp
     monkeypatch.setattr('web_dashboard.tsc_integration', tsci)
     monkeypatch.setattr('web_dashboard.autopilot_system', ap)
 
+    before = autopilot_metrics.get('unacked_total', 0)
+
     with app.test_client() as client:
         resp = client.post('/api/control/start_autopilot')
         # New behaviour: by default the API waits for ACK and returns 504 if plugin is unresponsive
         assert resp.status_code == 504
         data = resp.get_json()
         assert data['success'] is False
+
+    # Metrics: unacked_total should have incremented by 1
+    after = autopilot_metrics.get('unacked_total', 0)
+    assert after == before + 1
 
     # Commands file should still have the start_autopilot command
     content = open(tsci.ruta_archivo_comandos, encoding='utf-8').read()

@@ -85,6 +85,7 @@ python configurator.py
 1. **Editar `config.ini`**:
 
    <!-- markdownlint-disable MD013 -->
+
 ```ini
 [TSC_INTEGRATION]
 data_file_path = C:\...\GetData.txt
@@ -110,8 +111,9 @@ cuando `FuelLevel` esté en 0..1. Si `FuelLevel` es un número grande (por ejemp
    - Verificar permisos de escritura en la carpeta plugins
 
 2. **Configurar puertos**:
-  - Dashboard principal: `http://localhost:5000`
-  - Visualizaciones Bokeh: `http://localhost:5006`
+
+- Dashboard principal: `http://localhost:5000`
+- Visualizaciones Bokeh: `http://localhost:5006`
 
 ---
 
@@ -132,22 +134,39 @@ Este script crea respaldos y elimina entradas/keys de combustible históricas.
 
 ## Política de Datos de Telemetría y Alertas
 
-**Resumen:** No subir datos de telemetría en ejecución o logs de pruebas al control de versiones. Los archivos generados durante el desarrollo/ejecución (por ejemplo `data/telemetry_history.json` o grandes series de alertas) deben mantenerse fuera del repositorio y, si es necesario, archivarse en `tests/fixtures` como muestras reducidas y documentadas.
+**Resumen:** No subir datos de telemetría en ejecución o logs de pruebas
+al control de versiones. Los archivos generados durante el
+desarrollo/ejecución (por ejemplo `data/telemetry_history.json` o
+grandes series de alertas) deben mantenerse fuera del repositorio y, si
+es necesario, archivarse en `tests/fixtures` como muestras reducidas y
+documentadas.
 
 Buenas prácticas:
 
-- Evita commitear archivos de telemetría en tiempo de ejecución o dumps de alertas completos.
-- Usa `tests/fixtures/` para almacenar muestras pequeñas y reproducibles útiles para debugging o tests (no datasets completos generados en CI / local runs).
-- Si necesitas limpiar datos históricos de telemetría o combustible, usa `scripts/cleanup_persisted_fuel.py` o `scripts/trim_alerts.py` para generar versiones reducidas apropiadas para el repositorio.
-- Añade archivos temporales y scripts de depuración a `.gitignore` (p. ej. `tmp_*.py`, `data/telemetry_history.json`). Ya se han añadido estas reglas; por favor no remuevas estas entradas.
+- Evita commitear archivos de telemetría en tiempo de ejecución o dumps
+  de alertas completos.
+- Usa `tests/fixtures/` para almacenar muestras pequeñas y
+  reproducibles útiles para debugging o tests (no datasets completos
+  generados en CI / local runs).
+- Si necesitas limpiar datos históricos de telemetría o combustible,
+  usa `scripts/cleanup_persisted_fuel.py` o `scripts/trim_alerts.py` para
+  generar versiones reducidas apropiadas para el repositorio.
+- Añade archivos temporales y scripts de depuración a `.gitignore` (p.
+  ej. `tmp_*.py`, `data/telemetry_history.json`). Ya se han añadido
+  estas reglas; por favor no remuevas estas entradas.
 
 Procedimiento recomendado para archivar alertas de prueba:
 
-1. Ejecuta `scripts/trim_alerts.py` para reemplazar `alerts.json` por una versión reducida de ejemplo.
-2. Mueve o guarda el archivo completo en `tests/fixtures/alerts_wheelslip_full.json` (o similar) para referencia futura.
-3. Añade una nota en el commit explicando que los datos completos se archivaron y por qué fueron removidos.
+1. Ejecuta `scripts/trim_alerts.py` para reemplazar `alerts.json` por una
+   versión reducida de ejemplo.
+2. Mueve o guarda el archivo completo en
+   `tests/fixtures/alerts_wheelslip_full.json` (o similar) para referencia
+   futura.
+3. Añade una nota en el commit explicando que los datos completos se
+   archivaron y por qué fueron removidos.
 
-Razón: mantener el repositorio legible, reducir ruido en las revisiones y evitar fugas accidentales de datos de entorno de ejecución.
+Razón: mantener el repositorio legible, reducir ruido en las revisiones y
+evitar fugas accidentales de datos de entorno de ejecución.
 
 ## 🎮 Uso del Sistema
 
@@ -237,13 +256,13 @@ El sistema incluye controles avanzados para operar la locomotora:
   heurísticas y fallback controls — por ejemplo, si
   `DynamicBrake` no existe, puede mapear `DynamicBrake` a
   `VirtualEngineBrakeControl`.
-  - Asegúrate de que `TrainBrakeControl` o `VirtualBrake` aparecen en
+
+- Asegúrate de que `TrainBrakeControl` o `VirtualBrake` aparecen en
     `GetData.txt`, o que `posicion_freno_tren_presente` sea True.
-  - Si el mod/locomotora solo reporta `presion_tubo_freno_mostrada` y no
+- Si el mod/locomotora solo reporta `presion_tubo_freno_mostrada` y no
     `AirBrakePipePressurePSI`, la integración usa
     `presion_tubo_freno_mostrada` como fallback y marca
     `presion_tubo_freno_inferida`.
- 
 
 **Ejemplo — comportamiento sobre señal:**
 
@@ -592,7 +611,7 @@ detalles.
 - **Email**: <support@trainsimulator-autopilot.com>
 - **Discord**: [Train Simulator Autopilot](https://discord.gg/train-simulator)
 - **GitHub**: Issues —
-  https://github.com/tu-usuario/train-simulator-autopilot/issues
+  <https://github.com/tu-usuario/train-simulator-autopilot/issues>
 
 ---
 

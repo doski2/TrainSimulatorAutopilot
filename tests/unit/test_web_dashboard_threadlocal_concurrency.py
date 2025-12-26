@@ -1,5 +1,6 @@
 import threading
 import time
+
 import pytest
 
 from web_dashboard import _get_current_json_data, _set_current_json_data

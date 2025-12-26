@@ -1,7 +1,12 @@
+import argparse
 import json
+import logging
 import os
+import tempfile
 import time
 import uuid
+
+logger = logging.getLogger(__name__)
 
 # Defaults for wait_for_ack behavior
 DEFAULT_ACK_TIMEOUT = 5.0
@@ -47,7 +52,7 @@ def wait_for_ack(dirpath, cmd_id, timeout: float = DEFAULT_ACK_TIMEOUT, poll: fl
     end = time.time() + timeout
     while time.time() < end:
         if os.path.exists(ack):
-            with open(ack, "r", encoding="utf-8") as f:
+            with open(ack, encoding="utf-8") as f:
                 return json.load(f)
         time.sleep(poll)
     return None
@@ -85,13 +90,6 @@ def send_command_with_retries(dirpath, payload, timeout=5.0, retries=3, initial_
         delay *= backoff
 
     return None
-
-
-import argparse
-import tempfile
-import logging
-
-logger = logging.getLogger(__name__)
 
 
 if __name__ == "__main__":

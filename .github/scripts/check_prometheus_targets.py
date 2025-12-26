@@ -23,7 +23,6 @@ if sys.version_info < (3, 9):
 
 import requests
 
-
 DEFAULT_URL = "http://localhost:9090/api/v1/targets"
 DEFAULT_ALLOWED = {"host.docker.internal:5001", "127.0.0.1:5001", "localhost:5001"}
 
@@ -39,9 +38,12 @@ def check_once(url: str, allowed: Iterable[str], timeout: float = 5.0) -> bool:
     return False
 
 
-from typing import Optional, List
 
-def main(argv: Optional[List[str]] = None) -> int:
+# Use built-in collection types where possible (ruff recommends `list`),
+# but keep Optional for backward compatibility; ruff will suggest `X | None`.
+
+
+def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description="Check Prometheus discovered targets")
     p.add_argument("--url", default=DEFAULT_URL, help="Prometheus targets API URL")
     p.add_argument("--retries", type=int, default=30, help="Number of retries")

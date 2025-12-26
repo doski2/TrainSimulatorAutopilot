@@ -1,7 +1,5 @@
-import json
 import logging
 import time
-from pathlib import Path
 
 from tools.poc_file_ack.consumer import Consumer
 from tools.poc_file_ack.enqueue import atomic_write_cmd

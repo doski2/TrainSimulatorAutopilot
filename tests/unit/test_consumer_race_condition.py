@@ -1,7 +1,6 @@
 import json
-import time
 import logging
-from pathlib import Path
+import time
 
 from tools.poc_file_ack.consumer import Consumer
 from tools.poc_file_ack.enqueue import atomic_write_cmd
@@ -45,7 +44,7 @@ def test_consumer_marks_processed_before_ack_and_does_not_reprocess(tmp_path, ca
         # processed_ids should include cmd_id (persisted)
         processed_file = tmp_path / 'processed_ids.json'
         assert processed_file.exists(), 'processed_ids.json should exist'
-        with open(processed_file, 'r', encoding='utf-8') as f:
+        with open(processed_file, encoding='utf-8') as f:
             data = json.load(f)
         assert cmd_id in data
 

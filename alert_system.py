@@ -3,9 +3,10 @@
 
 import json
 import os
+import time
+import traceback
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-import time
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
@@ -13,7 +14,6 @@ import numpy as np
 import pandas as pd
 
 from seaborn_analysis import SeabornAnalysis
-import traceback
 
 # Importar módulos del proyecto
 from tsc_integration import TSCIntegration

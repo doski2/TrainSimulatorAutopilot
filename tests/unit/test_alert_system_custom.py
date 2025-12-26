@@ -1,12 +1,11 @@
 import os
 import sys
-from datetime import datetime
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
-from alert_system import AlertSystem, AlertType
+from alert_system import AlertSystem, AlertType  # noqa: E402
 
 
 def test_brake_pipe_discrepancy_alert():

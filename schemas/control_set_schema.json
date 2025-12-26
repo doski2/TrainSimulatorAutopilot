@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Control set payload",
+  "type": "object",
+  "required": ["control", "value"],
+  "additionalProperties": false,
+  "properties": {
+    "control": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "value": {
+      "oneOf": [
+        {"type": "boolean"},
+        {"type": "number"},
+        {"type": "string"}
+      ]
+    }
+  }
+}

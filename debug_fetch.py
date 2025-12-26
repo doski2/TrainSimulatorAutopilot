@@ -1,5 +1,6 @@
-import requests
 import json
+
+import requests
 
 urls=['http://localhost:5001/debug_data','http://localhost:5000/debug_data']
 for u in urls:

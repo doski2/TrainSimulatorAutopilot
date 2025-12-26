@@ -1,9 +1,10 @@
-import os
 import argparse
-import tempfile
 import logging
-from tools.poc_file_ack.enqueue import atomic_write_cmd, wait_for_ack
+import os
+import tempfile
+
 from tools.poc_file_ack.consumer import Consumer
+from tools.poc_file_ack.enqueue import atomic_write_cmd, wait_for_ack
 
 logger = logging.getLogger(__name__)
 

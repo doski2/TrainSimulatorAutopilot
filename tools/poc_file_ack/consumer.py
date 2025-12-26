@@ -1,9 +1,10 @@
 import json
-import os
-import time
-import threading
 import logging
+import os
+import threading
+import time
 from collections import OrderedDict
+from typing import Any, cast
 
 logger = logging.getLogger(__name__)
 
@@ -53,15 +54,18 @@ class Consumer(threading.Thread):
         self.poll_interval = poll_interval
         self.process_time = process_time
         self._stop_event = threading.Event()
+        # Declare _stop attribute (may be shadowed historically) so static checkers know it exists
+        self._stop: Any | None = None
         # Use OrderedDict-like structure (with .add() compatibility) as an LRU-like structure: keys are cmd_ids, values are timestamps
         self.processed = _OrderedSetDict()
         self.processed_ids_file = os.path.join(self.dirpath, processed_ids_file)
         # Defensive: make sure we are not accidentally shadowing Thread._stop
         # Older versions of the class used `self._stop = threading.Event()` which
         # overwrote Thread._stop leading to TypeError in join() (Event not callable).
-        if hasattr(self, '_stop') and not callable(getattr(self, '_stop')):
+        if hasattr(self, '_stop') and not callable(self._stop):
             logger.warning("Consumer instance unexpectedly has non-callable '_stop' attribute; renaming to '_stop_shadow' to avoid join errors")
-            self._stop_shadow = getattr(self, '_stop')
+            # safe to access directly because hasattr guarded above
+            self._stop_shadow = self._stop
             try:
                 delattr(self, '_stop')
             except Exception:
@@ -80,7 +84,7 @@ class Consumer(threading.Thread):
     def _load_processed_ids(self):
         try:
             if os.path.exists(self.processed_ids_file):
-                with open(self.processed_ids_file, 'r', encoding='utf-8') as f:
+                with open(self.processed_ids_file, encoding='utf-8') as f:
                     data = json.load(f)
                     if isinstance(data, list):
                         # preserve order from file; values store timestamp
@@ -126,7 +130,7 @@ class Consumer(threading.Thread):
         # If an instance attribute `_stop` exists and is not callable, remove it so the
         # class method `_stop` is used by the underlying Thread implementation.
         try:
-            if hasattr(self, '_stop') and not callable(getattr(self, '_stop')):
+            if hasattr(self, '_stop') and not callable(self._stop):
                 logger.warning("Consumer.join found non-callable '_stop' attribute; removing to avoid join error")
                 try:
                     delattr(self, '_stop')
@@ -147,23 +151,33 @@ class Consumer(threading.Thread):
             logger.warning("Thread.join raised TypeError (likely due to non-callable _stop); attempting to repair and retry: %s", e)
             try:
                 # remove instance attribute if present
-                if hasattr(self, '_stop') and not callable(getattr(self, '_stop')):
+                if hasattr(self, '_stop') and not callable(self._stop):
                     try:
                         delattr(self, '_stop')
                     except Exception:
                         logger.exception("Failed to delete instance '_stop' during join recovery")
                 # if class attribute is non-callable, bind threading.Thread._stop to instance
-                cls_stop = getattr(type(self), '_stop', None)
+                # Use vars(type(self)) to access class dict safely (avoids attribute access warnings)
+                cls_vars = vars(type(self))
+                cls_stop = cls_vars.get('_stop', None)
+
+                cls_stop = cast(Any, cls_stop)
                 if cls_stop is not None and not callable(cls_stop):
                     try:
-                        bound = threading.Thread._stop.__get__(self, threading.Thread)
-                        setattr(self, '_stop', bound)
+                        stop_func = getattr(threading.Thread, '_stop', None)  # type: ignore[attr-defined]
+                        if stop_func is not None:
+                            bound = stop_func.__get__(self, threading.Thread)
+                            self._stop = bound
                     except Exception:
                         logger.exception("Failed to bind Thread._stop to instance during join recovery")
                 # As a final attempt, ensure instance has a callable _stop attribute
                 if not callable(getattr(self, '_stop', None)):
                     try:
-                        setattr(self, '_stop', threading.Thread._stop.__get__(self, threading.Thread))
+                        # Access the class attribute safely via getattr to avoid static checker
+                        # complaints when `_stop` is not a known attribute on Thread.
+                        cls_thread_stop = getattr(threading.Thread, '_stop', None)  # type: ignore[attr-defined]
+                        if cls_thread_stop is not None:
+                            self._stop = cast(Any, cls_thread_stop).__get__(self, threading.Thread)
                     except Exception:
                         logger.exception("Failed to set fallback _stop bound method on instance")
                 # Retry join
@@ -199,7 +213,7 @@ class Consumer(threading.Thread):
                             continue
                         path = entry.path
                         try:
-                            with open(path, 'r', encoding='utf-8') as fh:
+                            with open(path, encoding='utf-8') as fh:
                                 payload = json.load(fh)
                         except json.JSONDecodeError as e:
                             # malformed JSON: remove file and log warning
@@ -288,10 +302,6 @@ class Consumer(threading.Thread):
                             logger.exception("Failed to remove command file %s after processing %s (attempt %d)", path, cmd_id, cnt)
                             if cnt >= self.removal_failure_threshold:
                                 logger.error("Persistent failure removing processed command file %s after %d attempts", path, cnt)
-            except KeyboardInterrupt:
-                raise
-            except Exception:
-                logger.exception("Unhandled exception in Consumer run loop; continuing")
             except KeyboardInterrupt:
                 raise
             except Exception:

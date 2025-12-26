@@ -1,7 +1,8 @@
-import os
 import json
-from tools.poc_file_ack.enqueue import atomic_write_cmd, wait_for_ack
+import os
+
 from tools.poc_file_ack.consumer import Consumer
+from tools.poc_file_ack.enqueue import atomic_write_cmd, wait_for_ack
 
 
 def test_malformed_and_missing_id_handling(tmp_path):

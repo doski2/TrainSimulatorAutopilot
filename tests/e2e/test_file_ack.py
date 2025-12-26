@@ -1,9 +1,10 @@
 import os
-import tempfile
 import subprocess
+import tempfile
 
-from tools.poc_file_ack.enqueue import atomic_write_cmd, wait_for_ack
 from tools.poc_file_ack.consumer import Consumer
+from tools.poc_file_ack.enqueue import atomic_write_cmd, wait_for_ack
+
 
 # CI diagnostic: print git HEAD and snippet of consumer.py so remote logs show which version is used.
 def _ci_diagnostic():
@@ -15,7 +16,7 @@ def _ci_diagnostic():
     try:
         path = os.path.join(os.path.dirname(__file__), '..', '..', 'tools', 'poc_file_ack', 'consumer.py')
         path = os.path.abspath(path)
-        with open(path, 'r', encoding='utf-8') as f:
+        with open(path, encoding='utf-8') as f:
             lines = f.readlines()
         print("CI DIAGNOSTIC: consumer.py head:\n" + "".join(lines[:120]))
     except Exception as e:

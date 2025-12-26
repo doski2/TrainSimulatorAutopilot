@@ -2,8 +2,8 @@ import os
 import tempfile
 import time
 
-from tools.poc_file_ack.enqueue import atomic_write_cmd
 from tools.poc_file_ack.consumer import Consumer
+from tools.poc_file_ack.enqueue import atomic_write_cmd
 
 
 def test_persist_processed_ids_across_restarts():
@@ -38,11 +38,11 @@ def test_persist_processed_ids_across_restarts():
             # since id was processed, consumer should remove the command and not produce a new ack with different timestamp
             # confirm that there is still only one ack file for that id
             # read ack content
-            with open(ack_path, 'r', encoding='utf-8') as f:
+            with open(ack_path, encoding='utf-8') as f:
                 original_ack = f.read()
             # wait a bit and ensure content unchanged
             time.sleep(0.5)
-            with open(ack_path, 'r', encoding='utf-8') as f:
+            with open(ack_path, encoding='utf-8') as f:
                 new_ack = f.read()
             assert original_ack == new_ack
         finally:

@@ -17,6 +17,8 @@ def load_module():
     import importlib.util
 
     spec = importlib.util.spec_from_file_location("check_prometheus_targets", "./.github/scripts/check_prometheus_targets.py")
+    # Ensure spec is not None for static type checkers
+    assert spec is not None
     mod = importlib.util.module_from_spec(spec)
     assert spec.loader is not None
     spec.loader.exec_module(mod)

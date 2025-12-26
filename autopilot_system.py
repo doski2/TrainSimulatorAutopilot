@@ -5,9 +5,9 @@ Sistema completo de piloto automático para Train Simulator Classic
 Integra TSC + IA + Control de comandos
 """
 
-from datetime import datetime
-import time
 import logging
+import time
+from datetime import datetime
 from typing import Any, Dict, Optional
 
 from tsc_integration import TSCIntegration
