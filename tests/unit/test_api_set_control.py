@@ -84,6 +84,34 @@ def test_control_set_tsc_send_fails(monkeypatch):
     assert failing.last == {"Regulator": 0.5}
 
 
+def test_control_set_reject_complex_value(monkeypatch):
+    dummy = DummyTSC()
+    import web_dashboard as wd
+
+    monkeypatch.setattr(wd, "tsc_integration", dummy)
+    client = app.test_client()
+
+    payload = {"control": "Regulator", "value": [1, 2, 3]}
+    resp = client.post("/api/control/set", json=payload)
+    assert resp.status_code == 400
+    j = resp.get_json()
+    assert j["success"] is False
+
+
+def test_control_set_reject_invalid_control_type(monkeypatch):
+    dummy = DummyTSC()
+    import web_dashboard as wd
+
+    monkeypatch.setattr(wd, "tsc_integration", dummy)
+    client = app.test_client()
+
+    payload = {"control": ["not", "a", "string"], "value": 0.5}
+    resp = client.post("/api/control/set", json=payload)
+    assert resp.status_code == 400
+    j = resp.get_json()
+    assert j["success"] is False
+
+
 def test_control_set_reject_colon(monkeypatch):
     dummy = DummyTSC()
     import web_dashboard as wd

@@ -1304,13 +1304,23 @@ def control_set():
 
         # Validate control name to prevent injection into file-based command protocol.
         # Reject control names containing ':' or control characters like newlines or NUL.
-        if not isinstance(control, str):
-            logger.warning("control_set: control name not a string: %r", control)
-            return jsonify({"success": False, "error": "Invalid control name"}), 400
-        forbidden = {":", "\n", "\r", "\x00"}
-        if any(ch in control for ch in forbidden) or not control.isprintable() or len(control) > 100:
-            logger.warning("control_set: rejected control name with forbidden characters: %r", control)
-            return jsonify({"success": False, "error": "Invalid control name"}), 400
+        def _validate_control_and_value(control, value):
+            if not isinstance(control, str):
+                return False, "Invalid control name"
+            if not control.strip():
+                return False, "Invalid control name"
+            forbidden = {":", "\n", "\r", "\x00"}
+            if any(ch in control for ch in forbidden) or not control.isprintable() or len(control) > 100:
+                return False, "Invalid control name"
+            # Value may be bool, str or number (int/float). Reject complex types like list/dict
+            if isinstance(value, (bool, str, int, float)):
+                return True, ""
+            return False, "Invalid value type"
+
+        ok, reason = _validate_control_and_value(control, value)
+        if not ok:
+            logger.warning("control_set: invalid payload: control=%r value=%r reason=%s", control, value, reason)
+            return jsonify({"success": False, "error": "Invalid payload: %s" % reason}), 400
 
         # Use TSCIntegration to map and write control commands
         if tsc_integration is None:
