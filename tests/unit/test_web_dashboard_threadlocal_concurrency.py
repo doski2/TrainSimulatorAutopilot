@@ -1,4 +1,5 @@
 import threading
+import time
 
 from web_dashboard import _get_current_json_data, _set_current_json_data
 
@@ -6,9 +7,8 @@ from web_dashboard import _get_current_json_data, _set_current_json_data
 def worker(i, results):
     # set a unique value and then read it back
     _set_current_json_data(f"value-{i}")
-    # small busy-wait to increase chance of interleaving
-    for _ in range(1000000):
-        pass
+    # small sleep to yield execution and increase chance of interleaving without burning CPU
+    time.sleep(0.01)
     results[i] = _get_current_json_data()
 
 
