@@ -283,6 +283,17 @@ SOCKETIO_CORS_ORIGINS = "*"
 SOCKETIO_ASYNC_MODE = "threading"
 socketio = SocketIO(app, cors_allowed_origins=SOCKETIO_CORS_ORIGINS, async_mode=SOCKETIO_ASYNC_MODE)
 
+# Rate limiter configuration (per-endpoint overrideable via app.config)
+app.config.setdefault("CONTROL_RATE_LIMIT", os.getenv("CONTROL_RATE_LIMIT", "60/minute"))
+
+try:
+    from flask_limiter import Limiter
+    from flask_limiter.util import get_remote_address
+
+    limiter = Limiter(app, key_func=get_remote_address)
+except Exception:
+    limiter = None  # In test environments without Flask-Limiter installed, continue without rate limiting
+
 # Componentes del sistema
 tsc_integration = None
 predictive_analyzer = None
@@ -1283,8 +1294,10 @@ def send_tsc_command(command_name, value):
         return False
 
 
-@app.route("/api/control/set", methods=["POST"])
-def control_set():
+# Register the endpoint and apply rate limiting only if limiter is available.
+# We wrap the implementation in `control_set_impl` and register it conditionally so
+# test environments without Flask-Limiter installed will still run.
+def control_set_impl():
     """Set a control value on the train via TSCIntegration.
 
     Expected JSON body: {"control": "Regulator", "value": 0.5}
@@ -1333,6 +1346,13 @@ def control_set():
             return jsonify({"success": False, "error": "Failed to send command to TSC"}), 500
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
+
+# Register the route implementation, with optional rate limiting
+if limiter:
+    wrapped = limiter.limit(lambda: app.config.get("CONTROL_RATE_LIMIT"))(control_set_impl)
+    app.route("/api/control/set", methods=["POST"])(wrapped)
+else:
+    app.route("/api/control/set", methods=["POST"])(control_set_impl)
 
 
 # Eventos WebSocket
