@@ -27,9 +27,7 @@ Resultado observado:
 
 - `SendCommand.txt` y `autopilot_commands.txt` contienen `start_autopilot`.
 - Cada archivo contiene el comando en su propia línea.
-- Si `autopilot_state.txt` no existe o no cambia a `on` dentro de
-  `AUTOPILOT_ACK_TIMEOUT`, la API espera (por defecto), retorna 504 y
-  registra la métrica `autopilot_metrics['unacked_total']++`.
+- Si `autopilot_state.txt` no existe o no cambia a `on`, la API **no** esperará y, por robustez, aplicará las líneas de fallback descritas más abajo.
 
 Evidencia (ejemplo de salida capturada durante la prueba):
 
@@ -50,7 +48,7 @@ Notas operativas:
   compatibilidad con ciertos controladores (RailDriver).
 - `autopilot_commands.txt` es el archivo que el plugin Lua realmente lee.
 - Se escribe también por seguridad para que el plugin lo procese.
-- Si quieres que documente el flujo ACK/fallback con más detalle
+- Si quieres que documente el flujo de fallback con más detalle
   (timeouts, métricas y comportamiento ante plugin offline), lo añado
   en esta misma página.
 
@@ -69,8 +67,7 @@ Notas operativas:
 
 - Reproducción rápida:
   1. Asegúrate de que no exista `autopilot_state.txt` en la carpeta `plugins/`.
-  2. Establece la variable de entorno `AUTOPILOT_REQUIRE_ACK=false` y reinicia el dashboard.
-  3. Llama `POST /api/control/start_autopilot` desde `app.test_client()` o `curl`.
+  2. Llama `POST /api/control/start_autopilot` desde `app.test_client()` o `curl`.
   4. Comprueba `plugins/SendCommand.txt` y `plugins/autopilot_commands.txt` — deben contener `start_autopilot` y las líneas de fallback `Regulator:0.125` y `VirtualThrottle:0.125`.
   5. En el simulador observa que la velocidad aumenta ligeramente (~13%).
 

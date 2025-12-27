@@ -1,5 +1,5 @@
 import pytest
-pytest.skip("ACK PoC deprecated — skipping consumer tests.", allow_module_level=True)
+pytest.skip("PoC deprecated — skipping consumer tests.", allow_module_level=True)
 
 import json
 import logging
@@ -40,9 +40,9 @@ def test_consumer_marks_processed_before_ack_and_does_not_reprocess(tmp_path, ca
         c.stop()
         c.join(timeout=1)
 
-        # ack should exist
-        ack_path = tmp_path / f'ack-{cmd_id}.json'
-        assert ack_path.exists(), 'ack file should have been written'
+        # confirmation file should exist
+        conf_path = tmp_path / f'ack-{cmd_id}.json'
+        assert conf_path.exists(), 'confirmation file should have been written'
 
         # processed_ids should include cmd_id (persisted)
         processed_file = tmp_path / 'processed_ids.json'

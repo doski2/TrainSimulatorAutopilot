@@ -1,5 +1,5 @@
 import pytest
-pytest.skip("ACK PoC deprecated — skipping consumer tests.", allow_module_level=True)
+pytest.skip("PoC deprecated — skipping consumer tests.", allow_module_level=True)
 
 import time
 

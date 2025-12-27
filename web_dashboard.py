@@ -422,7 +422,7 @@ app.config["SESSION_COOKIE_SECURE"] = False  # Para desarrollo local
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["PERMANENT_SESSION_LIFETIME"] = 3600  # 1 hora
 
-# ACK support removed — no timeout variable required.
+# Confirmation-by-file support removed — no timeout variable required.
 
 # Configuración SocketIO
 SOCKETIO_CORS_ORIGINS = "*"
@@ -1598,7 +1598,7 @@ def retry_autopilot():
         except Exception:
             pass
 
-        # Forzar start sin esperar ACK
+        # Forzar start sin esperar confirmación
         try:
             autopilot_system.start()
             autopilot_system.activar_modo_automatico()

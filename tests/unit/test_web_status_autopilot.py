@@ -13,7 +13,7 @@ def test_api_status_includes_plugin_fields(tmp_path, monkeypatch):
     tsc = TSCIntegration()
     tsc.ruta_archivo_comandos = str(send_cmd)
 
-    # Create ack files
+    # Create plugin readiness and state files
     (plugins_dir / "autopilot_plugin_loaded.txt").write_text("loaded", encoding="utf-8")
     (plugins_dir / "autopilot_state.txt").write_text("on", encoding="utf-8")
 

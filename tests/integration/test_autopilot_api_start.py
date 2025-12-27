@@ -113,7 +113,7 @@ def test_start_autopilot_ignores_legacy_env_flag_and_returns_success(tmp_path, m
 
     with app.test_client() as client:
         resp = client.post('/api/control/start_autopilot')
-        # After removing ACK support, API returns success regardless of env
+        # After removing file-based confirmation support, API returns success regardless of env
         assert resp.status_code == 200
         assert resp.get_json().get('success') is True
 
@@ -144,7 +144,7 @@ def test_start_autopilot_env_flag_ignored(tmp_path, monkeypatch):
 
     with app.test_client() as client:
         resp = client.post('/api/control/start_autopilot')
-        # Now the API should return success (200) despite no ACK
+        # Now the API should return success (200) despite missing plugin state file
         assert resp.status_code == 200
         assert resp.get_json().get('success') is True
 
