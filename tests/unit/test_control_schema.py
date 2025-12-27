@@ -1,9 +1,6 @@
 import pytest
 
-try:
-    import jsonschema  # noqa: F401
-except Exception:
-    pytest.skip("jsonschema not installed; skipping schema tests", allow_module_level=True)
+pytest.importorskip("jsonschema", reason="jsonschema not installed; skipping schema tests")
 
 from web_validators import validate_control_set
 
