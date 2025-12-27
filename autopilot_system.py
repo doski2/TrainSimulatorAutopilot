@@ -44,8 +44,9 @@ class IASistema:
         Returns:
             Diccionario con comandos de control
         """
-        velocidad_actual = datos.get("velocidad", 0)
-        limite_velocidad = datos.get("limite_velocidad_actual", 80)
+        # Prefer keys produced by TSCIntegration (km/h) but keep backwards compatibility
+        velocidad_actual = datos.get("velocidad_actual") if datos.get("velocidad_actual") is not None else datos.get("velocidad", 0)
+        limite_velocidad = datos.get("limite_velocidad") if datos.get("limite_velocidad") is not None else datos.get("limite_velocidad_actual", 80)
         pendiente = datos.get("pendiente", 0)
         aceleracion = datos.get("aceleracion", 0)
         distancia_parada = datos.get("distancia_parada", 1000)
@@ -84,8 +85,17 @@ class IASistema:
             comandos["razon_decision"] = (
                 f"Velocidad {velocidad_actual:.1f} < límite {limite_velocidad:.1f}"
             )
+            # Log con más detalle para depuración de por qué IA eligió esta aceleración
+            logger.info(
+                "[IA] ACELERANDO - velocidad_actual=%.2f, limite=%.2f, deficit=%.2f, acelerador=%.3f",
+                velocidad_actual,
+                limite_velocidad,
+                deficit,
+                comandos["acelerador"],
+            )
+            # Mantener una impresión legible para consola durante pruebas interactivas
             print(
-                f"[IA] ACELERANDO - Vel: {velocidad_actual:.1f}mph, Limite: {limite_velocidad:.1f}mph, Acelerador: {comandos['acelerador']:.3f}"
+                f"[IA] ACELERANDO - Vel: {velocidad_actual:.1f}, Limite: {limite_velocidad:.1f}, Acelerador: {comandos['acelerador']:.3f}"
             )
 
         else:
