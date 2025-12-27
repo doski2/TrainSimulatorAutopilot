@@ -30,7 +30,7 @@ Responses:
   {"success": false, "error": "..."}
   ```
 
-  — payload inválido o validación fallida
+— payload inválido o validación fallida
 
 - 500 Internal Server Error:
 

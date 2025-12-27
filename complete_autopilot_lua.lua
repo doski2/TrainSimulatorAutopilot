@@ -528,22 +528,10 @@ function readPythonCommands()
             if line == "start_autopilot" then
                 pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: processing start_autopilot\n"); f:close() end end)
                 SetAutopilotState(true)
-                -- Acknowledge state to external system
-                local statef = io.open("plugins/autopilot_state.txt", "w")
-                if statef then
-                    statef:write("on")
-                    statef:close()
-                    pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: wrote autopilot_state.txt = on\n"); f:close() end end)
-                end
             elseif line == "stop_autopilot" then
                 pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: processing stop_autopilot\n"); f:close() end end)
                 SetAutopilotState(false)
-                local statef = io.open("plugins/autopilot_state.txt", "w")
-                if statef then
-                    statef:write("off")
-                    statef:close()
-                    pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: wrote autopilot_state.txt = off\n"); f:close() end end)
-                end
+
             elseif line == "start_predictive" then
                 pcall(function() local f=io.open("plugins/autopilot_debug.log","a"); if f then f:write(os.date("%Y-%m-%d %H:%M:%S").." - readPythonCommands: processing start_predictive\n"); f:close() end end)
                 SetPredictiveState(true)

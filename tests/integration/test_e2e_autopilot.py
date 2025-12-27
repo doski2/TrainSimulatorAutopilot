@@ -48,19 +48,22 @@ def test_e2e_autopilot_writes_commands(tmp_path, monkeypatch):
 
     # Verificar que el archivo principal de comandos existe y contiene líneas
     assert os.path.exists(tsci.ruta_archivo_comandos)
-    content = open(tsci.ruta_archivo_comandos, encoding="utf-8").read()
+    with open(tsci.ruta_archivo_comandos, encoding="utf-8") as fh:
+        content = fh.read()
     assert ":" in content
 
     # Verificar archivo autopilot_commands.txt (Lua)
     lua_file = os.path.join(os.path.dirname(tsci.ruta_archivo_comandos), "autopilot_commands.txt")
     assert os.path.exists(lua_file)
-    lua_content = open(lua_file, encoding="utf-8").read()
+    with open(lua_file, encoding="utf-8") as fh:
+        lua_content = fh.read()
     assert ":" in lua_content
 
     # Verificar archivo legacy sendcommand.txt
     legacy_file = os.path.join(os.path.dirname(tsci.ruta_archivo_comandos), "sendcommand.txt")
     assert os.path.exists(legacy_file)
-    legacy_content = open(legacy_file, encoding="utf-8").read()
+    with open(legacy_file, encoding="utf-8") as fh:
+        legacy_content = fh.read()
     assert ":" in legacy_content
 
     # Métricas I/O y IA actualizadas

@@ -1,5 +1,4 @@
-Resumen de revisión y próximos pasos
-=================================
+Resumen de revisión y próximos pasos =================================
 
 Cambios principales implementados:
 
@@ -41,6 +40,7 @@ Tareas opcionales:
 
 Contacto:
 
-- Para ajustes adicionales, indícame si quieres que realice alguna de las siguientes
+- Para ajustes adicionales, indícame si quieres que realice alguna de las
+  siguientes
    acciones: `commit + PR`, limpieza de backups, o añadir migración automatizada
    de datos históricos.

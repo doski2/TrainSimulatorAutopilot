@@ -120,7 +120,8 @@ def test_enviar_comandos_fallback_dinamico(tsc_integration, tmp_path):
     tsc_integration.datos_anteriores = {"VirtualEngineBrakeControl": 0.2}
     tsc_integration.ruta_archivo_comandos = str(tmp_path / "SendCommandFallback.txt")
     tsc_integration.enviar_comandos({"freno_dinamico": 0.5})
-    contenido = open(tsc_integration.ruta_archivo_comandos, encoding="utf-8").read()
+    with open(tsc_integration.ruta_archivo_comandos, encoding="utf-8") as fh:
+        contenido = fh.read()
     assert "VirtualEngineBrakeControl:0.500" in contenido
 
 

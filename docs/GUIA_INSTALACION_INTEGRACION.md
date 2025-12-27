@@ -311,8 +311,8 @@ Antes de empezar, verifica:
 
 **Ejemplos por tipo de juego:**
 
-| Tipo de Juego        | Autopilot Posible            | Datos Críticos
-| | -------------------- | ---------------------------- |
+| Tipo de Juego        | Autopilot Posible            | Datos Críticos | |
+-------------------- | ---------------------------- |
 ------------------------------ | | **Simulador Vuelo**  | Control automático de
 vuelo  | Altitud, rumbo, velocidad      | | **Simulador Tren**   | Control de
 velocidad/frenos  | Velocidad, límites, presiones  | | **Juego Estrategia** |

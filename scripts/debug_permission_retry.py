@@ -9,7 +9,8 @@ from tsc_integration import TSCIntegration
 
 with TemporaryDirectory() as tmp:
     path = os.path.join(tmp, 'GetData.txt')
-    open(path,'w',encoding='utf-8').write('ControlName:CurrentSpeed\nControlValue:5.0\n')
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write('ControlName:CurrentSpeed\nControlValue:5.0\n')
     tsc = TSCIntegration()
     tsc.ruta_archivo = path
     calls = {'count': 0}

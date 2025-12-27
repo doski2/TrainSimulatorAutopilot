@@ -6,7 +6,8 @@ from tsc_integration import TSCIntegration
 
 p = r"C:\temp\GetData_test_bom_debug.txt"
 content = "\ufeffControlName:SignalAspect\nControlValue:2\nControlName:KVB_SignalAspect\nControlValue:-1\n"
-open(p,'w',encoding='utf-8').write(content)
+with open(p, 'w', encoding='utf-8') as f:
+    f.write(content)
 ts = TSCIntegration(ruta_archivo=p)
 print('archivo existe?', ts.archivo_existe())
 with open(p, 'rb') as f:

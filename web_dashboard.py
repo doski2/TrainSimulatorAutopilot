@@ -60,6 +60,7 @@ import json  # noqa: E402
 import logging  # noqa: E402
 import threading  # noqa: E402
 import time  # noqa: E402
+import uuid  # standard library used for atomic command ids  # noqa: E402
 from datetime import datetime  # noqa: E402
 
 # Configurar logging
@@ -93,8 +94,8 @@ if TYPE_CHECKING:
     # Importing these only during type checking helps Pylance/typing understand
     # the types without causing redeclaration issues at runtime.
     try:
-        from flask import Flask as FlaskType  # type: ignore
-        from werkzeug.exceptions import BadRequest as BadRequestType  # type: ignore
+        from flask import Flask as FlaskType  # type: ignore  # noqa: F401
+        from werkzeug.exceptions import BadRequest as BadRequestType  # type: ignore  # noqa: F401
     except Exception:  # pragma: no cover - only used by type checkers
         FlaskType = Any  # type: ignore
         BadRequestType = Any  # type: ignore
@@ -109,7 +110,8 @@ BadRequest: Any = Exception  # type: ignore[reportRedeclaration]
 # Third-party imports
 try:
     from bokeh.embed import server_document  # noqa: E402
-    from flask import Flask as _Flask, Response, jsonify, render_template, request  # noqa: E402
+    from flask import Flask as _Flask  # noqa: E402
+    from flask import Response, jsonify, render_template, request
     # Assign to the public name under Any to avoid Pylance reportAssignmentType
     Flask = cast(Any, _Flask)
     from flask_socketio import SocketIO, emit  # noqa: E402
@@ -355,13 +357,25 @@ except ImportError:
     TSCIntegration = None
     print("[BOOT] TSC Integration no disponible")
 
-# POC helpers para protocolo file+ACK
-try:
-    from tools.poc_file_ack.enqueue import atomic_write_cmd, send_command_with_retries  # noqa: E402
-except Exception:
-    # En entornos donde 'tools' no esté disponible (tests aislados), lo ignoramos
-    atomic_write_cmd = None
-    send_command_with_retries = None
+# Atomic command writer (simple, robust, no plugin confirmation dependency)
+
+def atomic_write_cmd(dirpath: str, payload: dict) -> str:
+    """Escribe un comando JSON de forma atómica en `dirpath` y devuelve un id."""
+    os.makedirs(dirpath, exist_ok=True)
+    cmd_id = uuid.uuid4().hex
+    fname = f"cmd-{cmd_id}.json"
+    tmp = os.path.join(dirpath, fname + ".tmp")
+    final = os.path.join(dirpath, fname)
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False)
+        f.flush()
+        try:
+            os.fsync(f.fileno())
+        except Exception:
+            # os.fsync puede fallar en algunos entornos (p.ej. Windows); ignoramos errores
+            pass
+    os.replace(tmp, final)
+    return cmd_id
 
 try:
     # from predictive_telemetry_analysis import PredictiveTelemetryAnalyzer  # noqa: E402  # TEMPORALMENTE COMENTADO
@@ -408,12 +422,7 @@ app.config["SESSION_COOKIE_SECURE"] = False  # Para desarrollo local
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["PERMANENT_SESSION_LIFETIME"] = 3600  # 1 hora
 
-# Timeout para esperar ACK del plugin autopilot (segundos). Puede sobreescribirse
-# por variable de entorno AUTOPILOT_ACK_TIMEOUT
-try:
-    AUTOPILOT_ACK_TIMEOUT = float(os.getenv("AUTOPILOT_ACK_TIMEOUT", "3.0"))
-except Exception:
-    AUTOPILOT_ACK_TIMEOUT = 3.0
+# Confirmation-by-file support removed — no timeout variable required.
 
 # Configuración SocketIO
 SOCKETIO_CORS_ORIGINS = "*"
@@ -463,7 +472,6 @@ system_status = {
 # Métricas relacionadas con el plugin Autopilot (visibilidad y reintentos)
 autopilot_metrics = {
     "retry_total": 0,
-    "unacked_total": 0,
 }
 
 # Estado de controles de locomotora
@@ -1097,21 +1105,18 @@ def api_commands():
     {
         "type": "set_regulator",
         "value": 0.4,
-        "wait_for_ack": true,  # opcional (default: false)
         "timeout": 5.0,       # opcional
         "retries": 3          # opcional
     }
 
-    Si `wait_for_ack` es true, el endpoint esperará hasta `timeout`
-    por un ACK y devolverá 200 con el ACK si lo recibe, o 504/500 si falla.
-    Si `wait_for_ack` es false, devolverá 202 Accepted inmediatamente.
+    Este endpoint encola el comando de forma atómica y devuelve 202 Accepted
+    con el id del comando encolado.
     """
     global tsc_integration
     try:
         payload = request.get_json() or {}
-        wait_for_ack_flag = bool(payload.get('wait_for_ack', False))
-        timeout = float(payload.get('timeout', 5.0))
-        retries = int(payload.get('retries', 0))
+        _timeout = float(payload.get('timeout', 5.0))
+        _retries = int(payload.get('retries', 0))
 
         # Determine plugins directory from TSCIntegration
         if tsc_integration:
@@ -1121,29 +1126,13 @@ def api_commands():
             plugins_dir = os.path.abspath('./plugins')
             os.makedirs(plugins_dir, exist_ok=True)
 
-        # If not waiting for ack, just write atomically and return 202
-        if not wait_for_ack_flag:
-            if atomic_write_cmd is None:
-                return (
-                    jsonify(
-                        {"status": "error", "error": "atomic command writer unavailable"}
-                    ),
-                    503,
-                )
-            cmd_id = atomic_write_cmd(plugins_dir, payload)
-            return jsonify({"status": "queued", "id": cmd_id}), 202
-
-        # else, send with retries and wait for ack
-        if send_command_with_retries is None:
+        if atomic_write_cmd is None:
             return (
-                jsonify({"status": "error", "error": "ACK sender unavailable"}),
+                jsonify({"status": "error", "error": "atomic command writer unavailable"}),
                 503,
             )
-        ack = send_command_with_retries(plugins_dir, payload, timeout=timeout, retries=retries)
-        if ack is not None:
-            return jsonify({"status": "applied", "ack": ack}), 200
-        else:
-            return jsonify({"status": "failed", "error": "no ACK received"}), 504
+        cmd_id = atomic_write_cmd(plugins_dir, payload)
+        return jsonify({"status": "queued", "id": cmd_id}), 202
     except Exception as e:
         return jsonify({"status": "error", "error": str(e)}), 500
 
@@ -1185,51 +1174,30 @@ def control_action(action):
                         {"message": "Piloto automático iniciado", "type": "success"},
                     )
                     logger.info("start_autopilot: autopilot started and socket message emitted")
-                    # Determinar si el cliente pidió esperar por ACK (por defecto: True)
-                    # Use silent=True so non-JSON requests (or missing Content-Type)
-                    # do not raise an HTTP exception (e.g., 415 Unsupported Media Type)
-                    # and instead return None which we treat as an empty payload.
-                    # Use cast(Any, request).get_json(...) to avoid Pylance warning
-                    # `reportCallIssue` when the stub signature doesn't include
-                    # the `silent` parameter.
-                    payload = cast(Any, request).get_json(silent=True) or {}
-                    wait_for_ack = bool(payload.get("wait_for_ack", True))
-                    logger.info("start_autopilot: wait_for_ack=%s", wait_for_ack)
-
-                    # Intentar confirmar estado desde el plugin Lua
+                    # Read request payload (if any) for informational use; do NOT use any 'wait-for-plugin' flag.
+                    _payload = cast(Any, request).get_json(silent=True) or {}
                     plugin_state = None
                     try:
                         if tsc_integration:
-                            # Primer intento: comprobar estado actual
-                            plugin_state = tsc_integration.get_autopilot_plugin_state()
-                            # Si no hay ack inmediato y el cliente quiere esperar, hacerlo con timeout configurado
-                            if plugin_state is None and wait_for_ack:
-                                try:
-                                    ok = tsc_integration.wait_for_autopilot_state("on", timeout=AUTOPILOT_ACK_TIMEOUT)
-                                    logger.info("start_autopilot: wait_for_autopilot_state returned %s", ok)
-                                except Exception:
-                                    logger.exception("start_autopilot: exception while waiting for plugin ack")
-                                    ok = False
-                                if ok:
-                                    plugin_state = "on"
-                                else:
-                                    # No llegó ACK en tiempo: registrar métrica y responder con 504 (Gateway Timeout)
-                                    try:
-                                        autopilot_metrics["unacked_total"] += 1
-                                    except Exception:
-                                        pass
-                                    return (
-                                        jsonify(
-                                            {
-                                                "success": False,
-                                                "error": "Autopilot plugin did not confirm start within timeout",
-                                                "action": action,
-                                            }
-                                        ),
-                                        504,
-                                    )
+                            # Read plugin state when possible for informational reporting
+                            try:
+                                plugin_state = tsc_integration.get_autopilot_plugin_state()
+                            except Exception:
+                                plugin_state = None
                     except Exception:
                         plugin_state = None
+
+                    logger.info("start_autopilot: not waiting for plugin confirmation")
+                    return (
+                        jsonify(
+                            {
+                                "success": True,
+                                "action": action,
+                                "autopilot_plugin_state": plugin_state,
+                            }
+                        ),
+                        200,
+                    )
 
                     return jsonify({"success": True, "action": action, "autopilot_plugin_state": plugin_state})
                 except Exception as e:
@@ -1265,8 +1233,13 @@ def control_action(action):
                     try:
                         if tsc_integration:
                             plugin_state = tsc_integration.get_autopilot_plugin_state()
-                            if plugin_state is None and tsc_integration.wait_for_autopilot_state("off", timeout=2.0):
-                                plugin_state = "off"
+                            # Do not wait for plugin state transitions; just read current state for informational purposes
+                            try:
+                                if plugin_state is None and tsc_integration.get_autopilot_plugin_state() == "off":
+                                    plugin_state = "off"
+                            except Exception:
+                                # best-effort: ignore errors checking current plugin state
+                                pass
                     except Exception:
                         plugin_state = None
 
@@ -1504,18 +1477,7 @@ def control_set_impl():
         except Exception as e:
             # Fall back to previous defensive checks if validator import fails for any reason
             logger.warning("control_set: validator not available, falling back to runtime checks: %s", e)
-            def _validate_control_and_value(control, value):
-                if not isinstance(control, str):
-                    return False, "Invalid control name"
-                if not control.strip():
-                    return False, "Invalid control name"
-                forbidden = {":", "\n", "\r", "\x00"}
-                if any(ch in control for ch in forbidden) or not control.isprintable() or len(control) > 100:
-                    return False, "Invalid control name"
-                if isinstance(value, (bool, str, int, float)):
-                    return True, ""
-                return False, "Invalid value type"
-
+            # Use the earlier defined `_validate_control_and_value` implementation instead of redefining it here
             ok, reason = _validate_control_and_value(control, value)
             if not ok:
                 logger.warning("control_set: invalid payload: control=%r value=%r reason=%s", control, value, reason)
@@ -1609,10 +1571,10 @@ def handle_telemetry_request():
 
 @app.route('/api/control/retry_autopilot', methods=['POST'])
 def retry_autopilot():
-    """Endpoint para reintentar iniciar Autopilot sin esperar por ACK.
+    """Endpoint para reintentar iniciar Autopilot sin esperar confirmación del plugin.
 
     - Incrementa un contador de reintentos
-    - Envía comando de inicio y devuelve el estado conocido del plugin (no espera ACK)
+    - Envía comando de inicio y devuelve el estado conocido del plugin (no espera confirmación)
     """
     global autopilot_metrics
     try:
@@ -1625,7 +1587,7 @@ def retry_autopilot():
         except Exception:
             pass
 
-        # Forzar start sin esperar ACK
+        # Forzar start sin esperar confirmación
         try:
             autopilot_system.start()
             autopilot_system.activar_modo_automatico()

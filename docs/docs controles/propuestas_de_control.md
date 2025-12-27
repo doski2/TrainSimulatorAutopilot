@@ -1,8 +1,8 @@
 # Propuestas de control (software-only)
 
 Resumen de alternativas para permitir que la IA controle el tren sin hardware.
-Para cada propuesta incluyo descripción, ejemplos de uso,
-ventajas y desventajas.
+Para cada propuesta incluyo descripción, ejemplos de uso, ventajas y
+desventajas.
 
 ---
 
@@ -149,13 +149,11 @@ ventajas y desventajas.
 
 ## Comparación rápida (resumen)
 
-|Método|Perm.|Lat.|Rob.|Fac.|Recomendado|
-|---|---:|---:|---:|---:|---:|---|
+|Método|Perm.|Lat.|Rob.|Fac.|Recomendado| |---|---:|---:|---:|---:|---:|---|
 |Archivo+ACK|bajo|medio|alto|muy fácil|integración|
 |SendCommand|bajo|medio|medio|fácil|mapeos|
-|vJoy|medio|baja|alta|medio|fallback|
-|Socket|medio-alto|muy baja|alta|difícil|baja-latencia|
-|HTTP|bajo|depende|alta|fácil|orquestación|
+|vJoy|medio|baja|alta|medio|fallback| |Socket|medio-alto|muy
+baja|alta|difícil|baja-latencia| |HTTP|bajo|depende|alta|fácil|orquestación|
 
 ---
 

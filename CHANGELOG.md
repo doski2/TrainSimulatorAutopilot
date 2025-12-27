@@ -4,6 +4,31 @@
 
 ### 🔧 Correcciones y mejoras (POC Archivo+ACK)
 
+- **policy**: Cambiado el comportamiento por defecto de `start_autopilot` para
+  **NO** requerir ACK del plugin Lua. Esto evita que llamadas al endpoint se
+  bloqueen en entornos donde el plugin no está disponible o los accesos a
+  archivos están restringidos.
+  - Se eliminó el soporte de espera por ACK del flujo principal del proyecto
+    y se deprecó la POC basada en archivos (`tools/poc_file_ack`).
+  - La PoC `tools/poc_file_ack` y las pruebas relacionadas fueron
+    **eliminadas** del repositorio; la decisión y el flujo final están
+    documentados en `docs/AUTOPILOT_SENDCOMMAND.md`.
+    - Se eliminó el test E2E
+      `tests/integration/test_e2e_autopilot_file_ack.py` que comprobaba el flujo
+      de ACK por archivos.
+    - Se eliminaron múltiples tests unitarios del consumer y otros tests
+      relacionados con la PoC ACK (ya deprecada), para reducir ruido y
+      mantenimiento en la suite de pruebas.
+  - Las métricas relacionadas con ACK (`ack_skipped_total`,
+    `unacked_total`) se han eliminado del conjunto de métricas operativas.
+  - Tests y documentación actualizados para reflejar la nueva política.
+
+  - **Archivos eliminados (selección):**
+    - `tools/poc_file_ack/` (PoC eliminado)
+    - `.github/workflows/poc-e2e.yml` (job específico del POC eliminado)
+    - `tests/e2e/test_file_ack.py`, `tests/integration/test_e2e_autopilot_file_ack.py`, `tests/e2e/test_probe_file.py`, `tests/e2e/test_retries.py`, `tests/e2e/test_persist_ids.py` (tests E2E relacionados con la PoC)
+    - Varias pruebas unitarias relacionadas con el consumer (p.ej. `tests/unit/test_consumer_*.py`) fueron eliminadas o marcadas como omitidas para reducir ruido de mantenimiento
+
 - **consumer**: Registrar excepciones en lugar de silenciarlas para mejorar
   diagnósticos y mantener el loop vivo (`tools/poc_file_ack/consumer.py`).
 - **tests**: Añadido `tests/unit/test_consumer_exceptions.py` que valida
@@ -13,8 +38,9 @@
 - **docs**: Documentación actualizada sobre la opción Archivo+ACK y la
   configuración de tests (`docs/docs controles/opcion1_archivo_ack.md`,
   `docs/testing-framework.md`).
-- **ci**: `.gitignore` actualizado para ignorar `tmp_poc_dir/` y job POC E2E
-  (`.github/workflows/poc-e2e.yml`) añadido previamente.
+- **ci**: `.gitignore` actualizado para ignorar `tmp_poc_dir/`.
+  - El job POC E2E (`.github/workflows/poc-e2e.yml`) **fue eliminado** porque
+    la PoC basada en archivos fue deprecada.
 - **consumer**: Marcar y persistir IDs procesados antes de escribir ACK para
   evitar reprocesos (test: `tests/unit/test_consumer_race_condition.py`).
 - **consumer**: Mantener una caché de `processed_ids` con tamaño limitado

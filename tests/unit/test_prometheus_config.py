@@ -9,10 +9,12 @@ def test_prometheus_configs_exist_and_contain_expected_entries():
     assert os.path.exists(prom), "prometheus.yml should exist"
     assert os.path.exists(rules), "rules.yml should exist"
 
-    content = open(prom, encoding='utf-8').read()
+    with open(prom, encoding='utf-8') as fh:
+        content = fh.read()
     assert 'scrape_configs' in content
     assert 'train_simulator_autopilot' in content
 
-    rules_content = open(rules, encoding='utf-8').read()
+    with open(rules, encoding='utf-8') as fh:
+        rules_content = fh.read()
     assert 'groups' in rules_content
     assert 'HighIADecisionLatency' in rules_content

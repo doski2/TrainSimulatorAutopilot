@@ -34,11 +34,11 @@ def reflow_text(text, width=80):
     def flush_buffer(indent=""):
         if not buffer:
             return
-        paragraph = " ".join(l.strip() for l in buffer)  # noqa: E741
+        paragraph = " ".join(ln.strip() for ln in buffer)
         # Keep it as is if contains URL
         if URL_RE.search(paragraph):
-            for l in buffer:  # noqa: E741
-                out_lines.append(indent + l.strip())
+            for buf_line in buffer:
+                out_lines.append(indent + buf_line.strip())
         else:
             wrapped = textwrap.wrap(paragraph, width=width - len(indent))
             for w in wrapped:

@@ -4,23 +4,19 @@ Classic
 
 ## 📊 Estado de Implementación
 
-| Especificación | Estado |
-| --- | ---: |
-| Control velocidad/freno | ✅ IMPLEMENTADO |
-| Anticipación de señales | ✅ IMPLEMENTADO |
-| Lógica adaptativa por tipo de tren | ✅ IMPLEMENTADO |
-| Integración InputMapper / KeyMaps | ✅ IMPLEMENTADO |
-| Lectura / escritura de telemetría | ✅ IMPLEMENTADO |
-| Registro de incidencias / auditoría | ✅ IMPLEMENTADO |
-| Métricas de rendimiento | ✅ IMPLEMENTADO |
-| Procesamiento paralelo | ✅ IMPLEMENTADO |
-| Pruebas automáticas | ✅ IMPLEMENTADO |
-| Diagramas de flujo | ✅ IMPLEMENTADO |
-| Troubleshooting | ✅ IMPLEMENTADO |
+| Especificación | Estado | | --- | ---: | | Control velocidad/freno | ✅
+IMPLEMENTADO | | Anticipación de señales | ✅ IMPLEMENTADO | | Lógica adaptativa
+por tipo de tren | ✅ IMPLEMENTADO | | Integración InputMapper / KeyMaps | ✅
+IMPLEMENTADO | | Lectura / escritura de telemetría | ✅ IMPLEMENTADO | | Registro
+de incidencias / auditoría | ✅ IMPLEMENTADO | | Métricas de rendimiento | ✅
+IMPLEMENTADO | | Procesamiento paralelo | ✅ IMPLEMENTADO | | Pruebas automáticas
+| ✅ IMPLEMENTADO | | Diagramas de flujo | ✅ IMPLEMENTADO | | Troubleshooting | ✅
+IMPLEMENTADO |
 
 ### Implementaciones (ejemplos de archivos)
 
-- `ia_logic.py:decidir_accion()` — Control velocidad/freno, anticipación de señales
+- `ia_logic.py:decidir_accion()` — Control velocidad/freno, anticipación de
+  señales
 - `input_mapper_integration.py` — InputMapper / KeyMaps
 - `extractor.py`, `tsc_integration.py` — Lectura / escritura de telemetría
 - `analisis_rendimiento.py` — Métricas de rendimiento

@@ -81,8 +81,12 @@ def process_commands_file(plugins_dir: Path) -> None:
     try:
         cmd_file.unlink()
         _append_debug_log(plugins_dir, "readPythonCommands: finished processing and removed file")
-    except Exception:
-        pass
+    except OSError as exc:
+        # Best-effort cleanup: log the error but do not raise to preserve non-fatal behavior
+        _append_debug_log(
+            plugins_dir,
+            f"readPythonCommands: could not remove autopilot_commands.txt -> {exc}",
+        )
 
 
 if __name__ == "__main__":

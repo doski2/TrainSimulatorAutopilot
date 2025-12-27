@@ -1092,8 +1092,8 @@ interfaz
 
 #### 🎯 Métricas Implementadas
 
-| Métrica                  | Unidad | Rango Típico | Uso
-| | ------------------------ | ------ | ------------ |
+| Métrica                  | Unidad | Rango Típico | Uso | |
+------------------------ | ------ | ------------ |
 ------------------------------- | | **Esfuerzo de Tracción** | N      | 0-1000 N
 | Potencia de tracción disponible | | **RPM**                  | RPM    |
 300-800      | Velocidad del motor             | | **Corriente**            | A

@@ -19,7 +19,8 @@ if tsc_integration:
         if os.path.exists(p):
             print('--- content of', f, '---')
             try:
-                print(open(p, encoding='utf-8', errors='replace').read())
+                with open(p, encoding='utf-8', errors='replace') as fh:
+                    print(fh.read())
             except Exception as e:
                 print('read error', e)
             print('--- end ---')

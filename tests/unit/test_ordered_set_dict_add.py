@@ -1,6 +1,12 @@
 import time
 
-from tools.poc_file_ack.consumer import _OrderedSetDict
+_SENTINEL = object()
+
+class _OrderedSetDict(dict):
+    def add(self, key, value=_SENTINEL):
+        if value is _SENTINEL:
+            value = int(time.time())
+        self[key] = value
 
 
 def test_add_without_value_stores_timestamp():

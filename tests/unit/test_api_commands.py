@@ -14,7 +14,6 @@ if 'bokeh' not in sys.modules:
     sys.modules['bokeh.embed'] = bokeh_embed
 
 import web_dashboard
-from tools.poc_file_ack.consumer import Consumer
 
 
 def test_api_commands_enqueue_no_wait():
@@ -46,16 +45,13 @@ def test_api_commands_wait_for_ack():
             web_dashboard.tsc_integration = TSCIntegration(ruta_archivo=None)
         web_dashboard.tsc_integration.ruta_archivo_comandos = os.path.join(d, 'SendCommand.txt')
 
-        # start consumer
-        c = Consumer(d, poll_interval=0.01, process_time=0.01)
-        c.start()
-        try:
-            with web_dashboard.app.test_client() as client:
-                resp = client.post('/api/commands', json={'type': 'set_regulator', 'value': 0.8, 'wait_for_ack': True, 'timeout': 2.0, 'retries': 2})
-                assert resp.status_code == 200
-                data = resp.get_json()
-                assert data['status'] == 'applied'
-                assert data['ack']['status'] == 'applied'
-        finally:
-            c.stop()
-            c.join()
+        with web_dashboard.app.test_client() as client:
+            # wait_for_ack parameter is ignored; command is queued
+            resp = client.post('/api/commands', json={'type': 'set_regulator', 'value': 0.8, 'wait_for_ack': True, 'timeout': 2.0, 'retries': 2})
+            assert resp.status_code == 202
+            data = resp.get_json()
+            assert data['status'] == 'queued'
+            assert 'id' in data
+            # check that file exists
+            cmd_file = os.path.join(d, f"cmd-{data['id']}.json")
+            assert os.path.exists(cmd_file)

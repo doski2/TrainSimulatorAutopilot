@@ -6,10 +6,12 @@ Integra TSC + IA + Control de comandos
 """
 
 import logging
+import os
 import time
 from datetime import datetime
 from typing import Any, Dict, Optional
 
+from autopilot.traction_control import TractionConfig, TractionControl  # noqa: E402
 from tsc_integration import TSCIntegration
 
 logger = logging.getLogger(__name__)
@@ -32,6 +34,20 @@ class IASistema:
             "decision_last_latency_ms": 0.0,
         }
 
+    def _to_float(self, value: Any, default: float = 0.0) -> float:
+        """Coerce a value to float safely, returning `default` on failure.
+
+        This avoids runtime errors when telemetry fields are missing or
+        malformed, and silences type-checker warnings about operations
+        on Optional values.
+        """
+        if value is None:
+            return default
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return default
+
     def procesar_telemetria(self, datos: Dict[str, Any]) -> Dict[str, Any]:
         """
         Procesar datos de telemetría y generar comandos de control.
@@ -42,11 +58,12 @@ class IASistema:
         Returns:
             Diccionario con comandos de control
         """
-        velocidad_actual = datos.get("velocidad", 0)
-        limite_velocidad = datos.get("limite_velocidad_actual", 80)
-        pendiente = datos.get("pendiente", 0)
-        aceleracion = datos.get("aceleracion", 0)
-        distancia_parada = datos.get("distancia_parada", 1000)
+        # Prefer keys produced by TSCIntegration (km/h) but keep backwards compatibility
+        velocidad_actual = self._to_float(datos.get("velocidad_actual", datos.get("velocidad", 0.0)))
+        limite_velocidad = self._to_float(datos.get("limite_velocidad", datos.get("limite_velocidad_actual", 80.0)))
+        pendiente = self._to_float(datos.get("pendiente", 0.0))
+        aceleracion = self._to_float(datos.get("aceleracion", 0.0))
+        distancia_parada = self._to_float(datos.get("distancia_parada", 1000.0))
 
         # Lógica de decisión principal
         comandos = {
@@ -82,8 +99,17 @@ class IASistema:
             comandos["razon_decision"] = (
                 f"Velocidad {velocidad_actual:.1f} < límite {limite_velocidad:.1f}"
             )
+            # Log con más detalle para depuración de por qué IA eligió esta aceleración
+            logger.info(
+                "[IA] ACELERANDO - velocidad_actual=%.2f, limite=%.2f, deficit=%.2f, acelerador=%.3f",
+                velocidad_actual,
+                limite_velocidad,
+                deficit,
+                comandos["acelerador"],
+            )
+            # Mantener una impresión legible para consola durante pruebas interactivas
             print(
-                f"[IA] ACELERANDO - Vel: {velocidad_actual:.1f}mph, Limite: {limite_velocidad:.1f}mph, Acelerador: {comandos['acelerador']:.3f}"
+                f"[IA] ACELERANDO - Vel: {velocidad_actual:.1f}, Limite: {limite_velocidad:.1f}, Acelerador: {comandos['acelerador']:.3f}"
             )
 
         else:
@@ -177,6 +203,19 @@ class AutopilotSystem:
         self.sesion_activa = False
         # Configurable behavior: whether autopilot applies brakes based on signals
         self.autobrake_by_signal = True
+        # Traction control helper for slip detection and throttle mitigation
+        self.traction = TractionControl(TractionConfig())
+        # Timestamp of last traction update to compute dt
+        self._last_traction_ts = None
+        # Traction metrics
+        self.ia.metrics.setdefault("traction_slip_total", 0)
+        self.ia.metrics.setdefault("traction_commands_sent_total", 0)
+
+        # AI accelerator send control (cooldown and thresholds)
+        self._last_ai_accel_sent_ts = 0.0
+        self._last_ai_accel_sent_value: float | None = None
+        self._ai_accel_cooldown = float(os.getenv("AI_ACCEL_COOLDOWN", "1.0"))
+        self._ai_accel_min_diff = float(os.getenv("AI_ACCEL_MIN_DIFF", "0.05"))
 
     def iniciar_sesion(self) -> bool:
         """
@@ -302,6 +341,73 @@ class AutopilotSystem:
                     comandos["acelerador"] = min(comandos.get("acelerador", 0.0), 0.0)
         except Exception:
             pass
+
+        # Enviar comandos ACCELERAR desde IA cuando corresponda (modo automático)
+        try:
+            if self.modo_automatico and comandos.get("decision") == "ACELERAR":
+                desired = float(comandos.get("acelerador", 0.0))
+                now = time.time()
+                # Determine baseline for comparison
+                baseline = self._last_ai_accel_sent_value
+                if baseline is None:
+                    baseline = float(datos_telemetria.get("acelerador", 0.0))
+                if (now - self._last_ai_accel_sent_ts) >= self._ai_accel_cooldown and abs(desired - baseline) >= self._ai_accel_min_diff:
+                    # Compute snapped notch for logging visibility
+                    try:
+                        snapped = self.tsc._snap_to_notch(desired)
+                    except Exception:
+                        snapped = desired
+                    logger.info("[IA] Computed acelerador desired=%.3f snapped=%.3f (baseline=%.3f)", desired, snapped, baseline)
+                    ok = self.tsc.enviar_comandos({"acelerador": desired})
+                    if ok:
+                        self._last_ai_accel_sent_ts = now
+                        self._last_ai_accel_sent_value = snapped
+        except Exception as e:
+            logger.exception("Failed to send IA accelerator command: %s", e)
+
+        # Detección de patinaje y mitigación (si tenemos telemetría relevante)
+        try:
+            now = time.time()
+            if self._last_traction_ts is None:
+                dt = 0.1
+            else:
+                dt = max(1e-6, now - self._last_traction_ts)
+            self._last_traction_ts = now
+
+            # Preferir intensidad normalizada si está disponible
+            slip_int = datos_telemetria.get("deslizamiento_ruedas_intensidad")
+            # Velocidad IA está en km/h; convertir a m/s para compatibilidad
+            vel_kmh = datos_telemetria.get("velocidad_actual", 0.0)
+            speed_m_s = self.ia._to_float(vel_kmh) / 3.6
+
+            slip_detected = self.traction.detect_slip(
+                speed_m_s if speed_m_s is not None else None,
+                None,
+                dt,
+                slip_intensity=slip_int,
+            )
+
+            if slip_detected:
+                # Increment metric
+                try:
+                    self.ia.metrics["traction_slip_total"] = int(self.ia.metrics.get("traction_slip_total", 0)) + 1
+                except Exception:
+                    self.ia.metrics["traction_slip_total"] = 1
+
+                # Si estamos en modo automático, enviar ajuste de throttle inmediato
+                if self.modo_automatico:
+                    current_th = float(datos_telemetria.get("acelerador", 0.0))
+                    new_th = self.traction.compute_throttle_adjustment(current_th, True)
+                    # Enviar comando de throttle (la integración mapeará a Regulator/VirtualThrottle)
+                    ok = self.tsc.enviar_comandos({"acelerador": new_th})
+                    if ok:
+                        try:
+                            self.ia.metrics["traction_commands_sent_total"] = int(self.ia.metrics.get("traction_commands_sent_total", 0)) + 1
+                        except Exception:
+                            self.ia.metrics["traction_commands_sent_total"] = 1
+                        logger.info("Applied traction mitigation: throttle %.3f -> %.3f", current_th, new_th)
+        except Exception as e:
+            logger.exception("Error during traction detection/mitigation: %s", e)
 
         # Enviar comandos si está en modo automático
         if self.modo_automatico:

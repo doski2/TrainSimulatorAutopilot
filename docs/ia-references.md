@@ -16,7 +16,8 @@
 - Señalización europea (PZB/LZB/AWS): ✅ IMPLEMENTADO
   - `sistemas_senalizacion_europea.py`, `test_sistemas_senalizacion_europea.py`
 - Señalización norteamericana: ✅ IMPLEMENTADO
-  - `sistemas_senalizacion_norteamerica.py`, `test_sistemas_senalizacion_norteamerica.py`
+  - `sistemas_senalizacion_norteamerica.py`,
+    `test_sistemas_senalizacion_norteamerica.py`
 - Normativas UIC/DB/Network Rail: 📝 DOCUMENTADO
 - Normativas FRA/Amtrak/AAR: 📝 DOCUMENTADO
 - Comunidades/foros: 📝 DOCUMENTADO

@@ -149,10 +149,9 @@ servidor web
 
 -
 
-Procedimientos de uso
-3. **[`workflow-log.md`](workflow-log.md)** - Estado del proyecto
-4. **[`README_DASHBOARD.md`](README_DASHBOARD.md)** - Uso del dashboard web
-5. **[`signals.md`](signals.md)** - Guía completa sobre `SignalAspect` y
+Procedimientos de uso 3. **[`workflow-log.md`](workflow-log.md)** - Estado del
+proyecto 4. **[`README_DASHBOARD.md`](README_DASHBOARD.md)** - Uso del dashboard
+web 5. **[`signals.md`](signals.md)** - Guía completa sobre `SignalAspect` y
 `KVB_SignalAspect`
 
 ### 🔧 Para Administradores
@@ -167,8 +166,8 @@ Reportes de rendimiento y estado
 
 ## 📊 Métricas del Proyecto
 
-| Aspecto                | Valor                | Archivo de Referencia
-| | ---------------------- | -------------------- |
+| Aspecto                | Valor                | Archivo de Referencia | |
+---------------------- | -------------------- |
 ---------------------------------------------------------- | | **Líneas de
 Código**   | ~20,000+             | [`historial-
 proyecto.md`](historico/historial-proyecto.md) | | **Archivos**           | 55+
@@ -177,15 +176,14 @@ Activos** | 3 sistemas completos | [`logs-tecnicos.md`](desarrollo/logs-
 tecnicos.md)          | | **APIs REST**          | 15+ endpoints        |
 [`WEB_DASHBOARD_API.md`](WEB_DASHBOARD_API.md)             | | **WebSocket
 Events**   | 8+ eventos           |
-[`WEB_DASHBOARD_API.md`](WEB_DASHBOARD_API.md)             | | **Tests**
-| 200+                 | [`testing-framework.md`](testing-framework.md)
-| | **Cobertura**          | 85%                  | [`testing-
-framework.md`](testing-framework.md)             | | **Precisión IA**       |
-92%                  | [`logs-tecnicos.md`](desarrollo/logs-tecnicos.md)
-| | **Latencia**           | <50ms                | [`logs-
-tecnicos.md`](desarrollo/logs-tecnicos.md)          | | **Calidad Código**     |
-0 errores linting    | [`logs-tecnicos.md`](desarrollo/logs-tecnicos.md)
-|
+[`WEB_DASHBOARD_API.md`](WEB_DASHBOARD_API.md)             | | **Tests** | 200+
+| [`testing-framework.md`](testing-framework.md) | | **Cobertura**          |
+85%                  | [`testing- framework.md`](testing-framework.md)
+| | **Precisión IA**       | 92%                  | [`logs-
+tecnicos.md`](desarrollo/logs-tecnicos.md) | | **Latencia**           | <50ms
+| [`logs- tecnicos.md`](desarrollo/logs-tecnicos.md)          | | **Calidad
+Código**     | 0 errores linting    | [`logs-tecnicos.md`](desarrollo/logs-
+tecnicos.md) |
 
 ## 🚀 Estado Actual
 

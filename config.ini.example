@@ -111,6 +111,12 @@ seleccion_automatica_loco = true  # Seleccionar locomotora automáticamente
 soporte_multi_locomotora = true   # Soporte para múltiples locomotoras
 tiempo_cambio_loco = 30           # Segundos entre cambios de locomotora
 
+# Comportamiento de ACK de Autopilot
+# Nota: el soporte de ACK ha sido eliminado del proyecto. El sistema ya no
+# espera confirmaciones del plugin Lua ni requiere `autopilot_state.txt`.
+# El comportamiento por defecto es devolver éxito inmediatamente y escribir
+# comandos de fallback cuando sea necesario.
+
 [LOGGING]
 # Configuración del sistema de logging
 
