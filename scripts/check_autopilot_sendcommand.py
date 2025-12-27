@@ -14,14 +14,17 @@ reload(web_dashboard)
 
 with TemporaryDirectory() as tmp:
     gd = os.path.join(tmp, 'GetData.txt')
-    open(gd, 'w', encoding='utf-8').write('ControlName:CurrentSpeed\nControlValue:0.0\n')
+    with open(gd, 'w', encoding='utf-8') as f:
+        f.write('ControlName:CurrentSpeed\nControlValue:0.0\n')
 
     tsci = TSCIntegration(ruta_archivo=gd)
     sendfile = os.path.join(tmp, 'SendCommand.txt')
     tsci.ruta_archivo_comandos = sendfile
 
     # create plugin ack (simulate plugin online)
-    open(os.path.join(tmp, 'autopilot_state.txt'), 'w', encoding='utf-8').write('on')
+    ack_path = os.path.join(tmp, 'autopilot_state.txt')
+    with open(ack_path, 'w', encoding='utf-8') as f:
+        f.write('on')
 
     ap = AutopilotSystem()
     ap.tsc = tsci
