@@ -17,7 +17,7 @@ class TractionConfig:
 
 
 class TractionControl:
-    def __init__(self, cfg: "TractionConfig | None" = None) -> None:
+    def __init__(self, cfg: TractionConfig | None = None) -> None:
         # Accept either TractionConfig or None (PEP 604 union syntax)
         self.cfg = cfg or TractionConfig()
         self.e = 0.0  # EWMA state for slip_ratio
