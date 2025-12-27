@@ -7,11 +7,12 @@ Integra TSC + IA + Control de comandos
 
 import logging
 import time
+import os
 from datetime import datetime
 from typing import Any, Dict, Optional
 
+from autopilot.traction_control import TractionConfig, TractionControl  # noqa: E402
 from tsc_integration import TSCIntegration
-from autopilot.traction_control import TractionControl, TractionConfig  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
@@ -186,6 +187,12 @@ class AutopilotSystem:
         self.ia.metrics.setdefault("traction_slip_total", 0)
         self.ia.metrics.setdefault("traction_commands_sent_total", 0)
 
+        # AI accelerator send control (cooldown and thresholds)
+        self._last_ai_accel_sent_ts = 0.0
+        self._last_ai_accel_sent_value: float | None = None
+        self._ai_accel_cooldown = float(os.getenv("AI_ACCEL_COOLDOWN", "1.0"))
+        self._ai_accel_min_diff = float(os.getenv("AI_ACCEL_MIN_DIFF", "0.05"))
+
     def iniciar_sesion(self) -> bool:
         """
         Iniciar sesión de piloto automático.
@@ -310,6 +317,29 @@ class AutopilotSystem:
                     comandos["acelerador"] = min(comandos.get("acelerador", 0.0), 0.0)
         except Exception:
             pass
+
+        # Enviar comandos ACCELERAR desde IA cuando corresponda (modo automático)
+        try:
+            if self.modo_automatico and comandos.get("decision") == "ACELERAR":
+                desired = float(comandos.get("acelerador", 0.0))
+                now = time.time()
+                # Determine baseline for comparison
+                baseline = self._last_ai_accel_sent_value
+                if baseline is None:
+                    baseline = float(datos_telemetria.get("acelerador", 0.0))
+                if (now - self._last_ai_accel_sent_ts) >= self._ai_accel_cooldown and abs(desired - baseline) >= self._ai_accel_min_diff:
+                    # Compute snapped notch for logging visibility
+                    try:
+                        snapped = self.tsc._snap_to_notch(desired)
+                    except Exception:
+                        snapped = desired
+                    logger.info("[IA] Computed acelerador desired=%.3f snapped=%.3f (baseline=%.3f)", desired, snapped, baseline)
+                    ok = self.tsc.enviar_comandos({"acelerador": desired})
+                    if ok:
+                        self._last_ai_accel_sent_ts = now
+                        self._last_ai_accel_sent_value = snapped
+        except Exception as e:
+            logger.exception("Failed to send IA accelerator command: %s", e)
 
         # Detección de patinaje y mitigación (si tenemos telemetría relevante)
         try:
