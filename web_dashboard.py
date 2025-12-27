@@ -356,13 +356,26 @@ except ImportError:
     TSCIntegration = None
     print("[BOOT] TSC Integration no disponible")
 
-# POC helpers para protocolo file+ACK
-try:
-    from tools.poc_file_ack.enqueue import atomic_write_cmd, send_command_with_retries  # noqa: E402
-except Exception:
-    # En entornos donde 'tools' no esté disponible (tests aislados), lo ignoramos
-    atomic_write_cmd = None
-    send_command_with_retries = None
+# Atomic command writer (simple, robust, no-ACK)
+import uuid
+
+def atomic_write_cmd(dirpath: str, payload: dict) -> str:
+    """Escribe un comando JSON de forma atómica en `dirpath` y devuelve un id."""
+    os.makedirs(dirpath, exist_ok=True)
+    cmd_id = uuid.uuid4().hex
+    fname = f"cmd-{cmd_id}.json"
+    tmp = os.path.join(dirpath, fname + ".tmp")
+    final = os.path.join(dirpath, fname)
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False)
+        f.flush()
+        try:
+            os.fsync(f.fileno())
+        except Exception:
+            # os.fsync puede fallar en algunos entornos (p.ej. Windows); ignoramos errores
+            pass
+    os.replace(tmp, final)
+    return cmd_id
 
 try:
     # from predictive_telemetry_analysis import PredictiveTelemetryAnalyzer  # noqa: E402  # TEMPORALMENTE COMENTADO
@@ -409,12 +422,7 @@ app.config["SESSION_COOKIE_SECURE"] = False  # Para desarrollo local
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["PERMANENT_SESSION_LIFETIME"] = 3600  # 1 hora
 
-# Timeout para esperar ACK del plugin autopilot (segundos). Puede sobreescribirse
-# por variable de entorno AUTOPILOT_ACK_TIMEOUT
-try:
-    AUTOPILOT_ACK_TIMEOUT = float(os.getenv("AUTOPILOT_ACK_TIMEOUT", "3.0"))
-except Exception:
-    AUTOPILOT_ACK_TIMEOUT = 3.0
+# ACK support removed — no timeout variable required.
 
 # Configuración SocketIO
 SOCKETIO_CORS_ORIGINS = "*"

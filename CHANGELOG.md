@@ -6,7 +6,7 @@
 
 - **policy**: Cambiado el comportamiento por defecto de `start_autopilot` para **NO** requerir ACK del plugin Lua. Esto evita que llamadas al endpoint se bloqueen en entornos donde el plugin no está disponible o los accesos a archivos están restringidos.
   - Se eliminó el soporte de espera por ACK del flujo principal del proyecto y se deprecó la POC basada en archivos (`tools/poc_file_ack`).
-  - Se añadió nota de deprecación en `tools/poc_file_ack/DEPRECATED.md` y los tests E2E/Unit que comprobaban la lógica de ACK fueron marcados como omitidos (skipped).
+  - La PoC `tools/poc_file_ack` y las pruebas relacionadas fueron **eliminadas** del repositorio; la decisión y el flujo final están documentados en `docs/AUTOPILOT_SENDCOMMAND.md`.
   - Las métricas relacionadas con ACK (`ack_skipped_total`, `unacked_total`) se han eliminado del conjunto de métricas operativas.
   - Tests y documentación actualizados para reflejar la nueva política.
 
