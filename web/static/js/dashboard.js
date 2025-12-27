@@ -269,43 +269,6 @@ function controlAction(action) {
     });
 }
 
-// POC UI: enviar comando File+ACK y mostrar estado en #poc-status
-(function registerPocUi() {
-    const pocBtn = document.getElementById('poc-send-btn');
-    const statusEl = document.getElementById('poc-status');
-    if (!pocBtn || !statusEl) return;
-
-    pocBtn.addEventListener('click', async () => {
-        pocBtn.disabled = true;
-        statusEl.textContent = 'Estado: enviando...';
-        try {
-            const payload = {
-                type: 'set_regulator',
-                value: 0.5,
-                wait_for_ack: true,
-                timeout: 5.0,
-                retries: 2
-            };
-            const res = await fetch('/api/commands', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            const data = await res.json();
-            if (res.status === 202) {
-                statusEl.textContent = `Estado: encolado (id=${data.id})`;
-            } else if (res.status === 200 && data.status === 'applied') {
-                statusEl.textContent = `Estado: ACK recibido (${data.ack.id})`;
-            } else {
-                statusEl.textContent = `Estado: Error (${res.status})`;
-            }
-        } catch (e) {
-            statusEl.textContent = 'Estado: Error de red';
-        } finally {
-            pocBtn.disabled = false;
-        }
-    });
-})();
 
 function updateTelemetry(data) {
     data = data || {};
