@@ -27,18 +27,27 @@ class TractionControl:
         self.e = a * value + (1 - a) * self.e
         return self.e
 
-    def detect_slip(self, speed_train: float, speed_wheel: float, dt: float) -> bool:
+    def detect_slip(self, speed_train: float | None, speed_wheel: float | None, dt: float, slip_intensity: float | None = None) -> bool:
         """Actualizar detector con nueva muestra y devolver si hay patinaje.
 
         Args:
-            speed_train: velocidad del tren (m/s)
-            speed_wheel: velocidad de rueda/axle (m/s)
+            speed_train: velocidad del tren (m/s) o None
+            speed_wheel: velocidad de rueda/axle (m/s) o None
             dt: tiempo (s) desde la muestra anterior
+            slip_intensity: intensidad de patinaje normalizada 0..1 (opcional)
         Returns:
             True si hay patinaje detectado (tras debounce).
         """
-        slip_eps = 1e-3
-        slip_ratio = (speed_wheel - speed_train) / max(speed_train, slip_eps)
+        # Si se provee slip_intensity, lo usamos directamente como "slip_ratio".
+        if slip_intensity is not None:
+            slip_ratio = float(slip_intensity)
+        else:
+            slip_eps = 1e-3
+            if speed_train is None or speed_wheel is None:
+                # Sin datos suficientes, no declarar patinaje
+                return False
+            slip_ratio = (speed_wheel - speed_train) / max(speed_train, slip_eps)
+
         s = self._update_ewma(slip_ratio)
 
         if s > self.cfg.slip_threshold:

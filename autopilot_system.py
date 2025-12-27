@@ -11,6 +11,7 @@ from datetime import datetime
 from typing import Any, Dict, Optional
 
 from tsc_integration import TSCIntegration
+from autopilot.traction_control import TractionControl, TractionConfig  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
@@ -177,6 +178,13 @@ class AutopilotSystem:
         self.sesion_activa = False
         # Configurable behavior: whether autopilot applies brakes based on signals
         self.autobrake_by_signal = True
+        # Traction control helper for slip detection and throttle mitigation
+        self.traction = TractionControl(TractionConfig())
+        # Timestamp of last traction update to compute dt
+        self._last_traction_ts = None
+        # Traction metrics
+        self.ia.metrics.setdefault("traction_slip_total", 0)
+        self.ia.metrics.setdefault("traction_commands_sent_total", 0)
 
     def iniciar_sesion(self) -> bool:
         """
@@ -302,6 +310,52 @@ class AutopilotSystem:
                     comandos["acelerador"] = min(comandos.get("acelerador", 0.0), 0.0)
         except Exception:
             pass
+
+        # Detección de patinaje y mitigación (si tenemos telemetría relevante)
+        try:
+            now = time.time()
+            if self._last_traction_ts is None:
+                dt = 0.1
+            else:
+                dt = max(1e-6, now - self._last_traction_ts)
+            self._last_traction_ts = now
+
+            # Preferir intensidad normalizada si está disponible
+            slip_int = datos_telemetria.get("deslizamiento_ruedas_intensidad")
+            # Velocidad IA está en km/h; convertir a m/s para compatibilidad
+            vel_kmh = datos_telemetria.get("velocidad_actual", 0.0)
+            speed_m_s = float(vel_kmh) / 3.6 if vel_kmh is not None else None
+            rpm = datos_telemetria.get("rpm", 0.0)
+            amperaje = datos_telemetria.get("amperaje", 0.0)
+
+            slip_detected = self.traction.detect_slip(
+                speed_m_s if speed_m_s is not None else None,
+                None,
+                dt,
+                slip_intensity=slip_int,
+            )
+
+            if slip_detected:
+                # Increment metric
+                try:
+                    self.ia.metrics["traction_slip_total"] = int(self.ia.metrics.get("traction_slip_total", 0)) + 1
+                except Exception:
+                    self.ia.metrics["traction_slip_total"] = 1
+
+                # Si estamos en modo automático, enviar ajuste de throttle inmediato
+                if self.modo_automatico:
+                    current_th = float(datos_telemetria.get("acelerador", 0.0))
+                    new_th = self.traction.compute_throttle_adjustment(current_th, True)
+                    # Enviar comando de throttle (la integración mapeará a Regulator/VirtualThrottle)
+                    ok = self.tsc.enviar_comandos({"acelerador": new_th})
+                    if ok:
+                        try:
+                            self.ia.metrics["traction_commands_sent_total"] = int(self.ia.metrics.get("traction_commands_sent_total", 0)) + 1
+                        except Exception:
+                            self.ia.metrics["traction_commands_sent_total"] = 1
+                        logger.info("Applied traction mitigation: throttle %.3f -> %.3f", current_th, new_th)
+        except Exception as e:
+            logger.exception("Error during traction detection/mitigation: %s", e)
 
         # Enviar comandos si está en modo automático
         if self.modo_automatico:
