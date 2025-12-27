@@ -85,7 +85,7 @@ def parse_latest_json_line(path: Path) -> dict | None:
             return None
         # Leemos todo y tomamos la última línea no vacía
         with path.open("r", encoding="utf-8", errors="ignore") as f:
-            lines = [l.strip() for l in f if l.strip()]
+            lines = [line.strip() for line in f if line.strip()]
         if not lines:
             return None
         last = lines[-1]
