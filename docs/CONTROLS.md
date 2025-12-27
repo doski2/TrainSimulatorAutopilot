@@ -134,19 +134,22 @@ python -m pytest tests/unit/test_tsc_interface_write.py -q
 
 ---
 
-## Comportamiento de ACK y diagnóstico 🩺
+## Cambios: ACK eliminado y diagnóstico 🩺
 
-- El plugin Lua normalmente confirma que ha arrancado escribiendo `autopilot_state.txt = on`.
-- Si el plugin no responde (por ejemplo no está cargado o hay errores en escritura de archivos), la API **por defecto NO espera** y devolverá éxito inmediato. Si quieres que la API espere y haga cumplir el ACK, activa `AUTOPILOT_REQUIRE_ACK=true` en el entorno; en ese caso la API esperará hasta `AUTOPILOT_ACK_TIMEOUT` segundos y responderá 504 si no se confirma.
-- Para entornos donde el plugin no puede cargarse o el acceso a archivos está restringido, puedes desactivar globalmente la espera por ACK con la variable de entorno:
-  - `AUTOPILOT_REQUIRE_ACK=false`
-  - Esto hará que `POST /api/control/start_autopilot` devuelva éxito inmediatamente (200) y que el sistema aplique controles de fallback si es necesario.
-- Se añadió la métrica `autopilot_metrics['ack_skipped_total']` para contabilizar cuántas veces se saltó la espera por ACK.
+- El soporte de ACK para la confirmación del plugin Lua ha sido **eliminado** del proyecto. `POST /api/control/start_autopilot` **ya no** requiere `autopilot_state.txt` ni espera confirmaciones.
+- Razonamiento:
+  - En entornos reales encontramos que el plugin no siempre se cargaba y que las escrituras a archivos fallaban por permisos o bloqueo (`Access denied` / `file locked`), lo que hacía que la dependencia del ACK provocara llamadas bloqueadas y errores en producción.
+  - Para aumentar la robustez operativa y evitar bloqueos, eliminamos la dependencia del ACK y aplicamos controles de fallback (`Regulator:0.125`, `VirtualThrottle:0.125`) cuando el plugin no procesa directamente `start_autopilot`.
+- Qué cambia para operadores:
+  1. `POST /api/control/start_autopilot` devuelve éxito inmediatamente y escribe los comandos necesarios.
+  2. El plugin Lua puede seguir siendo usado si está disponible; el sistema escribirá `autopilot_commands.txt` como antes.
+  3. Las métricas relacionadas con el ACK han sido removidas del panel (p. ej. `ack_skipped_total` y `unacked_total`).
 
 **Diagnóstico rápido:**
-1. Verifica que `plugins/autopilot_plugin_loaded.txt` y `plugins/autopilot_state.txt` existan y contengan el estado esperado.
-2. Revisa `tsc_autopilot.log` en busca de errores de escritura tipo `Access denied` o `file locked`.
-3. Si hay problemas de permisos o locking en Windows, reinicia el simulador y verifica antivirus/Indexing que puedan mantener archivos abiertos.
+
+1. Revisa `tsc_autopilot.log` para confirmaciones de escritura y errores tipo `Access denied` o `file locked`.
+2. Confirma la presencia del plugin y su carga (`autopilot_plugin_loaded.txt`) si lo necesitas para debugging.
+3. Si quieres, puedo crear un script de diagnóstico que capture logs, archivos y permisos para facilitar el soporte en entornos Windows.
 
 ---
 

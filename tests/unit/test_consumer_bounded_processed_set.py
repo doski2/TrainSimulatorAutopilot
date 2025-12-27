@@ -1,3 +1,6 @@
+import pytest
+pytest.skip("ACK PoC deprecated — skipping consumer tests.", allow_module_level=True)
+
 import time
 
 from tools.poc_file_ack.consumer import Consumer

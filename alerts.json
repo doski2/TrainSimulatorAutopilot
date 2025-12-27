@@ -217,5 +217,425 @@
     },
     "acknowledged": true,
     "acknowledged_at": "2025-12-24T22:53:47.545174"
+  },
+  {
+    "alert_id": "wheelslip_20251227_003707",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:37:07.394031",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:37:14.237470"
+  },
+  {
+    "alert_id": "wheelslip_20251227_003807",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:38:07.439466",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:50:39.593427"
+  },
+  {
+    "alert_id": "wheelslip_20251227_003907",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:39:07.460833",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:50:39.593432"
+  },
+  {
+    "alert_id": "wheelslip_20251227_004007",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:40:07.513675",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:50:39.593434"
+  },
+  {
+    "alert_id": "wheelslip_20251227_004107",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:41:07.598820",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:50:39.593436"
+  },
+  {
+    "alert_id": "wheelslip_20251227_004207",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:42:07.680059",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:50:39.593438"
+  },
+  {
+    "alert_id": "wheelslip_20251227_004307",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:43:07.685439",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:50:39.593440"
+  },
+  {
+    "alert_id": "wheelslip_20251227_004407",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:44:07.768475",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:50:39.593442"
+  },
+  {
+    "alert_id": "wheelslip_20251227_004507",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:45:07.849514",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:50:39.593444"
+  },
+  {
+    "alert_id": "wheelslip_20251227_004607",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:46:07.917824",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:50:39.593446"
+  },
+  {
+    "alert_id": "wheelslip_20251227_004707",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:47:07.935460",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:50:39.593447"
+  },
+  {
+    "alert_id": "wheelslip_20251227_004807",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:48:07.999055",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:50:39.593449"
+  },
+  {
+    "alert_id": "wheelslip_20251227_004908",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:49:08.008141",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:50:39.593451"
+  },
+  {
+    "alert_id": "wheelslip_20251227_005008",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:50:08.041107",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:50:39.593453"
+  },
+  {
+    "alert_id": "wheelslip_20251227_005302",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:53:02.976210",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:59:35.649095"
+  },
+  {
+    "alert_id": "wheelslip_20251227_005403",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:54:03.077230",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:59:35.649100"
+  },
+  {
+    "alert_id": "wheelslip_20251227_005503",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:55:03.113291",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:59:35.649102"
+  },
+  {
+    "alert_id": "wheelslip_20251227_005603",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:56:03.193768",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:59:35.649104"
+  },
+  {
+    "alert_id": "wheelslip_20251227_005703",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:57:03.259467",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:59:35.649106"
+  },
+  {
+    "alert_id": "wheelslip_20251227_005803",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:58:03.441840",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:59:35.649108"
+  },
+  {
+    "alert_id": "wheelslip_20251227_005903",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T00:59:03.487558",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T00:59:35.649110"
+  },
+  {
+    "alert_id": "wheelslip_20251227_010534",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T01:05:34.221034",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T01:12:23.605251"
+  },
+  {
+    "alert_id": "wheelslip_20251227_010634",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T01:06:34.278667",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T01:12:23.605260"
+  },
+  {
+    "alert_id": "wheelslip_20251227_010734",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T01:07:34.284654",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T01:12:23.605265"
+  },
+  {
+    "alert_id": "wheelslip_20251227_010834",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T01:08:34.376793",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T01:12:23.605269"
+  },
+  {
+    "alert_id": "wheelslip_20251227_010934",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T01:09:34.448810",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T01:12:23.605274"
+  },
+  {
+    "alert_id": "wheelslip_20251227_011034",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T01:10:34.518348",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T01:12:23.605278"
+  },
+  {
+    "alert_id": "wheelslip_20251227_011134",
+    "alert_type": "wheelslip",
+    "severity": "high",
+    "title": "Deslizamiento de Ruedas Detectado",
+    "message": "Deslizamiento: 1.00 (umbral: 0.5)",
+    "timestamp": "2025-12-27T01:11:34.580886",
+    "data": {
+      "wheelslip": 1.0,
+      "threshold": 0.5,
+      "slip_amount": 0.5
+    },
+    "acknowledged": true,
+    "acknowledged_at": "2025-12-27T01:12:23.605280"
   }
 ]

@@ -1,3 +1,6 @@
+import pytest
+pytest.skip("ACK-based flows removed — PoC deprecated and removed from project.", allow_module_level=True)
+
 import os
 import subprocess
 import tempfile

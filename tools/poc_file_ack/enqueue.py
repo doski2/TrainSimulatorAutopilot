@@ -33,28 +33,12 @@ def atomic_write_cmd(dirpath, payload):
     return cmd_id
 
 
+# ACK mechanisms are deprecated and removed. The wait_for_ack helper
+# is retained for historical reference but should not be used by production
+# code. Keep it here as a no-op shim that immediately returns None.
+
 def wait_for_ack(dirpath, cmd_id, timeout: float = DEFAULT_ACK_TIMEOUT, poll: float = DEFAULT_ACK_POLL):
-    """Wait for an ACK file for a given command id in `dirpath`.
-
-    Parameters:
-        dirpath (str): Directory where ack files are written.
-        cmd_id (str): Command id to look for (ack-{cmd_id}.json).
-        timeout (float): Maximum number of seconds to wait for the ack. Defaults
-            to DEFAULT_ACK_TIMEOUT (5.0 seconds).
-        poll (float): Interval in seconds between checks for the ack file.
-            Defaults to DEFAULT_ACK_POLL (0.1 seconds).
-
-    Returns:
-        dict or None: Parsed JSON content of the ack file if found within
-        timeout, otherwise None.
-    """
-    ack = os.path.join(dirpath, f"ack-{cmd_id}.json")
-    end = time.time() + timeout
-    while time.time() < end:
-        if os.path.exists(ack):
-            with open(ack, encoding="utf-8") as f:
-                return json.load(f)
-        time.sleep(poll)
+    """Deprecated: ACK-based flow removed. Return None immediately."""
     return None
 
 

@@ -81,8 +81,8 @@ tsc.enviar_comandos({"autopilot": True})
 2. El plugin debería:
    - leer `autopilot_commands.txt`.
    - escribir `autopilot_state.txt` con el valor `on` para indicar ACK.
-3. Verifica con: `/api/status` o con `tsc_integration.wait_for_autopilot_state('on')`.
-4. Si `wait_for_autopilot_state` expira → API responde 504 (configurable vía `AUTOPILOT_ACK_TIMEOUT`).
+3. Verifica con: `/api/status`.
+4. Nota: la comprobación por ACK (`wait_for_autopilot_state`) ha sido eliminada del flujo por defecto; el sistema no espera confirmaciones por archivo y siempre devuelve éxito en los endpoints de inicio de autopilot.
 
 ---
 

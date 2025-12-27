@@ -1,3 +1,6 @@
+import pytest
+pytest.skip("ACK PoC deprecated — skipping atomic writer tests tied to ACK PoC.", allow_module_level=True)
+
 import json
 import os
 

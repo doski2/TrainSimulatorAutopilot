@@ -1,4 +1,7 @@
 import json
+import pytest
+pytest.skip("ACK-based flows removed — PoC deprecated and removed from project.", allow_module_level=True)
+
 import os
 
 from tools.poc_file_ack.consumer import Consumer

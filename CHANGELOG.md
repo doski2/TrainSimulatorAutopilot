@@ -5,8 +5,9 @@
 ### 🔧 Correcciones y mejoras (POC Archivo+ACK)
 
 - **policy**: Cambiado el comportamiento por defecto de `start_autopilot` para **NO** requerir ACK del plugin Lua. Esto evita que llamadas al endpoint se bloqueen en entornos donde el plugin no está disponible o los accesos a archivos están restringidos.
-  - Nueva variable de entorno: `AUTOPILOT_REQUIRE_ACK` (por defecto `false`). Si se establece en `true`, la API esperará hasta `AUTOPILOT_ACK_TIMEOUT` y retornará 504 si no recibe confirmación.
-  - Métrica añadida: `autopilot_metrics['ack_skipped_total']` cuenta cuántas veces la espera por ACK fue omitida.
+  - Se eliminó el soporte de espera por ACK del flujo principal del proyecto y se deprecó la POC basada en archivos (`tools/poc_file_ack`).
+  - Se añadió nota de deprecación en `tools/poc_file_ack/DEPRECATED.md` y los tests E2E/Unit que comprobaban la lógica de ACK fueron marcados como omitidos (skipped).
+  - Las métricas relacionadas con ACK (`ack_skipped_total`, `unacked_total`) se han eliminado del conjunto de métricas operativas.
   - Tests y documentación actualizados para reflejar la nueva política.
 
 - **consumer**: Registrar excepciones en lugar de silenciarlas para mejorar

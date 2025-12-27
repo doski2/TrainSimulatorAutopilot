@@ -1,3 +1,6 @@
+import pytest
+pytest.skip("ACK-based flows removed — PoC deprecated and removed from project.", allow_module_level=True)
+
 from tools.poc_file_ack.enqueue import atomic_write_cmd, wait_for_ack
 
 

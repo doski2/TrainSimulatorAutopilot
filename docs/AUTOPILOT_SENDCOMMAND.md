@@ -53,12 +53,14 @@ Notas operativas:
 - Si quieres que documente el flujo ACK/fallback con más detalle
   (timeouts, métricas y comportamiento ante plugin offline), lo añado
   en esta misma página.
+
 ## Notas sobre ACK y configuración
 
-- Si `autopilot_state.txt` no aparece o no cambia a `on` dentro de
-  `AUTOPILOT_ACK_TIMEOUT`, la API **por defecto NO espera** y devuelve éxito inmediato. Si quieres que la API espere por ACK, activa la variable de entorno `AUTOPILOT_REQUIRE_ACK=true`.
-  - Si `AUTOPILOT_REQUIRE_ACK=true` y no llega ACK en tiempo, la API devolverá 504 e incrementará `autopilot_metrics['unacked_total']`.  
-  - Si `AUTOPILOT_REQUIRE_ACK=false` (por defecto), la métrica `autopilot_metrics['ack_skipped_total']` se incrementará para indicar que la espera fue omitida.
+- **Nota importante:** El soporte de ACK ha sido eliminado del proyecto. El API ya no espera confirmaciones del plugin Lua (no hay `autopilot_state.txt` obligatorio). En entornos donde el plugin no está cargado o el acceso a archivos está restringido, el endpoint `POST /api/control/start_autopilot` devuelve éxito inmediatamente y escribe las líneas de control de fallback cuando es necesario.
+
+- Razonamiento y evidencia de decisión:
+  - Durante pruebas en múltiples entornos detectamos que la confirmación por archivo (`autopilot_state.txt`) era poco fiable: el plugin no se cargaba en algunos entornos y además había errores de escritura y bloqueo de archivos (`Access denied` / `file locked`) en Windows que impedían una confirmación consistente.
+  - Por robustez operativa, eliminar la dependencia del ACK evita que la API se bloquee o devuelva errores en escenarios reales. Esto se probó exhaustivamente y los resultados están documentados en `CHANGELOG.md` y `docs/CONTROLS.md`.
 - Para entornos donde el plugin no puede cargar o no es fiable,
   puedes desactivar la espera globalmente con:
 
@@ -83,4 +85,3 @@ Notas operativas:
   5. En el simulador observa que la velocidad aumenta ligeramente (~13%).
 
 - Nota: si prefieres otro valor de inicio, se puede modificar la constante de fallback en `tsc_integration.py` o exponerla vía configuración (`AUTOPILOT_START_THROTTLE`) en una futura mejora.
-

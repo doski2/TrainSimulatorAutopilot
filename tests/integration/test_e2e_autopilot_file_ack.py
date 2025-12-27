@@ -1,3 +1,6 @@
+import pytest
+pytest.skip("ACK flows removed from project; e2e ACK tests deprecated.", allow_module_level=True)
+
 import time
 
 from tsc_integration import TSCIntegration

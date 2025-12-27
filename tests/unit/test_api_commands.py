@@ -51,11 +51,15 @@ def test_api_commands_wait_for_ack():
         c.start()
         try:
             with web_dashboard.app.test_client() as client:
+                # wait_for_ack parameter is now ignored; command is queued
                 resp = client.post('/api/commands', json={'type': 'set_regulator', 'value': 0.8, 'wait_for_ack': True, 'timeout': 2.0, 'retries': 2})
-                assert resp.status_code == 200
+                assert resp.status_code == 202
                 data = resp.get_json()
-                assert data['status'] == 'applied'
-                assert data['ack']['status'] == 'applied'
+                assert data['status'] == 'queued'
+                assert 'id' in data
+                # check that file exists
+                cmd_file = os.path.join(d, f"cmd-{data['id']}.json")
+                assert os.path.exists(cmd_file)
         finally:
             c.stop()
             c.join()

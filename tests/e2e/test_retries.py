@@ -1,3 +1,6 @@
+import pytest
+pytest.skip("ACK-based flows removed — retries e2e deprecated.", allow_module_level=True)
+
 import tempfile
 import threading
 import time
