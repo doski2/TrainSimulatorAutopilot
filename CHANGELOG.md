@@ -14,6 +14,7 @@
     **eliminadas** del repositorio; la decisión y el flujo final están
     documentados en `docs/AUTOPILOT_SENDCOMMAND.md`.
     - Se eliminó el test E2E `tests/integration/test_e2e_autopilot_file_ack.py` que comprobaba el flujo de ACK por archivos.
+    - Se eliminaron múltiples tests unitarios del consumer y tests relacionados con la PoC ACK (ya deprecada) para reducir ruido y mantenimiento en la suite de pruebas.
   - Las métricas relacionadas con ACK (`ack_skipped_total`,
     `unacked_total`) se han eliminado del conjunto de métricas operativas.
   - Tests y documentación actualizados para reflejar la nueva política.
