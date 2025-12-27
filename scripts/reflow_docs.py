@@ -26,7 +26,6 @@ def process_file(path: Path) -> bool:
         if line.strip().startswith('```'):
             # code fence; copy until closing fence
             in_code = not in_code
-            fence = line.strip()
             out_lines.append(line)
             i += 1
             while i < len(lines) and not lines[i].strip().startswith('```'):
