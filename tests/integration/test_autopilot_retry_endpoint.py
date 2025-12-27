@@ -32,4 +32,7 @@ def test_retry_autopilot_increments_metric_and_writes_command(tmp_path, monkeypa
 
     # check that command file contains start_autopilot
     assert os.path.exists(tsci.ruta_archivo_comandos)
-    assert 'start_autopilot' in open(tsci.ruta_archivo_comandos, encoding='utf-8').read()
+    with open(tsci.ruta_archivo_comandos, encoding='utf-8') as fh:
+        content = fh.read()
+    assert 'start_autopilot' in content
+
