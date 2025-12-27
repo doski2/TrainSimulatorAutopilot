@@ -1477,18 +1477,7 @@ def control_set_impl():
         except Exception as e:
             # Fall back to previous defensive checks if validator import fails for any reason
             logger.warning("control_set: validator not available, falling back to runtime checks: %s", e)
-            def _validate_control_and_value(control, value):
-                if not isinstance(control, str):
-                    return False, "Invalid control name"
-                if not control.strip():
-                    return False, "Invalid control name"
-                forbidden = {":", "\n", "\r", "\x00"}
-                if any(ch in control for ch in forbidden) or not control.isprintable() or len(control) > 100:
-                    return False, "Invalid control name"
-                if isinstance(value, (bool, str, int, float)):
-                    return True, ""
-                return False, "Invalid value type"
-
+            # Use the earlier defined `_validate_control_and_value` implementation instead of redefining it here
             ok, reason = _validate_control_and_value(control, value)
             if not ok:
                 logger.warning("control_set: invalid payload: control=%r value=%r reason=%s", control, value, reason)
