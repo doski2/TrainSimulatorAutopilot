@@ -57,6 +57,7 @@ def _set_current_json_data(val):
 # Standard library imports
 import configparser  # noqa: E402
 import json  # noqa: E402
+import uuid  # standard library used for atomic command ids
 import logging  # noqa: E402
 import threading  # noqa: E402
 import time  # noqa: E402
@@ -357,7 +358,6 @@ except ImportError:
     print("[BOOT] TSC Integration no disponible")
 
 # Atomic command writer (simple, robust, no plugin confirmation dependency)
-import uuid
 
 def atomic_write_cmd(dirpath: str, payload: dict) -> str:
     """Escribe un comando JSON de forma atómica en `dirpath` y devuelve un id."""
