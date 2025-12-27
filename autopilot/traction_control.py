@@ -2,7 +2,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
+
+# Use PEP 604 union operator (`X | None`) for optional types to satisfy Ruff UP045
 
 
 @dataclass
@@ -16,7 +17,8 @@ class TractionConfig:
 
 
 class TractionControl:
-    def __init__(self, cfg: Optional[TractionConfig] = None) -> None:
+    def __init__(self, cfg: "TractionConfig | None" = None) -> None:
+        # Accept either TractionConfig or None (PEP 604 union syntax)
         self.cfg = cfg or TractionConfig()
         self.e = 0.0  # EWMA state for slip_ratio
         self.debounce_state = 0.0
