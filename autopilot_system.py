@@ -34,6 +34,20 @@ class IASistema:
             "decision_last_latency_ms": 0.0,
         }
 
+    def _to_float(self, value: Any, default: float = 0.0) -> float:
+        """Coerce a value to float safely, returning `default` on failure.
+
+        This avoids runtime errors when telemetry fields are missing or
+        malformed, and silences type-checker warnings about operations
+        on Optional values.
+        """
+        if value is None:
+            return default
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return default
+
     def procesar_telemetria(self, datos: Dict[str, Any]) -> Dict[str, Any]:
         """
         Procesar datos de telemetría y generar comandos de control.
@@ -45,11 +59,11 @@ class IASistema:
             Diccionario con comandos de control
         """
         # Prefer keys produced by TSCIntegration (km/h) but keep backwards compatibility
-        velocidad_actual = datos.get("velocidad_actual") if datos.get("velocidad_actual") is not None else datos.get("velocidad", 0)
-        limite_velocidad = datos.get("limite_velocidad") if datos.get("limite_velocidad") is not None else datos.get("limite_velocidad_actual", 80)
-        pendiente = datos.get("pendiente", 0)
-        aceleracion = datos.get("aceleracion", 0)
-        distancia_parada = datos.get("distancia_parada", 1000)
+        velocidad_actual = self._to_float(datos.get("velocidad_actual", datos.get("velocidad", 0.0)))
+        limite_velocidad = self._to_float(datos.get("limite_velocidad", datos.get("limite_velocidad_actual", 80.0)))
+        pendiente = self._to_float(datos.get("pendiente", 0.0))
+        aceleracion = self._to_float(datos.get("aceleracion", 0.0))
+        distancia_parada = self._to_float(datos.get("distancia_parada", 1000.0))
 
         # Lógica de decisión principal
         comandos = {
@@ -364,9 +378,7 @@ class AutopilotSystem:
             slip_int = datos_telemetria.get("deslizamiento_ruedas_intensidad")
             # Velocidad IA está en km/h; convertir a m/s para compatibilidad
             vel_kmh = datos_telemetria.get("velocidad_actual", 0.0)
-            speed_m_s = float(vel_kmh) / 3.6 if vel_kmh is not None else None
-            rpm = datos_telemetria.get("rpm", 0.0)
-            amperaje = datos_telemetria.get("amperaje", 0.0)
+            speed_m_s = self.ia._to_float(vel_kmh) / 3.6
 
             slip_detected = self.traction.detect_slip(
                 speed_m_s if speed_m_s is not None else None,
