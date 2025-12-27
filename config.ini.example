@@ -111,6 +111,12 @@ seleccion_automatica_loco = true  # Seleccionar locomotora automáticamente
 soporte_multi_locomotora = true   # Soporte para múltiples locomotoras
 tiempo_cambio_loco = 30           # Segundos entre cambios de locomotora
 
+# Comportamiento de ACK de Autopilot
+# Por defecto NO se espera un ACK del plugin Lua. Si quieres que el sistema
+# espere y haga cumplir la confirmación del plugin, activa la variable de
+# entorno AUTOPILOT_REQUIRE_ACK=true o ajusta esta configuración en tu entorno.
+AUTOPILOT_REQUIRE_ACK = false  # false = no esperar ACK por defecto; true = esperar ACK (puede bloquear la llamada)
+
 [LOGGING]
 # Configuración del sistema de logging
 

@@ -109,7 +109,8 @@ BadRequest: Any = Exception  # type: ignore[reportRedeclaration]
 # Third-party imports
 try:
     from bokeh.embed import server_document  # noqa: E402
-    from flask import Flask as _Flask, Response, jsonify, render_template, request  # noqa: E402
+    from flask import Flask as _Flask  # noqa: E402
+    from flask import Response, jsonify, render_template, request
     # Assign to the public name under Any to avoid Pylance reportAssignmentType
     Flask = cast(Any, _Flask)
     from flask_socketio import SocketIO, emit  # noqa: E402
@@ -464,6 +465,7 @@ system_status = {
 autopilot_metrics = {
     "retry_total": 0,
     "unacked_total": 0,
+    "ack_skipped_total": 0,
 }
 
 # Estado de controles de locomotora
@@ -1193,8 +1195,19 @@ def control_action(action):
                     # `reportCallIssue` when the stub signature doesn't include
                     # the `silent` parameter.
                     payload = cast(Any, request).get_json(silent=True) or {}
-                    wait_for_ack = bool(payload.get("wait_for_ack", True))
-                    logger.info("start_autopilot: wait_for_ack=%s", wait_for_ack)
+                    # Default: do not wait for ACK unless client explicitly requests it (and env permits)
+                    wait_for_ack = bool(payload.get("wait_for_ack", False))
+                    # Allow environment override to disable ACK requirement globally
+                    # By default we DO NOT require ACK from the Lua plugin. Set AUTOPILOT_REQUIRE_ACK=true to enforce waiting for ACK.
+                    require_ack_env = os.getenv("AUTOPILOT_REQUIRE_ACK", "false").lower() in ("1", "true", "yes")
+                    # Effective wait is true when the client requests it OR the environment requires it
+                    # (i.e., set AUTOPILOT_REQUIRE_ACK=true to force waiting globally)
+                    effective_wait = bool(wait_for_ack or require_ack_env)
+
+                    if not require_ack_env and wait_for_ack:
+                        logger.info("start_autopilot: AUTOPILOT_REQUIRE_ACK is false in environment; skipping ACK wait")
+
+                    logger.info("start_autopilot: wait_for_ack=%s (effective=%s, env_requires=%s)", wait_for_ack, effective_wait, require_ack_env)
 
                     # Intentar confirmar estado desde el plugin Lua
                     plugin_state = None
@@ -1202,8 +1215,28 @@ def control_action(action):
                         if tsc_integration:
                             # Primer intento: comprobar estado actual
                             plugin_state = tsc_integration.get_autopilot_plugin_state()
-                            # Si no hay ack inmediato y el cliente quiere esperar, hacerlo con timeout configurado
-                            if plugin_state is None and wait_for_ack:
+
+                            # If plugin state is unknown and environment does not require ACK, skip waiting immediately
+                            if plugin_state is None and not require_ack_env:
+                                try:
+                                    autopilot_metrics["ack_skipped_total"] += 1
+                                except Exception:
+                                    pass
+                                logger.info("start_autopilot: AUTOPILOT_REQUIRE_ACK is false; returning success without ACK")
+                                return (
+                                    jsonify(
+                                        {
+                                            "success": True,
+                                            "action": action,
+                                            "autopilot_plugin_state": None,
+                                            "ack_required": False,
+                                        }
+                                    ),
+                                    200,
+                                )
+
+                            # Si no hay ack inmediato y el cliente quiere esperar y el entorno lo permite, hacerlo con timeout configurado
+                            if plugin_state is None and effective_wait:
                                 try:
                                     ok = tsc_integration.wait_for_autopilot_state("on", timeout=AUTOPILOT_ACK_TIMEOUT)
                                     logger.info("start_autopilot: wait_for_autopilot_state returned %s", ok)
