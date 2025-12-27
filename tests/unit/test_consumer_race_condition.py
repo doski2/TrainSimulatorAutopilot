@@ -1,7 +1,8 @@
-import pytest
 import json
 import logging
 import time
+
+import pytest
 
 try:
     from tools.poc_file_ack.consumer import Consumer  # type: ignore[reportMissingImports]

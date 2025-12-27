@@ -47,12 +47,15 @@ with TemporaryDirectory() as tmp:
 
     if os.path.exists(sendfile):
         print('\n--- SendCommand.txt content ---')
-        print(open(sendfile, encoding='utf-8').read())
+        with open(sendfile, encoding='utf-8') as fh:
+            print(fh.read())
     if os.path.exists(lua_file):
         print('\n--- autopilot_commands.txt content ---')
-        print(open(lua_file, encoding='utf-8').read())
+        with open(lua_file, encoding='utf-8') as fh:
+            print(fh.read())
 
     # Also show plugin ack file content
     ack_file = os.path.join(tmp, 'autopilot_state.txt')
     print('\n--- autopilot_state.txt content ---')
-    print(open(ack_file, encoding='utf-8').read())
+    with open(ack_file, encoding='utf-8') as fh:
+        print(fh.read())

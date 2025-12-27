@@ -1,9 +1,9 @@
-import pytest
+import pytest  # noqa: I001
 pytest.skip("PoC deprecated — skipping consumer tests.", allow_module_level=True)
 
-import time
+import time  # noqa: E402
 
-from tools.poc_file_ack.consumer import Consumer
+from tools.poc_file_ack.consumer import Consumer  # noqa: E402
 
 
 def test_consumer_stop_and_join_does_not_raise(tmp_path):

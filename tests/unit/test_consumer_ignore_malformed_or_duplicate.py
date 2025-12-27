@@ -1,11 +1,11 @@
-import pytest
+import pytest  # noqa: I001
 pytest.skip("ACK PoC deprecated — skipping consumer tests.", allow_module_level=True)
 
-import json
-import logging
-import time
+import json  # noqa: E402
+import logging  # noqa: E402
+import time  # noqa: E402
 
-from tools.poc_file_ack.consumer import Consumer
+from tools.poc_file_ack.consumer import Consumer  # noqa: E402
 
 
 def test_consumer_warns_and_removes_malformed_and_duplicate(tmp_path, caplog):

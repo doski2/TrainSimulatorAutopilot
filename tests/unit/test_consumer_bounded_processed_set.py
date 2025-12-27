@@ -1,10 +1,10 @@
-import pytest
+import pytest  # noqa: I001
 pytest.skip("ACK PoC deprecated — skipping consumer tests.", allow_module_level=True)
 
-import time
+import time  # noqa: E402
 
-from tools.poc_file_ack.consumer import Consumer
-from tools.poc_file_ack.enqueue import atomic_write_cmd
+from tools.poc_file_ack.consumer import Consumer  # noqa: E402
+from tools.poc_file_ack.enqueue import atomic_write_cmd  # noqa: E402
 
 
 def test_consumer_bounded_processed_set(tmp_path):

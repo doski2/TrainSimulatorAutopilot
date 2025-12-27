@@ -1,12 +1,12 @@
-import pytest
+import pytest  # noqa: I001
 pytest.skip("PoC deprecated — skipping consumer tests.", allow_module_level=True)
 
-import builtins
-import logging
-import time
+import builtins  # noqa: E402
+import logging  # noqa: E402
+import time  # noqa: E402
 
-from tools.poc_file_ack.consumer import Consumer
-from tools.poc_file_ack.enqueue import atomic_write_cmd
+from tools.poc_file_ack.consumer import Consumer  # noqa: E402
+from tools.poc_file_ack.enqueue import atomic_write_cmd  # noqa: E402
 
 
 def test_consumer_logs_unexpected_read_error_and_continues(tmp_path, caplog):

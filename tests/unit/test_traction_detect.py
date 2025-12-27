@@ -1,7 +1,3 @@
-import time
-
-import pytest
-
 from autopilot.traction_control import TractionConfig, TractionControl
 
 

@@ -1,9 +1,9 @@
-import pytest
+import pytest  # noqa: I001
 pytest.skip("ACK flows removed from project; e2e ACK tests deprecated.", allow_module_level=True)
 
-import time
+import time  # noqa: E402
 
-from tsc_integration import TSCIntegration
+from tsc_integration import TSCIntegration  # noqa: E402
 
 
 def test_e2e_file_ack(tmp_path):

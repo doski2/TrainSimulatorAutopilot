@@ -155,5 +155,6 @@ def test_start_autopilot_env_flag_ignored(tmp_path, monkeypatch):
         assert resp.get_json().get('success') is True
 
     # Commands file should still have the start_autopilot command
-    content = open(tsci.ruta_archivo_comandos, encoding='utf-8').read()
+    with open(tsci.ruta_archivo_comandos, encoding='utf-8') as fh:
+        content = fh.read()
     assert 'start_autopilot' in content

@@ -1,11 +1,11 @@
-import pytest
+import pytest  # noqa: I001
 pytest.skip("ACK PoC deprecated — skipping consumer tests.", allow_module_level=True)
 
-import os
-import time
+import os  # noqa: E402
+import time  # noqa: E402
 
-from tools.poc_file_ack.consumer import Consumer
-from tools.poc_file_ack.enqueue import atomic_write_cmd
+from tools.poc_file_ack.consumer import Consumer  # noqa: E402
+from tools.poc_file_ack.enqueue import atomic_write_cmd  # noqa: E402
 
 
 def test_consumer_recreates_missing_directory_and_continues(tmp_path):
