@@ -2,7 +2,7 @@ import os
 
 from autopilot_system import AutopilotSystem
 from tsc_integration import TSCIntegration
-from web_dashboard import app, autopilot_metrics
+from web_dashboard import app
 
 
 def test_start_autopilot_writes_commands_and_reports_plugin_state_when_plugin_reports_on(tmp_path, monkeypatch):
