@@ -26,8 +26,14 @@
   - **Archivos eliminados (selección):**
     - `tools/poc_file_ack/` (PoC eliminado)
     - `.github/workflows/poc-e2e.yml` (job específico del POC eliminado)
-    - `tests/e2e/test_file_ack.py`, `tests/integration/test_e2e_autopilot_file_ack.py`, `tests/e2e/test_probe_file.py`, `tests/e2e/test_retries.py`, `tests/e2e/test_persist_ids.py` (tests E2E relacionados con la PoC)
-    - Varias pruebas unitarias relacionadas con el consumer (p.ej. `tests/unit/test_consumer_*.py`) fueron eliminadas o marcadas como omitidas para reducir ruido de mantenimiento
+    - `tests/e2e/test_file_ack.py` (E2E)
+    - `tests/integration/test_e2e_autopilot_file_ack.py` (E2E)
+    - `tests/e2e/test_probe_file.py` (E2E)
+    - `tests/e2e/test_retries.py` (E2E)
+    - `tests/e2e/test_persist_ids.py` (E2E)
+    - Varias pruebas unitarias relacionadas con el consumer (p.ej.
+      `tests/unit/test_consumer_*.py`) fueron eliminadas o marcadas como
+      omitidas para reducir ruido de mantenimiento
 
 - **consumer**: Registrar excepciones en lugar de silenciarlas para mejorar
   diagnósticos y mantener el loop vivo (`tools/poc_file_ack/consumer.py`).
