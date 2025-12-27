@@ -33,23 +33,29 @@ def atomic_write_cmd(dirpath, payload):
     return cmd_id
 
 
-import warnings
-from tools.deprecated.poc_file_ack.enqueue import atomic_write_cmd as _atomic_write_cmd, send_command_with_retries as _send_command_with_retries, wait_for_ack as _wait_for_ack
-
-warnings.warn("tools.poc_file_ack is deprecated. Use tools.deprecated.poc_file_ack instead.", DeprecationWarning)
-
-# Re-export the original functions from the deprecated package for backwards compatibility
-
-def atomic_write_cmd(dirpath, payload):
-    return _atomic_write_cmd(dirpath, payload)
-
-
 def wait_for_ack(dirpath, cmd_id, timeout: float = DEFAULT_ACK_TIMEOUT, poll: float = DEFAULT_ACK_POLL):
-    return _wait_for_ack(dirpath, cmd_id, timeout=timeout, poll=poll)
+    """Wait for an ACK file for a given command id in `dirpath`.
 
+    Parameters:
+        dirpath (str): Directory where ack files are written.
+        cmd_id (str): Command id to look for (ack-{cmd_id}.json).
+        timeout (float): Maximum number of seconds to wait for the ack. Defaults
+            to DEFAULT_ACK_TIMEOUT (5.0 seconds).
+        poll (float): Interval in seconds between checks for the ack file.
+            Defaults to DEFAULT_ACK_POLL (0.1 seconds).
 
-def send_command_with_retries(dirpath, payload, timeout=5.0, retries=3, initial_delay=0.5, backoff=2.0, poll=0.1):
-    return _send_command_with_retries(dirpath, payload, timeout=timeout, retries=retries, initial_delay=initial_delay, backoff=backoff, poll=poll)
+    Returns:
+        dict or None: Parsed JSON content of the ack file if found within
+        timeout, otherwise None.
+    """
+    ack = os.path.join(dirpath, f"ack-{cmd_id}.json")
+    end = time.time() + timeout
+    while time.time() < end:
+        if os.path.exists(ack):
+            with open(ack, encoding="utf-8") as f:
+                return json.load(f)
+        time.sleep(poll)
+    return None
 
 
 def send_command_with_retries(dirpath, payload, timeout=5.0, retries=3, initial_delay=0.5, backoff=2.0, poll=0.1):

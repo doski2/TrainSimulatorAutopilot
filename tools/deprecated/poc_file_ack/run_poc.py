@@ -3,28 +3,14 @@ import logging
 import os
 import tempfile
 
-import warnings
-from tools.deprecated.poc_file_ack.run_poc import demo as _demo
-
-warnings.warn("tools.poc_file_ack.run_poc is deprecated and moved to tools.deprecated.poc_file_ack.run_poc", DeprecationWarning)
-
-def demo(dirpath: str | None = None):
-    return _demo(dirpath)
-
-if __name__ == '__main__':
-    import logging
-    logging.basicConfig(level=logging.INFO)
-    parser = argparse.ArgumentParser(description='Run POC consumer + enqueue demo')
-    parser.add_argument('--dir', '-d', help='Directory to use for POC (default: temporary directory)')
-    args = parser.parse_args()
-    demo(args.dir)
+from tools.deprecated.poc_file_ack.consumer import Consumer
+from tools.deprecated.poc_file_ack.enqueue import atomic_write_cmd, wait_for_ack
 
 logger = logging.getLogger(__name__)
 
 
 def demo(dirpath: str | None = None):
     """Run a short POC using dirpath if provided, otherwise a temporary dir."""
-    # choose directory: given dir or a temporary directory
     temp_ctx = None
     if dirpath:
         d = os.path.abspath(dirpath)

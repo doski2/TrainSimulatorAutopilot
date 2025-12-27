@@ -39,47 +39,14 @@ class _OrderedSetDict(OrderedDict):
             self[key] = value
 
 
-class Consumer(threading.Thread):
-    """Simple consumer that polls a directory for cmd-*.json files
-    and writes ack-{id}.json after 'processing'.
+import warnings
+from tools.deprecated.poc_file_ack.consumer import Consumer as _Consumer
 
-    The consumer maintains a bounded LRU-like cache of processed ids to
-    avoid unbounded memory growth on long-running processes. The maximum
-    number of stored ids is configurable via `processed_ids_max`.
-    """
+warnings.warn("tools.poc_file_ack.consumer is deprecated and re-exported from tools.deprecated.poc_file_ack.consumer", DeprecationWarning)
 
-    def __init__(self, dirpath, poll_interval=0.1, process_time=0.05, processed_ids_file='processed_ids.json', removal_failure_threshold: int = 5, processed_ids_max: int = 10000):
-        super().__init__(daemon=True)
-        self.dirpath = dirpath
-        self.poll_interval = poll_interval
-        self.process_time = process_time
-        self._stop_event = threading.Event()
-        # Declare _stop attribute (may be shadowed historically) so static checkers know it exists
-        self._stop: Any | None = None
-        # Use OrderedDict-like structure (with .add() compatibility) as an LRU-like structure: keys are cmd_ids, values are timestamps
-        self.processed = _OrderedSetDict()
-        self.processed_ids_file = os.path.join(self.dirpath, processed_ids_file)
-        # Defensive: make sure we are not accidentally shadowing Thread._stop
-        # Older versions of the class used `self._stop = threading.Event()` which
-        # overwrote Thread._stop leading to TypeError in join() (Event not callable).
-        if hasattr(self, '_stop') and not callable(self._stop):
-            logger.warning("Consumer instance unexpectedly has non-callable '_stop' attribute; renaming to '_stop_shadow' to avoid join errors")
-            # safe to access directly because hasattr guarded above
-            self._stop_shadow = self._stop
-            try:
-                delattr(self, '_stop')
-            except Exception:
-                logger.exception("Failed to remove shadowing '_stop' attribute")
-        # track repeated failures to remove files so we can alert if persistent
-        self.removal_failure_threshold = removal_failure_threshold
-        self.removal_failure_counts: dict[str, int] = {}
-        # max number of processed ids to retain in memory/persistence
-        self.processed_ids_max = processed_ids_max
-        os.makedirs(self.dirpath, exist_ok=True)
-        # load persisted processed ids (if present)
-        self._load_processed_ids()
-        # write a probe file to indicate the consumer/plugin is loaded
-        self.write_probe_file()
+# Re-export Consumer for backward compatibility
+class Consumer(_Consumer):
+    pass
 
     def _load_processed_ids(self):
         try:
