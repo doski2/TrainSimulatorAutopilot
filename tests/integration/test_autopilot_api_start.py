@@ -18,7 +18,8 @@ def test_start_autopilot_writes_commands_and_reports_plugin_state_when_plugin_re
     # Simulate plugin state file present (plugin reports 'on')
     plugins_dir = os.path.dirname(tsci.ruta_archivo_comandos)
     state_file = os.path.join(plugins_dir, "autopilot_state.txt")
-    open(state_file, "w", encoding="utf-8").write("on")
+    with open(state_file, "w", encoding="utf-8") as f:
+        f.write("on")
 
     # Prepare autopilot system and inject TSC
     ap = AutopilotSystem()
@@ -38,11 +39,14 @@ def test_start_autopilot_writes_commands_and_reports_plugin_state_when_plugin_re
         assert data.get('autopilot_plugin_state') == 'on'
 
     # Check that commands files include 'start_autopilot'
-    main_content = open(tsci.ruta_archivo_comandos, encoding='utf-8').read()
+    with open(tsci.ruta_archivo_comandos, encoding='utf-8') as fh:
+        main_content = fh.read()
     assert 'start_autopilot' in main_content
     lua_file = os.path.join(os.path.dirname(tsci.ruta_archivo_comandos), 'autopilot_commands.txt')
     assert os.path.exists(lua_file)
-    assert 'start_autopilot' in open(lua_file, encoding='utf-8').read()
+    with open(lua_file, encoding='utf-8') as fh:
+        lua_content = fh.read()
+    assert 'start_autopilot' in lua_content
 
 
 def test_start_autopilot_succeeds_by_default_when_plugin_unresponsive(tmp_path, monkeypatch):
@@ -74,11 +78,13 @@ def test_start_autopilot_succeeds_by_default_when_plugin_unresponsive(tmp_path, 
         assert data['success'] is True
 
     # Commands file should still have the start_autopilot command
-    content = open(tsci.ruta_archivo_comandos, encoding='utf-8').read()
+    with open(tsci.ruta_archivo_comandos, encoding='utf-8') as fh:
+        content = fh.read()
     assert 'start_autopilot' in content
 
     # Commands file should still have the start_autopilot command
-    content = open(tsci.ruta_archivo_comandos, encoding='utf-8').read()
+    with open(tsci.ruta_archivo_comandos, encoding='utf-8') as fh:
+        content = fh.read()
     assert 'start_autopilot' in content
 
     # Client request (payload ignored) — should still return success
