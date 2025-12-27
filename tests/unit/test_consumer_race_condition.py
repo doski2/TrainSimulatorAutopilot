@@ -1,12 +1,13 @@
 import pytest
-pytest.skip("PoC deprecated — skipping consumer tests.", allow_module_level=True)
-
 import json
 import logging
 import time
 
-from tools.poc_file_ack.consumer import Consumer
-from tools.poc_file_ack.enqueue import atomic_write_cmd
+try:
+    from tools.poc_file_ack.consumer import Consumer  # type: ignore[reportMissingImports]
+    from tools.poc_file_ack.enqueue import atomic_write_cmd  # type: ignore[reportMissingImports]
+except Exception:
+    pytest.skip("PoC deprecated — skipping consumer tests.", allow_module_level=True)
 
 
 def test_consumer_marks_processed_before_ack_and_does_not_reprocess(tmp_path, caplog):
