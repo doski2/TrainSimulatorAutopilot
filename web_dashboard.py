@@ -94,8 +94,8 @@ if TYPE_CHECKING:
     # Importing these only during type checking helps Pylance/typing understand
     # the types without causing redeclaration issues at runtime.
     try:
-        from flask import Flask as FlaskType  # type: ignore
-        from werkzeug.exceptions import BadRequest as BadRequestType  # type: ignore
+        from flask import Flask as FlaskType  # type: ignore  # noqa: F401
+        from werkzeug.exceptions import BadRequest as BadRequestType  # type: ignore  # noqa: F401
     except Exception:  # pragma: no cover - only used by type checkers
         FlaskType = Any  # type: ignore
         BadRequestType = Any  # type: ignore
