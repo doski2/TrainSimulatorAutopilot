@@ -4,7 +4,8 @@ Resumen:
 
 - Endpoint `POST /api/control/start_autopilot` escribe el comando
   `start_autopilot` en los archivos:
-  - `SendCommand.txt` (ruta configurada en `TSCIntegration.ruta_archivo_comandos`)
+  - `SendCommand.txt` (ruta configurada en
+    `TSCIntegration.ruta_archivo_comandos`)
   - `autopilot_commands.txt` (archivo que el plugin Lua lee)
 
 Reproducción local (pasos):
@@ -62,9 +63,14 @@ obligatoria y la API no espera confirmaciones del plugin Lua. El
 endpoint `POST /api/control/start_autopilot` devuelve éxito
 inmediatamente y aplica controles de fallback cuando es necesario.
 
-- Razonamiento: en entornos reales la confirmación por archivo resultó poco fiable (plugin no cargado, errores de I/O en Windows), lo que podía provocar bloqueos y errores. Por robustez operativa preferimos no depender de este mecanismo (ver `CHANGELOG.md` y `docs/CONTROLS.md`).
+- Razonamiento: en entornos reales la confirmación por archivo resultó
+  poco fiable (plugin no cargado, errores de I/O en Windows). Esto podía
+  provocar bloqueos y errores. Por robustez operativa preferimos no
+  depender de este mecanismo (ver `CHANGELOG.md` y `docs/CONTROLS.md`).
 
-- Consideración operativa: las variables de entorno antiguas relacionadas con la espera de confirmación (`AUTOPILOT_REQUIRE_ACK`) han quedado obsoletas y se ignoran por el servidor.
+- Consideración operativa: las variables de entorno antiguas relacionadas
+  con la espera de confirmación (`AUTOPILOT_REQUIRE_ACK`) han quedado
+  obsoletas y se ignoran por el servidor.
 
 ## Observación práctica: aceleración inicial
 
@@ -82,4 +88,6 @@ inmediatamente y aplica controles de fallback cuando es necesario.
    líneas de fallback `Regulator:0.125` y `VirtualThrottle:0.125`.
   4. En el simulador observa que la velocidad aumenta ligeramente (~13%).
 
-- Nota: si prefieres otro valor de inicio, se puede modificar la constante de fallback en `tsc_integration.py` o exponerla vía configuración (`AUTOPILOT_START_THROTTLE`) en una futura mejora.
+- Nota: si prefieres otro valor de inicio, se puede modificar la
+  constante de fallback en `tsc_integration.py` o exponerla vía
+  configuración (`AUTOPILOT_START_THROTTLE`) en una futura mejora.
