@@ -4,10 +4,17 @@
 
 ### 🔧 Correcciones y mejoras (POC Archivo+ACK)
 
-- **policy**: Cambiado el comportamiento por defecto de `start_autopilot` para **NO** requerir ACK del plugin Lua. Esto evita que llamadas al endpoint se bloqueen en entornos donde el plugin no está disponible o los accesos a archivos están restringidos.
-  - Se eliminó el soporte de espera por ACK del flujo principal del proyecto y se deprecó la POC basada en archivos (`tools/poc_file_ack`).
-  - La PoC `tools/poc_file_ack` y las pruebas relacionadas fueron **eliminadas** del repositorio; la decisión y el flujo final están documentados en `docs/AUTOPILOT_SENDCOMMAND.md`.
-  - Las métricas relacionadas con ACK (`ack_skipped_total`, `unacked_total`) se han eliminado del conjunto de métricas operativas.
+- **policy**: Cambiado el comportamiento por defecto de `start_autopilot` para
+  **NO** requerir ACK del plugin Lua. Esto evita que llamadas al endpoint se
+  bloqueen en entornos donde el plugin no está disponible o los accesos a
+  archivos están restringidos.
+  - Se eliminó el soporte de espera por ACK del flujo principal del proyecto
+    y se deprecó la POC basada en archivos (`tools/poc_file_ack`).
+  - La PoC `tools/poc_file_ack` y las pruebas relacionadas fueron
+    **eliminadas** del repositorio; la decisión y el flujo final están
+    documentados en `docs/AUTOPILOT_SENDCOMMAND.md`.
+  - Las métricas relacionadas con ACK (`ack_skipped_total`,
+    `unacked_total`) se han eliminado del conjunto de métricas operativas.
   - Tests y documentación actualizados para reflejar la nueva política.
 
 - **consumer**: Registrar excepciones en lugar de silenciarlas para mejorar
@@ -19,8 +26,9 @@
 - **docs**: Documentación actualizada sobre la opción Archivo+ACK y la
   configuración de tests (`docs/docs controles/opcion1_archivo_ack.md`,
   `docs/testing-framework.md`).
-- **ci**: `.gitignore` actualizado para ignorar `tmp_poc_dir/`; el job POC E2E
-  (`.github/workflows/poc-e2e.yml`) **fue eliminado** porque la PoC basada en archivos fue deprecada.
+- **ci**: `.gitignore` actualizado para ignorar `tmp_poc_dir/`.
+  - El job POC E2E (`.github/workflows/poc-e2e.yml`) **fue eliminado** porque
+    la PoC basada en archivos fue deprecada.
 - **consumer**: Marcar y persistir IDs procesados antes de escribir ACK para
   evitar reprocesos (test: `tests/unit/test_consumer_race_condition.py`).
 - **consumer**: Mantener una caché de `processed_ids` con tamaño limitado
