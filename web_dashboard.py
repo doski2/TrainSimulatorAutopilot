@@ -57,10 +57,10 @@ def _set_current_json_data(val):
 # Standard library imports
 import configparser  # noqa: E402
 import json  # noqa: E402
-import uuid  # standard library used for atomic command ids
 import logging  # noqa: E402
 import threading  # noqa: E402
 import time  # noqa: E402
+import uuid  # standard library used for atomic command ids
 from datetime import datetime  # noqa: E402
 
 # Configurar logging
@@ -1115,8 +1115,8 @@ def api_commands():
     global tsc_integration
     try:
         payload = request.get_json() or {}
-        timeout = float(payload.get('timeout', 5.0))
-        retries = int(payload.get('retries', 0))
+        _timeout = float(payload.get('timeout', 5.0))
+        _retries = int(payload.get('retries', 0))
 
         # Determine plugins directory from TSCIntegration
         if tsc_integration:
@@ -1175,7 +1175,7 @@ def control_action(action):
                     )
                     logger.info("start_autopilot: autopilot started and socket message emitted")
                     # Read request payload (if any) for informational use; do NOT use any 'wait-for-plugin' flag.
-                    payload = cast(Any, request).get_json(silent=True) or {}
+                    _payload = cast(Any, request).get_json(silent=True) or {}
                     plugin_state = None
                     try:
                         if tsc_integration:
