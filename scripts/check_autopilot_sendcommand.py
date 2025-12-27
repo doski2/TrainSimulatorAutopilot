@@ -39,8 +39,31 @@ with TemporaryDirectory() as tmp:
     print('HTTP status:', resp.status_code)
     try:
         print('JSON:', resp.get_json())
-    except Exception:
-        print('No JSON response')
+    except Exception as exc:
+        # Handle common expected non-JSON responses explicitly and log unexpected errors
+        try:
+            from werkzeug.exceptions import BadRequest as _BadRequest  # type: ignore
+        except Exception:
+            _BadRequest = None  # type: ignore
+
+        # Flask/werkzeug may raise BadRequest on malformed JSON; json library may raise JSONDecodeError or ValueError
+        try:
+            import json as _json
+        except Exception:
+            _json = None  # pragma: no cover - defensive
+
+        if _BadRequest is not None and isinstance(exc, _BadRequest):
+            print('No JSON response: BadRequest (likely invalid JSON)')
+        elif _json is not None and hasattr(_json, 'JSONDecodeError') and isinstance(exc, _json.JSONDecodeError):
+            print(f'No JSON response: JSONDecodeError -> {exc}')
+        elif isinstance(exc, ValueError):
+            print(f'No JSON response: {exc}')
+        else:
+            # Unknown exception: print details and traceback to aid debugging
+            import traceback
+
+            print(f'Exception while getting JSON response: {exc}')
+            traceback.print_exc()
 
     # Show sendfile and autopilot_commands.txt contents
     print('\nFiles produced:')
