@@ -60,7 +60,7 @@ import json  # noqa: E402
 import logging  # noqa: E402
 import threading  # noqa: E402
 import time  # noqa: E402
-import uuid  # standard library used for atomic command ids
+import uuid  # standard library used for atomic command ids  # noqa: E402
 from datetime import datetime  # noqa: E402
 
 # Configurar logging
