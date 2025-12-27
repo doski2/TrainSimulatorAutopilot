@@ -134,16 +134,16 @@ python -m pytest tests/unit/test_tsc_interface_write.py -q
 
 ---
 
-## Cambios: ACK eliminado y diagnóstico 🩺
+## Cambios: confirmación por archivo eliminada y diagnóstico 🩺
 
-- El soporte de ACK para la confirmación del plugin Lua ha sido **eliminado** del proyecto. `POST /api/control/start_autopilot` **ya no** requiere `autopilot_state.txt` ni espera confirmaciones.
+- El soporte de confirmación por archivo para el plugin Lua ha sido **eliminado** del proyecto. `POST /api/control/start_autopilot` **ya no** requiere `autopilot_state.txt` ni espera confirmaciones.
 - Razonamiento:
   - En entornos reales encontramos que el plugin no siempre se cargaba y que las escrituras a archivos fallaban por permisos o bloqueo (`Access denied` / `file locked`), lo que hacía que la dependencia del ACK provocara llamadas bloqueadas y errores en producción.
   - Para aumentar la robustez operativa y evitar bloqueos, eliminamos la dependencia del ACK y aplicamos controles de fallback (`Regulator:0.125`, `VirtualThrottle:0.125`) cuando el plugin no procesa directamente `start_autopilot`.
 - Qué cambia para operadores:
   1. `POST /api/control/start_autopilot` devuelve éxito inmediatamente y escribe los comandos necesarios.
   2. El plugin Lua puede seguir siendo usado si está disponible; el sistema escribirá `autopilot_commands.txt` como antes.
-  3. Las métricas relacionadas con el ACK han sido removidas del panel (p. ej. `ack_skipped_total` y `unacked_total`).
+  3. Las métricas relacionadas con confirmaciones por archivo han sido removidas del panel (p. ej. `ack_skipped_total` y `unacked_total`).
 
 **Diagnóstico rápido:**
 

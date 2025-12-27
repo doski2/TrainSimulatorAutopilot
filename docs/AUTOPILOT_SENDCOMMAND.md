@@ -54,23 +54,13 @@ Notas operativas:
   (timeouts, métricas y comportamiento ante plugin offline), lo añado
   en esta misma página.
 
-## Notas sobre ACK y configuración
+## Confirmación por archivo — estado actual
 
-- **Nota importante:** El soporte de ACK ha sido eliminado del proyecto. El API ya no espera confirmaciones del plugin Lua (no hay `autopilot_state.txt` obligatorio). En entornos donde el plugin no está cargado o el acceso a archivos está restringido, el endpoint `POST /api/control/start_autopilot` devuelve éxito inmediatamente y escribe las líneas de control de fallback cuando es necesario.
+**Nota:** La confirmación por archivo (`autopilot_state.txt`) **ya no** es obligatoria y la API no espera confirmaciones del plugin Lua. `POST /api/control/start_autopilot` devuelve éxito inmediatamente y aplica controles de fallback cuando es necesario.
 
-- Razonamiento y evidencia de decisión:
-  - Durante pruebas en múltiples entornos detectamos que la confirmación por archivo (`autopilot_state.txt`) era poco fiable: el plugin no se cargaba en algunos entornos y además había errores de escritura y bloqueo de archivos (`Access denied` / `file locked`) en Windows que impedían una confirmación consistente.
-  - Por robustez operativa, eliminar la dependencia del ACK evita que la API se bloquee o devuelva errores en escenarios reales. Esto se probó exhaustivamente y los resultados están documentados en `CHANGELOG.md` y `docs/CONTROLS.md`.
-- Para entornos donde el plugin no puede cargar o no es fiable,
-  puedes desactivar la espera globalmente con:
+- Razonamiento: en entornos reales la confirmación por archivo resultó poco fiable (plugin no cargado, errores de I/O en Windows), lo que podía provocar bloqueos y errores. Por robustez operativa preferimos no depender de este mecanismo (ver `CHANGELOG.md` y `docs/CONTROLS.md`).
 
-  ```bash
-  export AUTOPILOT_REQUIRE_ACK=false
-  ```
-
-  - Cuando se desactiva, `POST /api/control/start_autopilot` retornará
-    200 inmediatamente y la métrica `autopilot_metrics['ack_skipped_total']`
-    se incrementará para indicar que la espera fue omitida.
+- Consideración operativa: las variables de entorno antiguas relacionadas con la espera de confirmación (`AUTOPILOT_REQUIRE_ACK`) han quedado obsoletas y se ignoran por el servidor.
 
 ## Observación práctica: aceleración inicial
 

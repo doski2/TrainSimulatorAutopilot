@@ -4,7 +4,7 @@ let socket;
 let knownAlertIds = new Set();
 // Conjunto de claves para evitar notificaciones repetidas de la misma alerta (tipo+titulo)
 let knownAlertKeys = new Set();
-// Map de alert_id -> clave (alert_type:title) para poder limpiar y gestionar ack
+// Map de alert_id -> clave (alert_type:title) para poder limpiar y gestionar estados de alertas
 let knownAlertIdToKey = new Map();
 let speedChart;
 let telemetryHistory = [];
@@ -240,18 +240,18 @@ function controlAction(action) {
                 }
             }
 
-            // If server returned an ack from the autopilot plugin, update badge
+            // If server returned plugin state, update badge
             if (typeof data.autopilot_plugin_state !== 'undefined') {
                 const pluginBadge = document.getElementById('autopilot-plugin-state');
                 if (pluginBadge) {
                     if (data.autopilot_plugin_state === 'on') {
                         pluginBadge.className = 'badge bg-success';
                         pluginBadge.textContent = 'EN MODO AUTO';
-                        showAlert('Autopilot: comando ACK recibido (EN MODO AUTO)', 'success');
+                        showAlert('Autopilot: comando procesado por plugin (EN MODO AUTO)', 'success');
                     } else if (data.autopilot_plugin_state === 'off') {
                         pluginBadge.className = 'badge bg-warning text-dark';
                         pluginBadge.textContent = 'APAGADO';
-                        showAlert('Autopilot: comando ACK recibido (APAGADO)', 'info');
+                        showAlert('Autopilot: comando procesado por plugin (APAGADO)', 'info');
                     } else if (data.autopilot_plugin_state === null) {
                         pluginBadge.className = 'badge bg-secondary';
                         pluginBadge.textContent = 'PENDIENTE';
@@ -578,7 +578,7 @@ function updateSystemStatus(status) {
         stopBtn.disabled = true;
     }
 
-    // Plugin Lua state (ack)
+    // Plugin Lua state
     const pluginBadge = document.getElementById('autopilot-plugin-state');
     if (pluginBadge) {
         if (!status.autopilot_plugin_loaded) {

@@ -5,7 +5,7 @@ from tsc_integration import TSCIntegration
 from web_dashboard import app, autopilot_metrics
 
 
-def test_start_autopilot_writes_commands_and_returns_ack_when_plugin_reports_on(tmp_path, monkeypatch):
+def test_start_autopilot_writes_commands_and_reports_plugin_state_when_plugin_reports_on(tmp_path, monkeypatch):
     # Prepare GetData.txt (so autopilot_system.start() succeeds)
     getdata = tmp_path / "GetData.txt"
     getdata.write_text("ControlName:CurrentSpeed\nControlValue:0.0\n", encoding="utf-8")
@@ -15,10 +15,10 @@ def test_start_autopilot_writes_commands_and_returns_ack_when_plugin_reports_on(
     sendfile = tmp_path / "SendCommand.txt"
     tsci.ruta_archivo_comandos = str(sendfile)
 
-    # Simulate plugin ACK file present (plugin reports 'on')
+    # Simulate plugin state file present (plugin reports 'on')
     plugins_dir = os.path.dirname(tsci.ruta_archivo_comandos)
-    ack_file = os.path.join(plugins_dir, "autopilot_state.txt")
-    open(ack_file, "w", encoding="utf-8").write("on")
+    state_file = os.path.join(plugins_dir, "autopilot_state.txt")
+    open(state_file, "w", encoding="utf-8").write("on")
 
     # Prepare autopilot system and inject TSC
     ap = AutopilotSystem()
@@ -34,7 +34,7 @@ def test_start_autopilot_writes_commands_and_returns_ack_when_plugin_reports_on(
         assert resp.status_code == 200
         data = resp.get_json()
         assert data['success'] is True
-        # The API should report plugin_state 'on' as we created the ACK
+        # The API should report plugin_state 'on' as we created the plugin state file
         assert data.get('autopilot_plugin_state') == 'on'
 
     # Check that commands files include 'start_autopilot'
@@ -45,7 +45,7 @@ def test_start_autopilot_writes_commands_and_returns_ack_when_plugin_reports_on(
     assert 'start_autopilot' in open(lua_file, encoding='utf-8').read()
 
 
-def test_start_autopilot_skips_ack_by_default_and_returns_success_when_plugin_unresponsive(tmp_path, monkeypatch):
+def test_start_autopilot_succeeds_by_default_when_plugin_unresponsive(tmp_path, monkeypatch):
     # Prepare GetData.txt
     getdata = tmp_path / "GetData.txt"
     getdata.write_text("ControlName:CurrentSpeed\nControlValue:0.0\n", encoding="utf-8")
@@ -57,18 +57,18 @@ def test_start_autopilot_skips_ack_by_default_and_returns_success_when_plugin_un
     ap = AutopilotSystem()
     ap.tsc = tsci
 
-    # Ensure no ACK file exists
+    # Ensure no plugin state file exists
     plugins_dir = os.path.dirname(tsci.ruta_archivo_comandos)
-    ack_file = os.path.join(plugins_dir, "autopilot_state.txt")
-    if os.path.exists(ack_file):
-        os.remove(ack_file)
+    state_file = os.path.join(plugins_dir, "autopilot_state.txt")
+    if os.path.exists(state_file):
+        os.remove(state_file)
 
     monkeypatch.setattr('web_dashboard.tsc_integration', tsci)
     monkeypatch.setattr('web_dashboard.autopilot_system', ap)
 
     with app.test_client() as client:
         resp = client.post('/api/control/start_autopilot')
-        # New behaviour: by default the API does NOT wait for ACK and returns success immediately
+        # New behaviour: by default the API does NOT wait for plugin confirmation and returns success immediately
         assert resp.status_code == 200
         data = resp.get_json()
         assert data['success'] is True
@@ -81,14 +81,14 @@ def test_start_autopilot_skips_ack_by_default_and_returns_success_when_plugin_un
     content = open(tsci.ruta_archivo_comandos, encoding='utf-8').read()
     assert 'start_autopilot' in content
 
-    # Client can explicitly request no-wait; should still return success
+    # Client request (payload ignored) — should still return success
     with app.test_client() as client:
-        resp2 = client.post('/api/control/start_autopilot', json={'wait_for_ack': False})
+        resp2 = client.post('/api/control/start_autopilot', json={'timeout': 2.0})
         assert resp2.status_code == 200
         assert resp2.get_json().get('success') is True
 
 
-def test_start_autopilot_ignores_ack_config_and_returns_success(tmp_path, monkeypatch):
+def test_start_autopilot_ignores_legacy_env_flag_and_returns_success(tmp_path, monkeypatch):
     # Prepare GetData.txt
     getdata = tmp_path / "GetData.txt"
     getdata.write_text("ControlName:CurrentSpeed\nControlValue:0.0\n", encoding="utf-8")
@@ -100,17 +100,16 @@ def test_start_autopilot_ignores_ack_config_and_returns_success(tmp_path, monkey
     ap = AutopilotSystem()
     ap.tsc = tsci
 
-    # Ensure no ACK file exists
+    # Ensure no plugin state file exists
     plugins_dir = os.path.dirname(tsci.ruta_archivo_comandos)
-    ack_file = os.path.join(plugins_dir, "autopilot_state.txt")
-    if os.path.exists(ack_file):
-        os.remove(ack_file)
+    state_file = os.path.join(plugins_dir, "autopilot_state.txt")
+    if os.path.exists(state_file):
+        os.remove(state_file)
 
     monkeypatch.setattr('web_dashboard.tsc_integration', tsci)
     monkeypatch.setattr('web_dashboard.autopilot_system', ap)
 
-    # Set env to true (legacy) — should be ignored and API should still return success
-    monkeypatch.setenv("AUTOPILOT_REQUIRE_ACK", "true")
+    # Legacy env flags are ignored by the current implementation
 
     with app.test_client() as client:
         resp = client.post('/api/control/start_autopilot')
@@ -120,7 +119,7 @@ def test_start_autopilot_ignores_ack_config_and_returns_success(tmp_path, monkey
 
 
 
-def test_start_autopilot_env_disables_ack_and_skips_wait(tmp_path, monkeypatch):
+def test_start_autopilot_env_flag_ignored(tmp_path, monkeypatch):
     # Prepare GetData.txt
     getdata = tmp_path / "GetData.txt"
     getdata.write_text("ControlName:CurrentSpeed\nControlValue:0.0\n", encoding="utf-8")
@@ -132,17 +131,16 @@ def test_start_autopilot_env_disables_ack_and_skips_wait(tmp_path, monkeypatch):
     ap = AutopilotSystem()
     ap.tsc = tsci
 
-    # Ensure no ACK file exists
+    # Ensure no plugin state file exists
     plugins_dir = os.path.dirname(tsci.ruta_archivo_comandos)
-    ack_file = os.path.join(plugins_dir, "autopilot_state.txt")
-    if os.path.exists(ack_file):
-        os.remove(ack_file)
+    state_file = os.path.join(plugins_dir, "autopilot_state.txt")
+    if os.path.exists(state_file):
+        os.remove(state_file)
 
     monkeypatch.setattr('web_dashboard.tsc_integration', tsci)
     monkeypatch.setattr('web_dashboard.autopilot_system', ap)
 
-    # Set environment to disable ACK requirement globally (legacy flag; now ignored)
-    monkeypatch.setenv("AUTOPILOT_REQUIRE_ACK", "false")
+    # Legacy env flags are ignored by the current implementation
 
     with app.test_client() as client:
         resp = client.post('/api/control/start_autopilot')

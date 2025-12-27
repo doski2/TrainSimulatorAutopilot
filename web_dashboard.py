@@ -356,7 +356,7 @@ except ImportError:
     TSCIntegration = None
     print("[BOOT] TSC Integration no disponible")
 
-# Atomic command writer (simple, robust, no-ACK)
+# Atomic command writer (simple, robust, no plugin confirmation dependency)
 import uuid
 
 def atomic_write_cmd(dirpath: str, payload: dict) -> str:
@@ -1105,19 +1105,16 @@ def api_commands():
     {
         "type": "set_regulator",
         "value": 0.4,
-        "wait_for_ack": true,  # opcional (default: false)
         "timeout": 5.0,       # opcional
         "retries": 3          # opcional
     }
 
-    Si `wait_for_ack` es true, el endpoint esperará hasta `timeout`
-    por un ACK y devolverá 200 con el ACK si lo recibe, o 504/500 si falla.
-    Si `wait_for_ack` es false, devolverá 202 Accepted inmediatamente.
+    Este endpoint encola el comando de forma atómica y devuelve 202 Accepted
+    con el id del comando encolado.
     """
     global tsc_integration
     try:
         payload = request.get_json() or {}
-        wait_for_ack_flag = bool(payload.get('wait_for_ack', False))
         timeout = float(payload.get('timeout', 5.0))
         retries = int(payload.get('retries', 0))
 
@@ -1129,19 +1126,6 @@ def api_commands():
             plugins_dir = os.path.abspath('./plugins')
             os.makedirs(plugins_dir, exist_ok=True)
 
-        # If not waiting for ack, just write atomically and return 202
-        if not wait_for_ack_flag:
-            if atomic_write_cmd is None:
-                return (
-                    jsonify(
-                        {"status": "error", "error": "atomic command writer unavailable"}
-                    ),
-                    503,
-                )
-            cmd_id = atomic_write_cmd(plugins_dir, payload)
-            return jsonify({"status": "queued", "id": cmd_id}), 202
-
-        # ACK flows removed: do not wait for ACK even if requested; write atomically and return queued
         if atomic_write_cmd is None:
             return (
                 jsonify({"status": "error", "error": "atomic command writer unavailable"}),
@@ -1190,22 +1174,12 @@ def control_action(action):
                         {"message": "Piloto automático iniciado", "type": "success"},
                     )
                     logger.info("start_autopilot: autopilot started and socket message emitted")
-                    # Determinar si el cliente pidió esperar por ACK (por defecto: True)
-                    # Use silent=True so non-JSON requests (or missing Content-Type)
-                    # do not raise an HTTP exception (e.g., 415 Unsupported Media Type)
-                    # and instead return None which we treat as an empty payload.
-                    # Use cast(Any, request).get_json(...) to avoid Pylance warning
-                    # `reportCallIssue` when the stub signature doesn't include
-                    # the `silent` parameter.
+                    # Read request payload (if any) for informational use; do NOT use any 'wait-for-plugin' flag.
                     payload = cast(Any, request).get_json(silent=True) or {}
-                    # Default: do not wait for ACK unless client explicitly requests it (and env permits)
-                    wait_for_ack = bool(payload.get("wait_for_ack", False))
-                    # Allow environment override to disable ACK requirement globally
-                    # ACK support has been removed project-wide — we no longer wait for or enforce plugin confirmations
                     plugin_state = None
                     try:
                         if tsc_integration:
-                            # Read plugin state when possible for informational reporting, but do NOT wait for it
+                            # Read plugin state when possible for informational reporting
                             try:
                                 plugin_state = tsc_integration.get_autopilot_plugin_state()
                             except Exception:
@@ -1213,14 +1187,13 @@ def control_action(action):
                     except Exception:
                         plugin_state = None
 
-                    logger.info("start_autopilot: ACK support removed; not waiting for plugin confirmation")
+                    logger.info("start_autopilot: not waiting for plugin confirmation")
                     return (
                         jsonify(
                             {
                                 "success": True,
                                 "action": action,
                                 "autopilot_plugin_state": plugin_state,
-                                "ack_supported": False,
                             }
                         ),
                         200,
@@ -1609,10 +1582,10 @@ def handle_telemetry_request():
 
 @app.route('/api/control/retry_autopilot', methods=['POST'])
 def retry_autopilot():
-    """Endpoint para reintentar iniciar Autopilot sin esperar por ACK.
+    """Endpoint para reintentar iniciar Autopilot sin esperar confirmación del plugin.
 
     - Incrementa un contador de reintentos
-    - Envía comando de inicio y devuelve el estado conocido del plugin (no espera ACK)
+    - Envía comando de inicio y devuelve el estado conocido del plugin (no espera confirmación)
     """
     global autopilot_metrics
     try:
