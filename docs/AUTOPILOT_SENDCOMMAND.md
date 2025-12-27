@@ -11,7 +11,8 @@ Resumen:
 Reproducción local (pasos):
 
 1. Crear `GetData.txt` con telemetría mínima.
-2. Configurar `TSCIntegration.ruta_archivo` y `ruta_archivo_comandos` a un directorio temporal.
+2. Configurar `TSCIntegration.ruta_archivo` y
+   `ruta_archivo_comandos` a un directorio temporal.
 3. Crear `autopilot_state.txt` con `on` para simular plugin responsive.
 4. Llamar `POST /api/control/start_autopilot` vía `app.test_client()`.
 
