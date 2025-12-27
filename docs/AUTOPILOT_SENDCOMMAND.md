@@ -83,7 +83,8 @@ inmediatamente y aplica controles de fallback cuando es necesario.
 
 - Reproducción rápida:
   1. Asegúrate de que no exista `autopilot_state.txt` en la carpeta `plugins/`.
-  2. Llama `POST /api/control/start_autopilot` desde `app.test_client()` o `curl`.
+  2. Llama `POST /api/control/start_autopilot` desde `app.test_client()` o
+     `curl`.
   3. Comprueba `plugins/SendCommand.txt` y
    `plugins/autopilot_commands.txt` — deben contener `start_autopilot` y las
    líneas de fallback `Regulator:0.125` y `VirtualThrottle:0.125`.

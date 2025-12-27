@@ -5,7 +5,8 @@ en la carpeta `plugins` de Train Simulator en Windows.
 
 Precauciones:
 
-- Requiere permisos de administrador para escribir en `C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins`.
+- Requiere permisos de administrador para escribir en `C:\Program Files
+  (x86)\Steam\steamapps\common\RailWorks\plugins`.
 - Recomiendo cerrar Train Simulator antes de copiar para evitar
   problemas de archivo bloqueado.
   Si no puedes cerrar el juego, copia los archivos y reinícialo.
@@ -13,7 +14,8 @@ Precauciones:
 Pasos manuales (rápido):
 
 1. Abre PowerShell como Administrador.
-2. Desde la raíz del repo, ejecuta el siguiente comando (haz backup si ya existe):
+2. Desde la raíz del repo, ejecuta el siguiente comando (haz backup si ya
+   existe):
 
 ```powershell
 Copy-Item .\complete_autopilot_lua.lua "C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins\complete_autopilot_lua.lua"

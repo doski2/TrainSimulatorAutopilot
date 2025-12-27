@@ -1,7 +1,7 @@
 # Roadmap: Cómo llegar a Piloto Automático (Autopilot)
 
-Este documento describe los pasos prácticos, comandos y verificaciones para llevar
-el sistema desde código hasta un piloto automático operativo en Train
+Este documento describe los pasos prácticos, comandos y verificaciones para
+llevar el sistema desde código hasta un piloto automático operativo en Train
 Simulator Classic (TSC).
 
 ## 1) Pre-requisitos ✅
@@ -75,14 +75,17 @@ tsc.enviar_comandos({"autopilot": True})
 
 ## 5) Probar inicio del piloto (ACK) — pasos concretos ✅
 
-1. Con el simulador corriendo y la escena cargada, en el servidor (o tests) ejecuta:
+1. Con el simulador corriendo y la escena cargada, en el servidor (o tests)
+   ejecuta:
    - `POST /api/control/start_autopilot`.
    - Alternativamente: `tsc_integration.enviar_comandos({'autopilot': True})`.
 2. El plugin debería:
    - leer `autopilot_commands.txt`.
    - escribir `autopilot_state.txt` con el valor `on` para indicar ACK.
 3. Verifica con: `/api/status`.
-4. Nota: la comprobación por ACK (`wait_for_autopilot_state`) ha sido eliminada del flujo por defecto; el sistema no espera confirmaciones por archivo y siempre devuelve éxito en los endpoints de inicio de autopilot.
+4. Nota: la comprobación por ACK (`wait_for_autopilot_state`) ha sido eliminada
+   del flujo por defecto; el sistema no espera confirmaciones por archivo y
+   siempre devuelve éxito en los endpoints de inicio de autopilot.
 
 ---
 

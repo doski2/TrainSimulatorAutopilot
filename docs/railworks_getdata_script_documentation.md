@@ -2,25 +2,27 @@
 
 ## Descripción General
 
-El script `Railworks_GetData_Script.lua` es un plugin para Train Simulator Classic
-(RailWorks).
+El script `Railworks_GetData_Script.lua` es un plugin para Train Simulator
+Classic (RailWorks).
 
 Recopila datos de telemetría en tiempo real de la locomotora y los escribe en
 `GetData.txt`.
 
-Este archivo lo usan aplicaciones externas (por ejemplo el autopilot
-de `TrainSimulatorAutopilot`) para monitorear y controlar el tren.
+Este archivo lo usan aplicaciones externas (por ejemplo el autopilot de
+`TrainSimulatorAutopilot`) para monitorear y controlar el tren.
 
 ## Ubicación
 
-- **Archivo principal**: `C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins\Railworks_GetData_Script.lua`
-- **Archivo de salida**: `C:\Program Files (x86)\Steam\steamapps\common\RailWorks\plugins\GetData.txt`
+- **Archivo principal**: `C:\Program Files
+  (x86)\Steam\steamapps\common\RailWorks\plugins\Railworks_GetData_Script.lua`
+- **Archivo de salida**: `C:\Program Files
+  (x86)\Steam\steamapps\common\RailWorks\plugins\GetData.txt`
 - **Archivos de debug**: `debug_getdata.log`, `GetData_Error.txt`
 
 ## Funcionalidad
 
-El script se ejecuta automáticamente dentro del simulador cuando el jugador conduce
-una locomotora.
+El script se ejecuta automáticamente dentro del simulador cuando el jugador
+conduce una locomotora.
 
 Recopila datos como velocidad, RPM, esfuerzo de tracción y presiones de freno,
 entre otros, y los formatea en un archivo de texto plano.
@@ -34,7 +36,8 @@ entre otros, y los formatea en un archivo de texto plano.
 3. **`GetControlData()`**: Recopila datos de controles del motor y frenos.
 4. **`GetSpeedLimits()`**: Obtiene límites de velocidad actuales y próximos.
 5. **`WriteData()`**: Escribe los datos recopilados en `GetData.txt`.
-6. **`SendData()`**: Lee comandos desde `SendCommand.txt` y los envía al simulador.
+6. **`SendData()`**: Lee comandos desde `SendCommand.txt` y los envía al
+   simulador.
 
 ## Configuración
 
@@ -93,8 +96,8 @@ ControlValue:1200.0
 El script alimenta datos al backend Python (`tsc_integration.py`), que parsea
 `GetData.txt` y envía telemetría al dashboard web.
 
-Asegúrate de que el simulador se ejecute con permisos de escritura
-(ej. como administrador).
+Asegúrate de que el simulador se ejecute con permisos de escritura (ej. como
+administrador).
 
 ## Diagnóstico
 

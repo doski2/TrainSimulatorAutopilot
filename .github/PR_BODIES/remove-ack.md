@@ -57,6 +57,5 @@ Solicito revisión enfocada en:
   de que la justificación es clara para operadores.
 
 Si se acepta, procederé a (opcional): mover `tools/poc_file_ack` a
-`tools/deprecated/` y cerrar/omitir completamente los artefactos PoC en la
-rama principal.
-
+`tools/deprecated/` y cerrar/omitir completamente los artefactos PoC en la rama
+principal.

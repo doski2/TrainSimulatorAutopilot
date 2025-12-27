@@ -69,8 +69,8 @@
 | Tipo Juego              | Método Captura  | Complejidad | |
 ----------------------- | --------------- | ----------- | | **Simulador con
 API**   | API directa     | Baja        | | **Juego con Scripting** | Script en
-juego | Media       | | **Juego sin API**       | Memory reading  | Alta
-| | **Cualquier Juego**     | Screen capture  | Media-Alta  |
+juego | Media       | | **Juego sin API**       | Memory reading  | Alta | |
+**Cualquier Juego**     | Screen capture  | Media-Alta  |
 
 ## 🚀 Próximos Pasos Recomendados
 

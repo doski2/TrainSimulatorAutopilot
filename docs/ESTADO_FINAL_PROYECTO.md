@@ -40,10 +40,10 @@ El sistema de conducción autónoma para Train Simulator Classic ha sido
 ### 📊 **MÉTRICAS FINALES**
 
 | Aspecto       | Resultado    | Estado          | | ------------- |
------------- | --------------- | | Precisión IA  | 86.7%        | ✅ Excelente
-| | Rendimiento   | < 0.1s       | ✅ Óptimo       | | Estabilidad   | 100%
-| ✅ Perfecta     | | Escalabilidad | Paralelo     | ✅ Implementado | | Seguridad
-| Automatizada | ✅ Completa     |
+------------ | --------------- | | Precisión IA  | 86.7%        | ✅ Excelente |
+| Rendimiento   | < 0.1s       | ✅ Óptimo       | | Estabilidad   | 100% | ✅
+Perfecta     | | Escalabilidad | Paralelo     | ✅ Implementado | | Seguridad |
+Automatizada | ✅ Completa     |
 
 ---
 

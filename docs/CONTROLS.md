@@ -35,8 +35,10 @@ Notas de seguridad y robustez
 - El plugin intenta parsear valores numéricos (tonumber) y
   booleanos (`true`/`false`).
 - Aplica internamente `PlayerEngineSetControlValue` para aplicar los valores.
-- El endpoint REST `POST /api/control/set` valida el nombre del control y rechazará
-  nombres que contengan `:` o caracteres de control (por ejemplo `\n`, `\r`, NUL)
+- El endpoint REST `POST /api/control/set` valida el nombre del control y
+  rechazará
+  nombres que contengan `:` o caracteres de control (por ejemplo `\n`, `\r`,
+  NUL)
   para prevenir inyección en el protocolo basado en archivos.
 - Asegúrate de que el simulador esté cargado y la escena tenga `engine key`.
   Esto permite que el plugin procese las líneas.
@@ -136,32 +138,45 @@ python -m pytest tests/unit/test_tsc_interface_write.py -q
 
 ## Cambios: confirmación por archivo eliminada y diagnóstico 🩺
 
-- El soporte de confirmación por archivo para el plugin Lua ha sido **eliminado** del proyecto. `POST /api/control/start_autopilot` **ya no** requiere `autopilot_state.txt` ni espera confirmaciones.
+- El soporte de confirmación por archivo para el plugin Lua ha sido
+  **eliminado** del proyecto. `POST /api/control/start_autopilot` **ya no**
+  requiere `autopilot_state.txt` ni espera confirmaciones.
 - Razonamiento:
-  - En entornos reales encontramos que el plugin no siempre se cargaba y que las escrituras a archivos fallaban por permisos o bloqueo (`Access denied` / `file locked`), lo que hacía que la dependencia de la confirmación por archivo provocara llamadas bloqueadas y errores en producción.
-  - Para aumentar la robustez operativa y evitar bloqueos, eliminamos la dependencia de la confirmación por archivo y aplicamos controles de fallback (`Regulator:0.125`, `VirtualThrottle:0.125`) cuando el plugin no procesa directamente `start_autopilot`.
+  - En entornos reales encontramos que el plugin no siempre se cargaba y que las
+    escrituras a archivos fallaban por permisos o bloqueo (`Access denied` /
+    `file locked`), lo que hacía que la dependencia de la confirmación por
+    archivo provocara llamadas bloqueadas y errores en producción.
+  - Para aumentar la robustez operativa y evitar bloqueos, eliminamos la
+    dependencia de la confirmación por archivo y aplicamos controles de fallback
+    (`Regulator:0.125`, `VirtualThrottle:0.125`) cuando el plugin no procesa
+    directamente `start_autopilot`.
 - Qué cambia para operadores:
-  1. `POST /api/control/start_autopilot` devuelve éxito inmediatamente y escribe los comandos necesarios.
-  2. El plugin Lua puede seguir siendo usado si está disponible; el sistema escribirá `autopilot_commands.txt` como antes.
-  3. Las métricas relacionadas con confirmaciones por archivo han sido removidas del panel (p. ej. `confirm_skipped_total` y `unconfirmed_total`).
+  1. `POST /api/control/start_autopilot` devuelve éxito inmediatamente y escribe
+     los comandos necesarios.
+  2. El plugin Lua puede seguir siendo usado si está disponible; el sistema
+     escribirá `autopilot_commands.txt` como antes.
+  3. Las métricas relacionadas con confirmaciones por archivo han sido removidas
+     del panel (p. ej. `confirm_skipped_total` y `unconfirmed_total`).
 
 **Diagnóstico rápido:**
 
-1. Revisa `tsc_autopilot.log` para confirmaciones de escritura y errores tipo `Access denied` o `file locked`.
-2. Confirma la presencia del plugin y su carga (`autopilot_plugin_loaded.txt`) si lo necesitas para debugging.
-3. Si quieres, puedo crear un script de diagnóstico que capture logs, archivos y permisos para facilitar el soporte en entornos Windows.
+1. Revisa `tsc_autopilot.log` para confirmaciones de escritura y errores tipo
+   `Access denied` o `file locked`.
+2. Confirma la presencia del plugin y su carga (`autopilot_plugin_loaded.txt`)
+   si lo necesitas para debugging.
+3. Si quieres, puedo crear un script de diagnóstico que capture logs, archivos y
+   permisos para facilitar el soporte en entornos Windows.
 
 ---
 
-> **Nota:** Estas medidas mejoran la robustez cuando el plugin Lua
-> no responde o no está cargado.
-> En entornos con el plugin activo, la comunicación preferible es
-> `autopilot_commands.txt`.
+> **Nota:** Estas medidas mejoran la robustez cuando el plugin Lua no responde o
+> no está cargado. En entornos con el plugin activo, la comunicación preferible
+> es `autopilot_commands.txt`.
 
 ---
 
-Documentación actualizada por **GitHub Copilot** en la rama
-`copilot/implement-plugin-controls`.
+Documentación actualizada por **GitHub Copilot** en la rama `copilot/implement-
+plugin-controls`.
 
-Si quieres, puedo agregar una sección en `config.ini.example`
-para exponer la tabla de muescas como opción configurable.
+Si quieres, puedo agregar una sección en `config.ini.example` para exponer la
+tabla de muescas como opción configurable.

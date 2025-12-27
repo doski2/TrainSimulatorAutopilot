@@ -8,9 +8,9 @@ Resumen:
 
 ## Objetivo 🎯
 
-Detectar cuando una rueda patina y aplicar una respuesta segura y
-medible (reducción de aceleración, freno dinámico, aplicación de sand,
-etc.), minimizando falsos positivos y manteniendo seguridad operativa.
+Detectar cuando una rueda patina y aplicar una respuesta segura y medible
+(reducción de aceleración, freno dinámico, aplicación de sand, etc.),
+minimizando falsos positivos y manteniendo seguridad operativa.
 
 ## Señales y features principales 🔍
 

@@ -119,21 +119,19 @@ de código
 
 ### Variables Principales Implementadas
 
-| Variable                          | Mapeo IA                   | Dashboard
-| Estado       | | --------------------------------- |
--------------------------- | --------------------- | ------------ | |
-CurrentSpeed                      | velocidad_actual           | ✅ Velocidad
-| Implementado | | Acceleration                      | aceleracion
-| ✅ Aceleración        | Implementado | | TractiveEffort                    |
-esfuerzo_traccion          | ✅ Tracción           | Implementado | | RPM
-| rpm                        | ✅ RPM                | Implementado | | Ammeter
-| amperaje                   | ✅ Corriente          | Implementado | | Wheelslip
-| deslizamiento_ruedas       | ✅ Deslizamiento      | Implementado | |
-AirBrakePipePressurePSI           | presion_tubo_freno         | ✅ Tubo de Freno
-| Implementado | | MainReservoirPressurePSIDisplayed |
-presion_deposito_principal | ✅ Depósito Principal | Implementado | |
-AuxReservoirPressure              | presion_deposito_auxiliar  | ✅ Depósito
-Auxiliar  | ⭐ Nuevo     |
+| Variable                          | Mapeo IA                   | Dashboard |
+Estado       | | --------------------------------- | --------------------------
+| --------------------- | ------------ | | CurrentSpeed                      |
+velocidad_actual           | ✅ Velocidad | Implementado | | Acceleration
+| aceleracion | ✅ Aceleración        | Implementado | | TractiveEffort
+| esfuerzo_traccion          | ✅ Tracción           | Implementado | | RPM | rpm
+| ✅ RPM                | Implementado | | Ammeter | amperaje                   |
+✅ Corriente          | Implementado | | Wheelslip | deslizamiento_ruedas       |
+✅ Deslizamiento      | Implementado | | AirBrakePipePressurePSI           |
+presion_tubo_freno         | ✅ Tubo de Freno | Implementado | |
+MainReservoirPressurePSIDisplayed | presion_deposito_principal | ✅ Depósito
+Principal | Implementado | | AuxReservoirPressure              |
+presion_deposito_auxiliar  | ✅ Depósito Auxiliar  | ⭐ Nuevo     |
 
 ### Endpoints API Principales
 
