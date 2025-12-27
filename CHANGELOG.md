@@ -19,8 +19,8 @@
 - **docs**: Documentación actualizada sobre la opción Archivo+ACK y la
   configuración de tests (`docs/docs controles/opcion1_archivo_ack.md`,
   `docs/testing-framework.md`).
-- **ci**: `.gitignore` actualizado para ignorar `tmp_poc_dir/` y job POC E2E
-  (`.github/workflows/poc-e2e.yml`) añadido previamente.
+- **ci**: `.gitignore` actualizado para ignorar `tmp_poc_dir/`; el job POC E2E
+  (`.github/workflows/poc-e2e.yml`) **fue eliminado** porque la PoC basada en archivos fue deprecada.
 - **consumer**: Marcar y persistir IDs procesados antes de escribir ACK para
   evitar reprocesos (test: `tests/unit/test_consumer_race_condition.py`).
 - **consumer**: Mantener una caché de `processed_ids` con tamaño limitado
