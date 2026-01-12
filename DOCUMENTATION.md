@@ -45,7 +45,7 @@ TrainSimulatorAutopilot/
 
 ### Tecnologías Utilizadas
 
-- **Backend**: Python 3.8+, Flask-SocketIO
+- **Backend**: Python 3.9+, Flask-SocketIO
 - **Frontend**: HTML5, Bootstrap 5, Chart.js
 - **Visualizaciones**: Bokeh (puerto 5006)
 - **Desktop App**: Electron.js
@@ -60,7 +60,7 @@ TrainSimulatorAutopilot/
 
 - **Python 3.8+**
 - **Train Simulator Classic** instalado
-- **Node.js 16+** (para Electron)
+- **Node.js 18+** (para Electron)
 - **Raildriver Interface** (opcional pero recomendado)
 
 ### Instalación Automática
@@ -567,6 +567,11 @@ find reports -name "*.json" -mtime +90 -delete
 3. **Commit** cambios con mensajes descriptivos
 4. **Push** a branch
 5. Crear **Pull Request**
+
+6. **Añadir entradas en el CHANGELOG**:
+   - Añade una entrada concisa en `CHANGELOG.md` bajo *Unreleased* siguiendo el formato "Keep a Changelog" (título, fecha y entradas breves).
+   - Si la entrada es extensa o histórica, propon el archivado de versiones anteriores en `archivado/` y documenta la razón en la PR.
+   - Si `CONTRIBUTING.md` no contiene pautas para el changelog, crea un issue para añadirlas (se puede automatizar la plantilla si se desea).
 
 ### Estándares de Código
 
