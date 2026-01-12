@@ -1,0 +1,40 @@
+name: "Apply labels to existing issues (manual)"
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Set to true to actually apply labels (otherwise dry-run)'
+        required: false
+        default: 'false'
+      include_prs:
+        description: 'Include pull requests'
+        required: false
+        default: 'false'
+      limit:
+        description: 'Limit number of issues to process (0 = unlimited)'
+        required: false
+        default: '0'
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Run apply labels script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          python .github/scripts/apply_labels_to_existing_issues.py $(if [ "${{ github.event.inputs.confirm }}" = "true" ]; then echo --confirm; fi) $(if [ "${{ github.event.inputs.include_prs }}" = "true" ]; then echo --include-prs; fi) --limit ${{ github.event.inputs.limit }}
