@@ -2,7 +2,7 @@
 
 ## Ejemplos de Scripts Lua para Locomotoras
 
-### Script Avanzado de Piloto Automático (Actualizado 2025-12-02)
+### Script Avanzado de Piloto Automático (Actualizado 02/12/2025)
 
 ```lua
 -- complete_autopilot_lua.lua - Script completo de piloto automático

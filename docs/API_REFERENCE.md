@@ -26,7 +26,7 @@ from web_dashboard import WebDashboard
 # Ver sección Electron Application API
 ```
 
-### Diagrama de Arquitectura Actual (2025-12-02)
+### Diagrama de Arquitectura Actual (02/12/2025)
 
 ```text
 ┌─────────────────────────────────────────────────────────────┐

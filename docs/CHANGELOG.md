@@ -6,7 +6,7 @@ El formato está basado en [Keep a
 Changelog](https://keepachangelog.com/en/1.0.0/), y este proyecto se adhiere al
 [Versionado Semántico](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.1] - 2025-12-03 - Correcciones Críticas de Inicio
+## [1.0.1] - 03/12/2025 - Correcciones Críticas de Inicio
 
 ### 🔧 Problemas Resueltos
 
@@ -89,7 +89,7 @@ inicio | ~30s (con errores) | ~5s      | 83% más rápido | | Tasa de éxito    
 
 ---
 
-## [3.0.0] - 2025-11-29
+## [3.0.0] - 29/11/2025
 
 ### 🎯 **MODERNIZACIÓN COMPLETA DEL SISTEMA**
 
@@ -618,7 +618,7 @@ desarrolladores
 - **Solución de problemas**: Troubleshooting integrado con soluciones comunes
 - **Workflows documentados**: Procesos estándar para desarrollo y mantenimiento
 
-## [v2.0.0] - 2025-11-10 - ⚙️ MÉTRICAS DEL MOTOR IMPLEMENTADAS
+## [v2.0.0] - 10/11/2025 - ⚙️ MÉTRICAS DEL MOTOR IMPLEMENTADAS
 
 ### Agregado
 
