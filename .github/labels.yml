@@ -38,3 +38,16 @@ labels:
   - name: wontfix
     color: ededed
     description: Decisión de no resolver.
+
+  - name: prioridad: crítica
+    color: 8b0000
+    description: Prioridad crítica — requiere atención inmediata.
+  - name: prioridad: alta
+    color: d93f0b
+    description: Prioridad alta — planificar lo antes posible.
+  - name: prioridad: media
+    color: ff9f00
+    description: Prioridad media — importante pero no urgente.
+  - name: prioridad: baja
+    color: 006b75
+    description: Prioridad baja — trabajo de bajo impacto.
