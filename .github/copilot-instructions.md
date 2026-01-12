@@ -117,5 +117,40 @@ socket.on('telemetry', (data) => { /* procesar telemetría */ });
 - Aplicar límites de tasa en conexiones WebSocket cuando corresponda
 - Registrar eventos de seguridad con `logger.warning()`
 - No exponer rutas de archivos del simulador en interfaces web
+
+## Regla: revisar y auditar continuamente (aplica a TODO el proyecto) ⚠️
+- Antes de agregar o cambiar archivos importantes (código, documentación, tests, assets) busca patrones y archivos existentes y reusa/actualiza cuando sea posible (`*.md`, `*.py`, `*.lua`, `dashboard/`, `web/`, `scripts/`).
+- Preferir **actualizar** un archivo existente sobre crear uno nuevo que duplique funcionalidad o nombre.
+- Si surge duda sobre crear o modificar un archivo significativo, abre un issue o solicita confirmación al mantenedor antes de proceder.
+- Documentar la decisión en la descripción del PR: qué archivos se revisaron, alternativas consideradas y por qué se eligió la solución.
+- Ejemplo práctico: antes de añadir `scripts/simulate_tsc.py`, revisar `debug_tsc.py` y `debug_fetch.py` y añadir un `docs/CHANGE_X.md` que resuma la prueba y la justificación.
+
+## Pruebas locales y logs temporales
+- Para desarrollar y depurar sin arrancar el simulador puedes usar los scripts de depuración incluidos: `debug_fetch.py` y `debug_tsc.py` (o `start.bat` para arranque completo).
+- Añadir `logs/` a `.gitignore` para no comitear archivos de ejecución y depuración.
+- Para validar dashboards localmente: correr `python web_dashboard.py` y `cd dashboard && npm start`, luego abrir la UI y verificar que los eventos WebSocket y elementos HTML rendericen correctamente.
+- Diseñar tests unitarios que mockeen la E/S de archivos y la comunicación con el simulador (p. ej., `tests/` con `pytest` y `pytest-mock`).
+
+## Regla de CI / Plataforma de pruebas
+- Todas las pruebas de integración que interactúen con archivos del simulador (`GetData.txt`, `SendCommand.txt`) o requieran el entorno de RailWorks **deben** ejecutarse en `windows-latest` (Windows) en CI. Evita `ubuntu-latest` o `macos-latest` para esas suites.
+- Los tests unitarios que no interactúen con archivos del simulador pueden ejecutarse en runners Linux/macOS para mayor velocidad.
+- Documenta en el PR qué tests requieren Windows y por qué, y añade instrucciones para ejecutar las mismas pruebas localmente en Windows.
+
+## Convenciones para PRs y cambios importantes
+- Cada PR grande debe incluir:
+  - Resumen de qué se hizo y por qué.
+  - Archivos revisados y las alternativas consideradas.
+  - Pasos para reproducir las pruebas manuales y los comandos de test (ej.: `python -m pytest tests/test_x.py`).
+  - Notas de seguridad si aplica (nuevas variables de entorno, rutas, etc.).
+- Añadir `docs/CHANGE_X.md` para cambios de diseño o decisiones que afecten a integración, APIs o arquitectura.
+
+## Archivos útiles / referencias rápidas
+- `debug_fetch.py`, `debug_tsc.py` — scripts de depuración y simulación
+- `start.bat` — arranque integrado para pruebas end-to-end
+- `configurator.py` — validación de configuración
+- `README.md`, `DOCUMENTATION.md`, `API_DOCUMENTATION.md` — documentación de referencia
+
+---
+
 </content>
 <parameter name="filePath">c:\Users\doski\TrainSimulatorAutopilot\.github\copilot-instructions.md
