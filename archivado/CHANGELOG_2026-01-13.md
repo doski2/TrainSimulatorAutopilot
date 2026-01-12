@@ -1,6 +1,6 @@
 # Train Simulator Autopilot - Registro de Cambios
 
-## [Unreleased] - 2026-01-12
+## [Unreleased] - 12/01/2026
 
 Este repositorio mantiene un historial completo de cambios, ahora archivado en `docs/CHANGELOG_ARCHIVE.md` para mejorar la legibilidad del archivo principal.
 
@@ -21,7 +21,7 @@ Para ver el historial completo con todos los detalles y entradas antiguas, consu
 
 - Abre un PR que añada una sección concisa en *Unreleased* siguiendo el formato "Keep a Changelog" (título, fecha y entradas breves).
 
-**Archivado:** este cambio fue propuesto el 2026-01-12 por @doski2 y moverá el historial completo a `docs/CHANGELOG_ARCHIVE.md`.
+**Archivado:** este cambio fue propuesto el 12/01/2026 por @doski2 y moverá el historial completo a `docs/CHANGELOG_ARCHIVE.md`. 
 
 ---
 
