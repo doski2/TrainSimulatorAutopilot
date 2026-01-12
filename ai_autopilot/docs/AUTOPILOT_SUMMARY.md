@@ -1,6 +1,6 @@
 # Resumen y análisis del flujo GetData/SendCommand (Autopilot)
 
-Fecha: 2025-12-07
+Fecha: 07/12/2025
 
 ## 1. Propósito
 

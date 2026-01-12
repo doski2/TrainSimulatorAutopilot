@@ -1,6 +1,6 @@
 # Ejecutar pruebas End-to-End (E2E)
 
-**Revisado:** 2026-01-13 — Revisado por @doski2 ✅
+**Revisado:** 13/01/2026 — Revisado por @doski2 ✅
 
 Este documento explica cómo ejecutar las pruebas de integración end-to-end localmente.
 

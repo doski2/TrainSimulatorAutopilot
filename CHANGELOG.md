@@ -1,6 +1,6 @@
 # Train Simulator Autopilot - Registro de Cambios
 
-## [Unreleased] - 2026-01-13
+## [Unreleased] - 13/01/2026
 
 Este repositorio mantiene un historial completo de cambios en `archivado/CHANGELOG_2026-01-13.md`.
 

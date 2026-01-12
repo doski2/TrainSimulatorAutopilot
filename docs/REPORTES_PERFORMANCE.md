@@ -247,7 +247,7 @@ Integration | < 0.01ms    | Baja      | Baja     | ✅ Excelente  | | IA Logic |
 - Ejecutar backup manual si automático falló
 - Actualizar dependencias si es necesario
 
-#### Próxima revisión: 2026-01-02
+#### Próxima revisión: 02/01/2026
 
 - ✓ Verificar control de versiones
 

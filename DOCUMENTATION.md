@@ -1,6 +1,6 @@
 # 🚂 Train Simulator Autopilot - Documentación Completa
 
-**Revisado:** 2026-01-13 — Revisado por @doski2 ✅
+**Revisado:** 13/01/2026 — Revisado por @doski2 ✅
 
 ## 📋 Información General
 
