@@ -5,6 +5,7 @@
 Este repositorio mantiene un historial completo de cambios, ahora archivado en `docs/CHANGELOG_ARCHIVE.md` para mejorar la legibilidad del archivo principal.
 
 **Resumen (highlights):**
+
 - Modernización del sistema (dashboards TypeScript/Flask/Electron, WebSocket, CI y tests).
 - Herramientas nuevas: auto-etiquetado de issues, scripts para aplicar etiquetas a issues existentes.
 - Visualización/Análisis: integración con Bokeh y Seaborn.
@@ -12,11 +13,12 @@ Este repositorio mantiene un historial completo de cambios, ahora archivado en `
 
 Para ver el historial completo con todos los detalles y entradas antiguas, consulta:
 
-`docs/CHANGELOG_ARCHIVE.md`
+`archivado/CHANGELOG_2026-01-12.md`
 
 ---
 
 ### Cómo añadir una entrada
+
 - Abre un PR que añada una sección concisa en *Unreleased* siguiendo el formato "Keep a Changelog" (título, fecha y entradas breves).
 
 **Archivado:** este cambio fue propuesto el 2026-01-12 por @doski2 y moverá el historial completo a `docs/CHANGELOG_ARCHIVE.md`.
