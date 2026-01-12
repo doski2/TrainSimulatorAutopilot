@@ -1,0 +1,82 @@
+name: "Auto-label issues and PRs"
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+  pull_request:
+    types: [opened, edited, reopened]
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Apply labels based on title/body
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue || context.payload.pull_request;
+            if (!issue) return;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const number = issue.number;
+            const title = (issue.title || '').toLowerCase();
+            const body = (issue.body || '').toLowerCase();
+
+            const labelMap = {
+              'bug': {re: /\b(bug|error|fallo|crash|excepci[oó]n)\b/i, color: 'd73a4a'},
+              'crítico': {re: /\b(cr[ií]tico|critical|bloqueante|blocker)\b/i, color: 'b60205'},
+              'mejora': {re: /\b(mejora|feature|enhancement|nuevo|add|añadir)\b/i, color: '0366d6'},
+              'documentación': {re: /\b(doc|documentaci[oó]n|readme|docs|documentation)\b/i, color: 'fbca04'},
+              'pregunta': {re: /\b(pregunta|question|\?)\b/i, color: '7057ff'},
+              'ayuda': {re: /\b(ayuda|help wanted|help wanted|help)\b/i, color: '0e8a16'},
+              'buen-primer-issue': {re: /\b(good first issue|buen primer issue|buen-primer-issue)\b/i, color: 'bfe5bf'},
+              'tests': {re: /\b(test|pytest|coverage|prueba|tests)\b/i, color: '1b7c83'},
+              'ci': {re: /\b(ci|github actions|circleci|travis|pipeline|workflow)\b/i, color: 'c2e0c6'},
+              'telemetría': {re: /\b(telemetr|telemetry|lua|capture|getdata|sendcommand|capture)\b/i, color: 'f9d0c4'},
+              'windows': {re: /\b(windows|win32|win64)\b/i, color: '000000'},
+              'seguridad': {re: /\b(security|vulnerability|vulnerabilidad|secret|secreto)\b/i, color: '8b0000'},
+              'wontfix': {re: /\b(wontfix|won't fix|no reparar|no resolver)\b/i, color: 'ededed'}
+            };
+
+            const toAdd = [];
+            for (const [label, meta] of Object.entries(labelMap)) {
+              try {
+                if (meta.re.test(title) || meta.re.test(body)) {
+                  toAdd.push(label);
+                }
+              } catch (e) {
+                core.warning(`Error testing regexp for ${label}: ${e}`)
+              }
+            }
+
+            if (toAdd.length === 0) {
+              console.log('No labels matched.');
+              return;
+            }
+
+            // Ensure labels exist, create if missing
+            for (const l of toAdd) {
+              const meta = labelMap[l];
+              try {
+                await github.rest.issues.getLabel({owner, repo, name: l});
+              } catch (err) {
+                if (err.status === 404) {
+                  console.log(`Label ${l} not found - creating it`);
+                  await github.rest.issues.createLabel({owner, repo, name: l, color: meta.color, description: ''});
+                } else {
+                  throw err;
+                }
+              }
+            }
+
+            console.log(`Adding labels: ${toAdd.join(', ')}`);
+            await github.rest.issues.addLabels({owner, repo, issue_number: number, labels: toAdd});
+
+            // Optional: add a short comment when labels are applied
+            await github.rest.issues.createComment({owner, repo, issue_number: number, body: `Etiquetas aplicadas automáticamente: ${toAdd.join(', ')}`});
