@@ -1,0 +1,57 @@
+name: CI (Windows example)
+
+on:
+  push:
+    branches: [ master, "docs/*", "features/*" ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      run_integration:
+        description: 'Run integration tests that need RailWorks files (Windows only)'
+        required: false
+        default: 'false'
+
+jobs:
+  windows_tests:
+    name: Windows tests
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Lint (ruff)
+        run: |
+          python -m pip install ruff
+          ruff check . || true
+
+      - name: Run unit tests
+        run: |
+          pytest -q
+
+      - name: Run simulator integration tests (optional)
+        if: ${{ github.event.inputs.run_integration == 'true' }}
+        run: |
+          echo "Running integration tests that require RailWorks files on Windows"
+          # Use a pytest marker to tag simulator-dependent tests, e.g., @pytest.mark.simulator
+          pytest -q -m "simulator" || true
+
+  note:
+    name: Notes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Guidance
+        run: |
+          echo "This is an example Windows job to run tests in windows-latest."
+          echo "Mark integration tests with @pytest.mark.simulator and trigger them via workflow_dispatch with run_integration=true."
