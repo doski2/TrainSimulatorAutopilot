@@ -24,6 +24,10 @@ GITHUB_API = "https://api.github.com"
 LABEL_MAP = {
     'bug': { 're': r"\b(bug|error|fallo|crash|excepci[oó]n)\b", 'color': 'd73a4a', 'description': 'Reporte de fallo o comportamiento incorrecto.'},
     'crítico': { 're': r"\b(cr[ií]tico|critical|bloqueante|blocker)\b", 'color': 'b60205', 'description': 'Fallos que bloquean uso o seguridad.'},
+    'prioridad: crítica': { 're': r"\b(prioridad[:\s]*cr[ií]tica|critic[oó]?|urgente|emergencia)\b", 'color': '8b0000', 'description': 'Prioridad crítica — requiere atención inmediata.'},
+    'prioridad: alta': { 're': r"\b(prioridad[:\s]*alta|alta prioridad|high priority|priority[:\s]*high|urgente)\b", 'color': 'd93f0b', 'description': 'Prioridad alta — planificar lo antes posible.'},
+    'prioridad: media': { 're': r"\b(prioridad[:\s]*media|prioridad media|medium priority)\b", 'color': 'ff9f00', 'description': 'Prioridad media — importante pero no urgente.'},
+    'prioridad: baja': { 're': r"\b(prioridad[:\s]*baja|baja prioridad|low priority)\b", 'color': '006b75', 'description': 'Prioridad baja — trabajo de bajo impacto.'},
     'mejora': { 're': r"\b(mejora|feature|enhancement|nuevo|add|añadir)\b", 'color': '0366d6', 'description': 'Solicitud de mejora o nueva característica.'},
     'documentación': { 're': r"\b(doc|documentaci[oó]n|readme|docs|documentation)\b", 'color': 'fbca04', 'description': 'Cambios en docs, README o guías.'},
     'pregunta': { 're': r"\b(pregunta|question|\?)\b", 'color': '7057ff', 'description': 'Dudas o consultas del proyecto.'},
@@ -128,6 +132,13 @@ def main():
 
         if not to_add:
             continue
+
+        # Normalizar prioridades: si coinciden varias prioridades, conservar sólo la más severa
+        priority_order = ['prioridad: crítica', 'prioridad: alta', 'prioridad: media', 'prioridad: baja']
+        matched_priorities = [p for p in priority_order if p in to_add]
+        if len(matched_priorities) > 1:
+            keep = matched_priorities[0]
+            to_add = [l for l in to_add if (l not in priority_order) or l == keep]
 
         summary.append({'number': number, 'title': title, 'add': to_add})
 
