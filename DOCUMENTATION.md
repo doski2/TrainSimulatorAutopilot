@@ -1,5 +1,7 @@
 # 🚂 Train Simulator Autopilot - Documentación Completa
 
+**Revisado:** 2026-01-13 — Revisado por @doski2 ✅
+
 ## 📋 Información General
 
 **Versión**: 2.0.0 **Fecha**: Noviembre 2025 **Autor**: Train Simulator
