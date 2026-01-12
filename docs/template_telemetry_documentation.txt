@@ -1,6 +1,8 @@
 # =============================================================================
 # DATOS DE TELEMETRÍA DE [NOMBRE_DEL_JUEGO/SIMULADOR]
 # Archivo generado por [SCRIPT/MÉTODO_DE_CAPTURA]
+# Ejemplos de métodos de captura: `Railworks_GetData_Script.lua` (escribe GetData.txt), `debug_fetch.py` o `debug_tsc.py` para pruebas locales
+# Comando de ejemplo para generar una captura de prueba: `python debug_tsc.py --output sample_getdata.txt`
 # Actualizado: [FECHA]
 # =============================================================================
 

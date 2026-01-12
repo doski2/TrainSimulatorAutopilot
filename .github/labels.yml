@@ -1,0 +1,40 @@
+labels:
+  - name: bug
+    color: d73a4a
+    description: Reporte de fallo o comportamiento incorrecto.
+  - name: crítico
+    color: b60205
+    description: Fallos que bloquean uso o seguridad.
+  - name: mejora
+    color: 0366d6
+    description: Solicitud de mejora o nueva característica.
+  - name: documentación
+    color: fbca04
+    description: Cambios en docs, README o guías.
+  - name: pregunta
+    color: 7057ff
+    description: Dudas o consultas del proyecto.
+  - name: ayuda
+    color: 0e8a16
+    description: Solicitudes de colaboración / help wanted.
+  - name: buen-primer-issue
+    color: bfe5bf
+    description: Tareas aptas para nuevos colaboradores.
+  - name: tests
+    color: 1b7c83
+    description: Relacionado con pruebas o cobertura.
+  - name: ci
+    color: c2e0c6
+    description: Problemas o cambios en integración continua.
+  - name: telemetría
+    color: f9d0c4
+    description: Issues relacionados con telemetría, capture o scripts Lua.
+  - name: windows
+    color: 000000
+    description: Problemas o diferencias específicas de Windows.
+  - name: seguridad
+    color: 8b0000
+    description: Vulnerabilidades o exposición de secretos.
+  - name: wontfix
+    color: ededed
+    description: Decisión de no resolver.
