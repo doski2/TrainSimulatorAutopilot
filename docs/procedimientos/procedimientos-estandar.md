@@ -1,6 +1,6 @@
 # 📋 Procedimientos Estándar - Train Simulator Autopilot
 
-## 📋 Procedimientos Estándar Modernos (2025-12-02)
+## 📋 Procedimientos Estándar Modernos (02/12/2025)
 
 ### Procedimiento Estándar: Inicio del Sistema Multi-Dashboard
 

@@ -283,7 +283,7 @@ automatizado, documentación completa y monitoreo de rendimiento.
 
 ---
 
-**Última actualización**: 2025-12-02
+**Última actualización**: 02/12/2025
 
 **Mantenedor**: Equipo de desarrollo Train Simulator Autopilot
 

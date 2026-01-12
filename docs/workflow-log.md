@@ -895,7 +895,7 @@ completo, Electron pendiente)
 
 ---
 
-## [2025-11-09] Verificación de integración Rust/C++ para alto rendimiento
+## [09/11/2025] Verificación de integración Rust/C++ para alto rendimiento
 
 - **Acción:** Verificada documentación vs implementación de módulos
 high-performance
@@ -1049,7 +1049,7 @@ funcionalidades sugeridas implementadas
 
 ---
 
-## Log de workflow - Actualización 2025-12-02
+## Log de workflow - Actualización 02/12/2025
 
 ### ✅ **Nuevas Métricas del Motor Agregadas al Dashboard**
 
