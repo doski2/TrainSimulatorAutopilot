@@ -30,7 +30,11 @@ jobs:
 
             const labelMap = {
               'bug': {re: /\b(bug|error|fallo|crash|excepci[oó]n)\b/i, color: 'd73a4a'},
-              'crítico': {re: /\b(cr[ií]tico|critical|bloqueante|blocker)\b/i, color: 'b60205'},
+              'crítico': {re: /\b(cr[ií]tico|critical|bloqueante|blocker|urgente)\b/i, color: 'b60205'},
+              'prioridad: crítica': {re: /\b(prioridad[:\s]*cr[ií]tica|critic[oó]?|urgente|emergencia)\b/i, color: '8b0000'},
+              'prioridad: alta': {re: /\b(prioridad[:\s]*alta|alta prioridad|high priority|priority[:\s]*high|urgente)\b/i, color: 'd93f0b'},
+              'prioridad: media': {re: /\b(prioridad[:\s]*media|prioridad media|medium priority)\b/i, color: 'ff9f00'},
+              'prioridad: baja': {re: /\b(prioridad[:\s]*baja|baja prioridad|low priority)\b/i, color: '006b75'},
               'mejora': {re: /\b(mejora|feature|enhancement|nuevo|add|añadir)\b/i, color: '0366d6'},
               'documentación': {re: /\b(doc|documentaci[oó]n|readme|docs|documentation)\b/i, color: 'fbca04'},
               'pregunta': {re: /\b(pregunta|question|\?)\b/i, color: '7057ff'},
@@ -44,7 +48,7 @@ jobs:
               'wontfix': {re: /\b(wontfix|won't fix|no reparar|no resolver)\b/i, color: 'ededed'}
             };
 
-            const toAdd = [];
+            let toAdd = [];
             for (const [label, meta] of Object.entries(labelMap)) {
               try {
                 if (meta.re.test(title) || meta.re.test(body)) {
@@ -53,6 +57,14 @@ jobs:
               } catch (e) {
                 core.warning(`Error testing regexp for ${label}: ${e}`)
               }
+            }
+
+            // Normalize priority labels: keep only the highest-severity match when multiples are found
+            const priorityOrder = ['prioridad: crítica','prioridad: alta','prioridad: media','prioridad: baja'];
+            const matchedPriorities = priorityOrder.filter(p => toAdd.includes(p));
+            if (matchedPriorities.length > 1) {
+              const keep = matchedPriorities[0];
+              toAdd = toAdd.filter(l => !priorityOrder.includes(l) || l === keep);
             }
 
             if (toAdd.length === 0) {
