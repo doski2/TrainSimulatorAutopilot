@@ -1,58 +1,29 @@
 # Train Simulator Autopilot - Registro de Cambios
 
-## [Unreleased] - 2025-12-17
+## [Unreleased] - 2026-01-12
 
-### 🔧 Correcciones y mejoras (POC Archivo+ACK)
+Este repositorio mantiene un historial completo de cambios, ahora archivado en `docs/CHANGELOG_ARCHIVE.md` para mejorar la legibilidad del archivo principal.
 
-- **policy**: Cambiado el comportamiento por defecto de `start_autopilot` para
-  **NO** requerir ACK del plugin Lua. Esto evita que llamadas al endpoint se
-  bloqueen en entornos donde el plugin no está disponible o los accesos a
-  archivos están restringidos.
-  - Se eliminó el soporte de espera por ACK del flujo principal del proyecto
-    y se deprecó la POC basada en archivos (`tools/poc_file_ack`).
-  - La PoC `tools/poc_file_ack` y las pruebas relacionadas fueron
-    **eliminadas** del repositorio; la decisión y el flujo final están
-    documentados en `docs/AUTOPILOT_SENDCOMMAND.md`.
-    - Se eliminó el test E2E
-      `tests/integration/test_e2e_autopilot_file_ack.py` que comprobaba el flujo
-      de ACK por archivos.
-    - Se eliminaron múltiples tests unitarios del consumer y otros tests
-      relacionados con la PoC ACK (ya deprecada), para reducir ruido y
-      mantenimiento en la suite de pruebas.
-  - Las métricas relacionadas con ACK (`ack_skipped_total`,
-    `unacked_total`) se han eliminado del conjunto de métricas operativas.
-  - Tests y documentación actualizados para reflejar la nueva política.
+**Resumen (highlights):**
+- Modernización del sistema (dashboards TypeScript/Flask/Electron, WebSocket, CI y tests).
+- Herramientas nuevas: auto-etiquetado de issues, scripts para aplicar etiquetas a issues existentes.
+- Visualización/Análisis: integración con Bokeh y Seaborn.
+- Temas pendientes: optimizaciones de rendimiento, pruebas E2E sobre Windows, soporte para telemetría de alta frecuencia.
 
-  - **Archivos eliminados (selección):**
-    - `tools/poc_file_ack/` (PoC eliminado)
-    - `.github/workflows/poc-e2e.yml` (job específico del POC eliminado)
-    - `tests/e2e/test_file_ack.py` (E2E)
-    - `tests/integration/test_e2e_autopilot_file_ack.py` (E2E)
-    - `tests/e2e/test_probe_file.py` (E2E)
-    - `tests/e2e/test_retries.py` (E2E)
-    - `tests/e2e/test_persist_ids.py` (E2E)
-    - Varias pruebas unitarias relacionadas con el consumer (p.ej.
-      `tests/unit/test_consumer_*.py`) fueron eliminadas o marcadas como
-      omitidas para reducir ruido de mantenimiento
+Para ver el historial completo con todos los detalles y entradas antiguas, consulta:
 
-- **consumer**: Registrar excepciones en lugar de silenciarlas para mejorar
-  diagnósticos y mantener el loop vivo (`tools/poc_file_ack/consumer.py`).
-- **tests**: Añadido `tests/unit/test_consumer_exceptions.py` que valida
-  logging y resiliencia del consumer.
-- **tests**: Centralizada la configuración de `sys.path` en `tests/conftest.py`
-  (se removieron inserciones manuales desde tests individuales).
-- **docs**: Documentación actualizada sobre la opción Archivo+ACK y la
-  configuración de tests (`docs/docs controles/opcion1_archivo_ack.md`,
-  `docs/testing-framework.md`).
-- **ci**: `.gitignore` actualizado para ignorar `tmp_poc_dir/`.
-  - El job POC E2E (`.github/workflows/poc-e2e.yml`) **fue eliminado** porque
-    la PoC basada en archivos fue deprecada.
-- **consumer**: Marcar y persistir IDs procesados antes de escribir ACK para
-  evitar reprocesos (test: `tests/unit/test_consumer_race_condition.py`).
-- **consumer**: Mantener una caché de `processed_ids` con tamaño limitado
-  (`processed_ids_max`) para evitar crecimiento ilimitado de memoria en
-  consumidores de larga duración (test:
-  `tests/unit/test_consumer_bounded_processed_set.py`).
+`docs/CHANGELOG_ARCHIVE.md`
+
+---
+
+### Cómo añadir una entrada
+- Abre un PR que añada una sección concisa en *Unreleased* siguiendo el formato "Keep a Changelog" (título, fecha y entradas breves).
+
+**Archivado:** este cambio fue propuesto el 2026-01-12 por @doski2 y moverá el historial completo a `docs/CHANGELOG_ARCHIVE.md`.
+
+---
+
+(El historial completo se ha movido a `docs/CHANGELOG_ARCHIVE.md`.)
 
 ## [2.1.0] - 2025-12-17
 
