@@ -38,19 +38,19 @@ jobs:
           python -m venv .venv
           .\.venv\Scripts\Activate.ps1
           python -m pip install --upgrade pip
-          $cacheArg = '--cache-dir .pip-cache'
+          $cacheDir = '.pip-cache'
           if (Test-Path requirements.txt) {
             Write-Host "Installing runtime requirements from requirements.txt"
-            python -m pip install $cacheArg -r requirements.txt
+            python -m pip install --cache-dir $cacheDir -r requirements.txt
           } else {
             Write-Host "requirements.txt not found; ensure runtime dependencies are available"
           }
           if (Test-Path requirements-dev.txt) {
             Write-Host "Installing dev requirements from requirements-dev.txt"
-            python -m pip install $cacheArg -r requirements-dev.txt
+            python -m pip install --cache-dir $cacheDir -r requirements-dev.txt
           } else {
             Write-Host "requirements-dev.txt not found; installing pytest only"
-            python -m pip install $cacheArg pytest
+            python -m pip install --cache-dir $cacheDir pytest
           }
 
       - name: Run tests via helper (creates report.xml)
