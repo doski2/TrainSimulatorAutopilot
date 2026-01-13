@@ -22,24 +22,35 @@ jobs:
         with:
           python-version: '3.13'
 
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            .pip-cache
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt','**/requirements-dev.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - name: Create .venv and install dependencies
         shell: pwsh
         run: |
           python -m venv .venv
           .\.venv\Scripts\Activate.ps1
           python -m pip install --upgrade pip
+          $cacheArg = '--cache-dir .pip-cache'
           if (Test-Path requirements.txt) {
             Write-Host "Installing runtime requirements from requirements.txt"
-            python -m pip install -r requirements.txt
+            python -m pip install $cacheArg -r requirements.txt
           } else {
             Write-Host "requirements.txt not found; ensure runtime dependencies are available"
           }
           if (Test-Path requirements-dev.txt) {
             Write-Host "Installing dev requirements from requirements-dev.txt"
-            python -m pip install -r requirements-dev.txt
+            python -m pip install $cacheArg -r requirements-dev.txt
           } else {
             Write-Host "requirements-dev.txt not found; installing pytest only"
-            python -m pip install pytest
+            python -m pip install $cacheArg pytest
           }
 
       - name: Run tests via helper (creates report.xml)
