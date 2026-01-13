@@ -1,0 +1,49 @@
+name: Windows - Run tests via helper
+
+on:
+  pull_request:
+    paths:
+      - '**'
+  push:
+    branches:
+      - '**'
+
+jobs:
+  run-tests-windows:
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+
+      - name: Create .venv and install dependencies
+        shell: pwsh
+        run: |
+          python -m venv .venv
+          .\.venv\Scripts\Activate.ps1
+          python -m pip install --upgrade pip
+          if (Test-Path requirements-dev.txt) { python -m pip install -r requirements-dev.txt } else { Write-Host "requirements-dev.txt not found; installing pytest only" }
+
+      - name: Run tests via helper (creates report.xml)
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          .\scripts\run_tests.ps1 -q --junitxml=report.xml || $LASTEXITCODE = $LASTEXITCODE
+
+      - name: Upload JUnit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-test-report
+          path: report.xml
+
+      - name: Fail workflow if tests failed
+        if: failure()
+        run: exit 1
+        shell: pwsh
