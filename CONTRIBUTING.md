@@ -19,5 +19,50 @@ Gracias por contribuir. Por favor sigue estas pautas simples para mantener la co
 - JavaScript: ESLint
 - Usar `pytest` para tests y asegúrate de que pasen en CI antes de pedir revisión.
 
+## Entorno de desarrollo y tests
+Sigue estos pasos para preparar tu entorno de desarrollo y ejecutar tests localmente:
+
+1. Crear y activar un entorno virtual:
+   - Linux/macOS:
+     ```bash
+     python -m venv .venv
+     source .venv/bin/activate
+     ```
+   - Windows (PowerShell):
+     ```powershell
+     python -m venv .venv
+     .\.venv\Scripts\Activate.ps1
+     ```
+
+2. Instalar dependencias de desarrollo:
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+3. Ejecutar tests:
+
+```bash
+# Ejecutar toda la suite de tests unitarios
+pytest -q
+
+# Ejecutar un test específico
+pytest tests/unit/test_tsc_integration.py::test_leer_datos_retries_on_permission_error -q
+
+# Si un test es flaky localmente, puedes reintentar automáticamente
+pytest --maxfail=1 --reruns 2
+```
+
+4. Ejecutar tests de integración Windows (si necesitas pruebas que interactúen con RailWorks):
+
+```bash
+# Desde GitHub CLI: dispara la job Windows que ejecuta tests con marca 'simulator'
+gh workflow run windows-ci.yml --ref master -f run_integration=true
+```
+
+Notas:
+- Si faltan paquetes (por ejemplo `matplotlib`), instala `pip install -r requirements-dev.txt` o `pip install matplotlib`.
+- La job de CI Windows ya aplica reintentos (`--reruns 2`) para mitigar flakes intermitentes.
+
 ## Preguntas
 Para preguntas sobre estilo o convenciones, crea un issue y etiqueta `pregunta`.
