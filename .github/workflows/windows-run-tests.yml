@@ -69,6 +69,16 @@ jobs:
           name: windows-test-report
           path: report.xml
 
+      - name: Upload pytest logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-pytest-logs
+          path: |
+            pytest-output.txt
+            pytest-error.txt
+            report.xml
+
       - name: Fail workflow if tests failed
         if: failure()
         run: exit 1
