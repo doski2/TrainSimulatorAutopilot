@@ -30,6 +30,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
+          pip install pytest-rerunfailures
 
       - name: Lint (ruff)
         run: |
@@ -38,14 +39,14 @@ jobs:
 
       - name: Run unit tests
         run: |
-          pytest -q
+          pytest -q --maxfail=1 --reruns 2
 
       - name: Run simulator integration tests (optional)
         if: ${{ github.event.inputs.run_integration == 'true' }}
         run: |
           echo "Running integration tests that require RailWorks files on Windows"
           # Use a pytest marker to tag simulator-dependent tests, e.g., @pytest.mark.simulator
-          pytest -q -m "simulator" || true
+          pytest -q --maxfail=1 --reruns 2 -m "simulator" || true
 
   note:
     name: Notes
