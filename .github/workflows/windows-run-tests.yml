@@ -28,7 +28,19 @@ jobs:
           python -m venv .venv
           .\.venv\Scripts\Activate.ps1
           python -m pip install --upgrade pip
-          if (Test-Path requirements-dev.txt) { python -m pip install -r requirements-dev.txt } else { Write-Host "requirements-dev.txt not found; installing pytest only" }
+          if (Test-Path requirements.txt) {
+            Write-Host "Installing runtime requirements from requirements.txt"
+            python -m pip install -r requirements.txt
+          } else {
+            Write-Host "requirements.txt not found; ensure runtime dependencies are available"
+          }
+          if (Test-Path requirements-dev.txt) {
+            Write-Host "Installing dev requirements from requirements-dev.txt"
+            python -m pip install -r requirements-dev.txt
+          } else {
+            Write-Host "requirements-dev.txt not found; installing pytest only"
+            python -m pip install pytest
+          }
 
       - name: Run tests via helper (creates report.xml)
         shell: pwsh
