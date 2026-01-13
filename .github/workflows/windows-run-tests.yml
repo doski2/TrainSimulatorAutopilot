@@ -34,7 +34,10 @@ jobs:
         shell: pwsh
         continue-on-error: true
         run: |
-          .\scripts\run_tests.ps1 -q --junitxml=report.xml || $LASTEXITCODE = $LASTEXITCODE
+          & .\scripts\run_tests.ps1 -q --junitxml=report.xml
+          $rc = $LASTEXITCODE
+          Write-Host "pytest exit code: $rc"
+          exit $rc
 
       - name: Upload JUnit report
         if: always()
