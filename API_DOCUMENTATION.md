@@ -1,5 +1,7 @@
 # 📡 Documentación de APIs - Train Simulator Autopilot
 
+**Revisado:** 13/01/2026 — Revisado por @doski2 ✅
+
 ## 📋 Información General
 
 **Base URL**: `http://localhost:5001`  (por defecto; configurable con la variable de entorno `FLASK_PORT`)
