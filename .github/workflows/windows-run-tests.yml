@@ -1,0 +1,85 @@
+name: Windows - Run tests via helper
+
+on:
+  pull_request:
+    paths:
+      - '**'
+  push:
+    branches:
+      - '**'
+
+jobs:
+  run-tests-windows:
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            .pip-cache
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt','**/requirements-dev.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Create .venv and install dependencies
+        shell: pwsh
+        run: |
+          python -m venv .venv
+          .\.venv\Scripts\Activate.ps1
+          python -m pip install --upgrade pip
+          $cacheDir = '.pip-cache'
+          if (Test-Path requirements.txt) {
+            Write-Host "Installing runtime requirements from requirements.txt"
+            python -m pip install --cache-dir $cacheDir -r requirements.txt
+          } else {
+            Write-Host "requirements.txt not found; ensure runtime dependencies are available"
+          }
+          if (Test-Path requirements-dev.txt) {
+            Write-Host "Installing dev requirements from requirements-dev.txt"
+            python -m pip install --cache-dir $cacheDir -r requirements-dev.txt
+          } else {
+            Write-Host "requirements-dev.txt not found; installing pytest only"
+            python -m pip install --cache-dir $cacheDir pytest
+          }
+
+      - name: Run tests via helper (creates report.xml)
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          & .\scripts\run_tests.ps1 -q --junitxml=report.xml
+          $rc = $LASTEXITCODE
+          Write-Host "pytest exit code: $rc"
+          exit $rc
+
+      - name: Upload JUnit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-test-report
+          path: report.xml
+
+      - name: Upload pytest logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-pytest-logs
+          path: |
+            pytest-output.txt
+            pytest-error.txt
+            report.xml
+
+      - name: Fail workflow if tests failed
+        if: failure()
+        run: exit 1
+        shell: pwsh

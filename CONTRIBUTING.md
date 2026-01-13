@@ -53,6 +53,9 @@ pytest tests/unit/test_tsc_integration.py::test_leer_datos_retries_on_permission
 pytest --maxfail=1 --reruns 2
 ```
 
+**Atajo para Windows (recomendado si tienes problemas de entorno):**
+- Ejecuta `scripts\run_tests.ps1` (PowerShell) o `scripts\run_tests.bat` (CMD) desde la raíz del repo; los scripts usarán la Python del virtualenv `.venv` y aceptan los mismos argumentos que `pytest`.
+
 4. Ejecutar tests de integración Windows (si necesitas pruebas que interactúen con RailWorks):
 
 ```bash
