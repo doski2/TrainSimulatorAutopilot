@@ -2,9 +2,9 @@
 
 ## 📋 Información General
 
-**Base URL**: `http://localhost:5000`  
+**Base URL**: `http://localhost:5001`  (por defecto; configurable con la variable de entorno `FLASK_PORT`)
 **Protocolo**: HTTP/1.1 + WebSocket  
-**Autenticación**: Ninguna (desarrollo local)  
+**Autenticación**: Ninguna (desarrollo local). **En producción debe habilitarse autenticación/autorización** (issue creado).  
 **Formato**: JSON  
 
 ## 🔌 Endpoints REST API
@@ -260,7 +260,7 @@ Los controles de alternancia (puertas, luces) mantienen estado interno.
   - `train_model`: Entrenar modelo predictivo
   - `toggle_doors`: Alternar estado de puertas (abre/cierra)
   - `toggle_lights`: Alternar estado de luces (enciende/apaga)
-  - `emergency_brake`: Activar freno de emergencia
+  - `emergency_brake`: Activar freno de emergencia (¡acción crítica — deben existir comprobaciones de seguridad en servidor y logs auditables!)
 
 **Respuesta Exitosa (200)**:
 
@@ -270,6 +270,8 @@ Los controles de alternancia (puertas, luces) mantienen estado interno.
   "action": "toggle_lights"
 }
 ```
+
+**Nota:** Las acciones críticas (por ejemplo `emergency_brake`) deben documentarse y requerir validaciones/confirmaciones específicas en el servidor; se creó un issue para proponer medidas de seguridad y validación de control.
 
 ---
 
@@ -430,7 +432,7 @@ Página principal del dashboard (HTML).
 
 ### Conexión
 
-**URL**: `ws://localhost:5000/socket.io/`  
+**URL**: `ws://localhost:5001/socket.io/`  (usa `wss://...` en producción con TLS)
 **Protocolo**: Socket.IO  
 **Namespace**: `/` (default)  
 
@@ -464,9 +466,9 @@ Actualización de telemetría cada 100ms.
 }
 ```
 
-Note: `active_alerts_list` contains a full array of active alert objects (prefer
-this over the numeric `active_alerts` count). Alerts may be deduped on the
-client to avoid repeated sticky notifications.
+**Nota:** `active_alerts_list` contiene el array completo de objetos de alerta activos (preferible al contador numérico `active_alerts`).
+
+**Acción pendiente:** El esquema completo y tipos de datos del payload `telemetry_update` (campos, unidades y ejemplos) deben documentarse formalmente — se creó un issue para definir y mantener el esquema (JSON Schema / OpenAPI).
 
 Fuel-related metrics (e.g. `fuelLevel`, `fuelConsumption`) are deprecated for
 TSC integration; use efficiency metrics instead.
@@ -562,5 +564,5 @@ print(response.json())
 
 ---
 
-*Última actualización: Noviembre 2025*</content>
+*Última actualización: 13/01/2026*</content>
 parameter name="filePath">c:\Users\doski\TrainSimulatorAutopilot\API_DOCUMENTATION.md
