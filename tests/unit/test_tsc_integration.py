@@ -236,9 +236,20 @@ def test_leer_datos_retries_on_permission_error(tmp_path, monkeypatch):
     assert datos.get("CurrentSpeed") == 5.0
     # Metrics should show that we performed at least one retry
     metrics = tsc.get_io_metrics()
-    assert metrics["read_total_retries"] >= 1
-    # Allow zero latency in environments with sub-millisecond timing resolution
-    assert metrics["read_last_latency_ms"] >= 0.0
+    try:
+        assert metrics["read_total_retries"] >= 1
+        # Allow zero latency in environments with sub-millisecond timing resolution
+        assert metrics["read_last_latency_ms"] >= 0.0
+    except AssertionError as e:
+        # Dump useful debug info to CI logs to help diagnose intermittent failures
+        print("[DEBUG] metrics:", metrics)
+        print("[DEBUG] open calls count:", calls)
+        # Also log raw file content and attempted path for context
+        try:
+            print("[DEBUG] file content:\n", open(tsc.ruta_archivo, encoding="utf-8").read())
+        except Exception as ex:
+            print("[DEBUG] could not read file for debug: ", ex)
+        raise
 
 
 def test_leer_datos_ignora_entrada_parcial(tmp_path):
