@@ -1,0 +1,4 @@
+# CODEOWNERS — Asigna automáticamente revisores a PRs y cambios.
+# Formato: path owner
+# Esta regla aplica a todo el repositorio y asigna a @doski2 como revisor por defecto.
+* @doski2
