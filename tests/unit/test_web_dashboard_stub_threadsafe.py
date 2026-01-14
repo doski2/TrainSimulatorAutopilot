@@ -1,4 +1,6 @@
 import pytest
+# Skip if Flask not available
+pytest.importorskip("flask")
 import threading
 
 pytestmark = pytest.mark.integration  # requires Flask
