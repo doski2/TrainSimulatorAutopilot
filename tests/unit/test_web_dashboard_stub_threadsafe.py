@@ -1,4 +1,7 @@
+import pytest
 import threading
+
+pytestmark = pytest.mark.integration  # requires Flask
 
 from flask import Flask, jsonify, request
 

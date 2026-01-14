@@ -1,7 +1,10 @@
+import pytest
 from alert_system import AlertSystem
 from autopilot_system import AutopilotSystem
 from tsc_integration import TSCIntegration
 from web_dashboard import app
+
+pytestmark = pytest.mark.integration  # requires Flask / alert_system runtime
 
 
 def test_alert_metrics_reflect_generated_alert(tmp_path, monkeypatch):

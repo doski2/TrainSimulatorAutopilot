@@ -6,6 +6,7 @@ import os
 
 import pytest
 
+pytestmark = pytest.mark.integration  # requires joblib/scikit-learn
 from predictive_telemetry_analysis import PredictiveTelemetryAnalyzer
 
 

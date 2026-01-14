@@ -56,7 +56,8 @@ jobs:
         shell: pwsh
         continue-on-error: true
         run: |
-          & .\scripts\run_tests.ps1 -q --junitxml=report.xml
+          # Run only quick tests on PRs: exclude integration/slow/visualization
+          & .\scripts\run_tests.ps1 -q -m "not integration and not slow and not visualization" --junitxml=report.xml
           $rc = $LASTEXITCODE
           Write-Host "pytest exit code: $rc"
           exit $rc
