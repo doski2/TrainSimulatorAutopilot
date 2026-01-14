@@ -154,6 +154,34 @@ except Exception as e:
         def get_json(self):
             return self._data
 
+        def get_data(self, as_text=False):
+            """Return response body as bytes/str compatible with Flask's Response.get_data."""
+            # If inner data is a Flask-like Response object
+            if hasattr(self._data, "get_data"):
+                try:
+                    return self._data.get_data(as_text=as_text)
+                except TypeError:
+                    # older signatures may not accept as_text
+                    return self._data.get_data()
+            # If inner data is a simple string
+            if isinstance(self._data, str):
+                return self._data
+            # dict -> JSON text
+            try:
+                return json.dumps(self._data)
+            except Exception:
+                return str(self._data)
+
+    # Minimal Response stub to be used by endpoints in test environments
+    class Response:
+        def __init__(self, body="", status=200, mimetype=None):
+            self.body = body
+            self.status_code = status
+            self.mimetype = mimetype
+
+        def get_data(self, as_text=False):
+            return self.body if as_text else (self.body.encode("utf-8") if isinstance(self.body, str) else self.body)
+
     class _SimpleClient:
         def __init__(self, app):
             self.app = app
@@ -311,6 +339,10 @@ except Exception as e:
         def render_template(self, *args, **kwargs):
             return ''
 
+        def run(self, *args, **kwargs):
+            # No-op in test stub; mimic Flask's signature
+            return None
+
     # Minimal socketio stub
     class _SimpleSocketIO:
         def __init__(self, app, cors_allowed_origins=None, async_mode=None):
@@ -459,12 +491,36 @@ def require_api_key(func):
             logger.warning("No API_KEYS configured; sensitive endpoints are unprotected")
             return func(*args, **kwargs)
 
-        auth = request.headers.get("Authorization") or request.headers.get("X-API-KEY")
+        # Robust header extraction to support test stubs and real Flask requests
+        auth = None
+        try:
+            headers = getattr(request, "headers", None)
+            if headers is not None and hasattr(headers, "get"):
+                auth = headers.get("Authorization") or headers.get("X-API-KEY")
+            else:
+                environ = getattr(request, "environ", None)
+                if environ and isinstance(environ, dict):
+                    auth = environ.get("HTTP_AUTHORIZATION") or environ.get("HTTP_X_API_KEY")
+                elif hasattr(request, "get"):
+                    # Some test stubs emulate a mapping interface
+                    try:
+                        auth = request.get("X-API-KEY") or request.get("Authorization")
+                    except Exception:
+                        auth = None
+        except Exception:
+            auth = None
+
         if not auth:
             return jsonify({"success": False, "error": "Unauthorized"}), 401
 
-        token = auth.split(" ", 1)[1] if auth.startswith("Bearer ") else auth
-        token = token.strip()
+        if isinstance(auth, (list, tuple)):
+            auth = auth[0]
+        if isinstance(auth, bytes):
+            auth = auth.decode()
+
+        token = auth.split(" ", 1)[1] if isinstance(auth, str) and auth.startswith("Bearer ") else auth
+        token = token.strip() if isinstance(token, str) else str(token)
+
         if token in keys:
             return func(*args, **kwargs)
         return jsonify({"success": False, "error": "Forbidden"}), 403

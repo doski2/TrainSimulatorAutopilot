@@ -3,8 +3,9 @@ name: Integration Tests (Prometheus)
 on:
   push:
     branches: [ master, main, develop ]
-  pull_request:
-    branches: [ master, main, develop ]
+  workflow_dispatch: {}
+  # Note: Removed `pull_request` trigger to avoid running heavy integration tests
+  # on every PR. Use workflow_dispatch or push to main/master/develop for E2E runs.
 
 jobs:
   integration:

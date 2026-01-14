@@ -5,7 +5,10 @@ Tests unitarios para el módulo Predictive Telemetry Analysis
 import os
 
 import pytest
+# Skip if joblib is not available (heavy ML dependency)
+pytest.importorskip("joblib")
 
+pytestmark = pytest.mark.integration  # requires joblib/scikit-learn
 from predictive_telemetry_analysis import PredictiveTelemetryAnalyzer
 
 

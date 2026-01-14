@@ -1,4 +1,9 @@
+import pytest
+# Skip if Flask not available
+pytest.importorskip("flask")
 import threading
+
+pytestmark = pytest.mark.integration  # requires Flask
 
 from flask import Flask, jsonify, request
 

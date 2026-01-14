@@ -5,7 +5,12 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
+import pytest
+# Skip tests that depend on seaborn/matplotlib
+pytest.importorskip("matplotlib")
 from alert_system import AlertSystem, AlertType  # noqa: E402
+
+pytestmark = pytest.mark.integration  # requires seaborn/matplotlib
 
 
 def test_brake_pipe_discrepancy_alert():

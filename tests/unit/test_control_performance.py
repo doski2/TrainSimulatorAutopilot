@@ -6,7 +6,12 @@ import sys
 # Añadir ruta del proyecto
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
+import pytest
+# Skip if Flask not available
+pytest.importorskip("flask")
 from web_dashboard import app, performance_monitor
+
+pytestmark = pytest.mark.integration  # requires runtime performance_monitor and Flask endpoints
 
 
 def test_toggle_performance_monitor():

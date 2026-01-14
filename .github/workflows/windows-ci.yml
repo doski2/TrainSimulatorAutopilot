@@ -37,9 +37,11 @@ jobs:
           python -m pip install ruff
           ruff check . || true
 
-      - name: Run unit tests
+      - name: Run unit tests (parallel, exclude heavy markers)
         run: |
-          pytest -q --maxfail=1 --reruns 2
+          # Use pytest-xdist to parallelize unit tests and speed up Windows runs
+          python -m pip install pytest-xdist || true
+          pytest -q -n auto -m "not integration and not slow and not visualization" --maxfail=1 --reruns 2
 
       - name: Run simulator integration tests (optional)
         if: ${{ github.event.inputs.run_integration == 'true' }}

@@ -9,7 +9,11 @@ if (-Not (Test-Path $venvPython)) {
 }
 
 $argsList = $args -join ' '
-if ($argsList -eq '') { $argsList = '-q' }
+if ($argsList -eq '') { 
+    # Default to a parallel, diagnostic-friendly invocation when possible
+    # -n auto requires pytest-xdist (installed in dev requirements)
+    $argsList = '-q -n auto --maxfail=1 --junitxml=report.xml'
+}
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
 $outFile = Join-Path $repoRoot "pytest-output.txt"

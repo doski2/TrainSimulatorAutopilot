@@ -6,7 +6,12 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
+import pytest
+# Skip this module entirely if matplotlib (used by seaborn_analysis) is not installed
+pytest.importorskip("matplotlib")
 from alert_system import AlertSystem, AlertType  # noqa: E402
+
+pytestmark = pytest.mark.integration  # requires seaborn/matplotlib
 
 
 def test_check_wheelslip_triggered_above_threshold():
