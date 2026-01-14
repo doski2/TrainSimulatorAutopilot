@@ -1076,12 +1076,18 @@ class TSCIntegration:
             except Exception:
                 logger.exception("[TSC] Error evaluating start_autopilot fallback logic")
 
-            # Escribir al archivo autopilot_commands.txt de forma atómica con reintentos
+            # Intentar escribir al archivo autopilot_commands.txt de forma atómica con reintentos.
+            # Si esta escritura falla, consideramos que el envío **no** fue exitoso porque
+            # es la vía principal usada por el plugin Lua para ejecutar directivas críticas
+            # como `emergency_brake`.
+            write_ok = True
             try:
                 self._atomic_write_lines(self.ruta_archivo_comandos, comandos_texto)
             except Exception as e:
                 logger.warning("[TSC] No se pudo escribir %s: %s", self.ruta_archivo_comandos, e)
-                # No abortar inmediatamente; seguir intentando escribir archivos auxiliares
+                # Marcar fallo en la escritura principal; continuamos para intentar
+                # escribir archivos auxiliares pero devolveremos False al final.
+                write_ok = False
 
             print(f"[TSC] Comandos enviados al Lua: {len(comandos_texto)} comandos")
             for linea in comandos_texto:
@@ -1159,8 +1165,10 @@ class TSCIntegration:
             except Exception as e:
                 logger.warning(f"[TSC] Error handling TSClassic Interface file write: {e}")
 
-            # If we've reached here, consider the send successful
-            return True
+            # If we've reached here, consider the send successful only if the
+            # primary write to the Lua commands file succeeded. Auxiliary writes
+            # may have failed independently but the main failure is the blocker.
+            return bool(write_ok)
         except Exception as e:
             logger.exception("[TSC] Error sending commands: %s", e)
             return False

@@ -186,3 +186,23 @@ def test_control_set_zero_value(monkeypatch):
     j = resp.get_json()
     assert j["success"] is True
     assert dummy.last == {"Regulator": 0}
+
+
+def test_emergency_brake_send_failure_returns_500(monkeypatch):
+    """Si TSCIntegration.enviar_comandos devuelve False para emergency_brake,
+    el endpoint debe devolver 500 y no tratarlo como éxito de seguridad."""
+    class FailingTSC:
+        def enviar_comandos(self, comandos):
+            return False
+
+    import web_dashboard as wd
+
+    monkeypatch.setattr(wd, "tsc_integration", FailingTSC())
+    client = app.test_client()
+
+    payload = {"control": "command", "value": "emergency_brake"}
+    resp = client.post("/api/control/set", json=payload)
+    assert resp.status_code == 500
+    j = resp.get_json()
+    assert j["success"] is False
+
