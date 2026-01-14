@@ -60,3 +60,66 @@ def test_locked_file_retries_and_returns_none(monkeypatch, tmp_path):
 
     # leer_datos_archivo should catch the error and return None
     assert t.leer_datos_archivo() is None
+
+
+def test_locked_file_realistic(tmp_path):
+    """Realistic lock: open file exclusively in a background thread to simulate
+    the simulator holding the file open and verify TSCIntegration handles it."""
+    import threading
+    import time
+
+    p = tmp_path / "GetData.txt"
+    write_text(p, "ControlName: CurrentSpeed\nControlValue: 2.34\n")
+
+    t = TSCIntegration(ruta_archivo=str(p))
+
+    # Locker that works on Windows (msvcrt) and POSIX (fcntl)
+    def locker():
+        try:
+            if os.name == "nt":
+                import msvcrt
+
+                f = open(p, "r+b")
+                # Lock the entire file non-blocking
+                try:
+                    msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1)
+                except Exception:
+                    # Fallback to block
+                    msvcrt.locking(f.fileno(), msvcrt.LK_LOCK, 1)
+                time.sleep(1.0)
+                try:
+                    msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)
+                except Exception:
+                    pass
+                f.close()
+            else:
+                import fcntl
+
+                f = open(p, "r+b")
+                try:
+                    fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                except BlockingIOError:
+                    # Try blocking
+                    fcntl.flock(f, fcntl.LOCK_EX)
+                time.sleep(1.0)
+                try:
+                    fcntl.flock(f, fcntl.LOCK_UN)
+                except Exception:
+                    pass
+                f.close()
+        except Exception:
+            # Ensure that the locker won't raise to the test harness
+            pass
+
+    t_thread = threading.Thread(target=locker, daemon=True)
+    t_thread.start()
+
+    # Give locker a moment to acquire the lock
+    time.sleep(0.2)
+
+    # obtener_datos_telemetria should not crash; it may return None if lock prevents reading
+    res = t.obtener_datos_telemetria()
+    assert res is None or isinstance(res, dict)
+
+    t_thread.join()
+
