@@ -6,7 +6,11 @@ on:
       - '**'
   push:
     branches:
-      - '**'
+      - master
+      - main
+  # Limit pushes to main/master to reduce redundant Windows runs on feature branches.
+  # For ad-hoc full runs, use workflow_dispatch when needed.
+  workflow_dispatch: {}
 
 jobs:
   run-tests-windows:
