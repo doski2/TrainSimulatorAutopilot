@@ -16,8 +16,9 @@ Este repositorio mantiene un historial completo de cambios en `archivado/CHANGEL
 - **Diagnóstico:** Captura automática de stdout/stderr de pytest (`pytest-output.txt`, `pytest-error.txt`) y subida de esos logs como artifact solo en caso de fallo para facilitar el diagnóstico de flakes.
 - **Docs:** `CONTRIBUTING.md` actualizado para recomendar los nuevos atajos de test en Windows. 
 - **Seguridad / Fiabilidad:** Asegurado que comandos críticos (p.ej. `emergency_brake`) no sean silenciados si la escritura al archivo de comandos falla: `enviar_comandos` ahora devuelve `False` cuando la escritura principal falla y se añaden pruebas unitarias que cubren este caso.
+- **Seguridad:** Añadida autenticación por API key para endpoints sensibles (`/api/commands`, `/api/control/<action>`) y pruebas unitarias asociadas; configurable vía `API_KEYS` o `API_KEY` (env).
 
-(Ver PR #74 para detalles y ejecución validada: run 20975308347 — 145 passed, 1 skipped.)
+(Ver PR #74 y PR #76 para detalles y ejecuciones validadas.)
 
 Para ver el historial completo con todos los detalles y entradas antiguas, consulta:
 

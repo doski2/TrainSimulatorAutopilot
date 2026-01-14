@@ -87,6 +87,7 @@ except ImportError:
 logger.info("Imports estándar completados")
 
 from typing import TYPE_CHECKING, Any, cast  # noqa: E402
+from functools import wraps  # noqa: E402
 
 # Type-only imports for static checking. These avoid creating runtime symbols
 # that could clash with our test-mode stub classes below.
@@ -428,6 +429,47 @@ app.config["PERMANENT_SESSION_LIFETIME"] = 3600  # 1 hora
 SOCKETIO_CORS_ORIGINS = "*"
 SOCKETIO_ASYNC_MODE = "threading"
 socketio = SocketIO(app, cors_allowed_origins=SOCKETIO_CORS_ORIGINS, async_mode=SOCKETIO_ASYNC_MODE)
+
+# Simple API key authentication helpers for sensitive endpoints
+# - Configure via environment variable `API_KEYS` (comma-separated) or `API_KEY` (single key)
+# - Set `AUTH_DISABLED=1` in env to disable enforcement (useful in test/dev)
+
+def get_configured_api_keys() -> set:
+    keys_raw = os.getenv("API_KEYS") or os.getenv("API_KEY") or ""
+    if not keys_raw:
+        return set()
+    return set(k.strip() for k in keys_raw.split(",") if k.strip())
+
+
+def require_api_key(func):
+    """Decorator to require an API key for access.
+
+    Accepts either an `Authorization: Bearer <key>` header or `X-API-KEY: <key>`.
+    When no keys are configured, enforcement is not applied but a warning is logged.
+    """
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        # Allow disabling auth in special test/dev scenarios
+        if os.getenv("AUTH_DISABLED", "").lower() in ("1", "true", "yes"):
+            return func(*args, **kwargs)
+
+        keys = get_configured_api_keys()
+        if not keys:
+            logger.warning("No API_KEYS configured; sensitive endpoints are unprotected")
+            return func(*args, **kwargs)
+
+        auth = request.headers.get("Authorization") or request.headers.get("X-API-KEY")
+        if not auth:
+            return jsonify({"success": False, "error": "Unauthorized"}), 401
+
+        token = auth.split(" ", 1)[1] if auth.startswith("Bearer ") else auth
+        token = token.strip()
+        if token in keys:
+            return func(*args, **kwargs)
+        return jsonify({"success": False, "error": "Forbidden"}), 403
+
+    return wrapper
 
 # Rate limiter configuration (per-endpoint overrideable via app.config)
 app.config.setdefault("CONTROL_RATE_LIMIT", os.getenv("CONTROL_RATE_LIMIT", "60/minute"))
@@ -1098,6 +1140,7 @@ def get_system_status():
 
 
 @app.route('/api/commands', methods=['POST'])
+@require_api_key
 def api_commands():
     """Endpoint para encolar comandos para el simulador.
 
@@ -1138,6 +1181,7 @@ def api_commands():
 
 
 @app.route("/api/control/<action>", methods=["POST"])
+@require_api_key
 def control_action(action):
     """API para controlar el sistema."""
     print(f"Control action received: {action}")
