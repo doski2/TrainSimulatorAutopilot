@@ -316,9 +316,24 @@ Estos flags facilitan la detección de si datos específicos están poblados des
 calculados o estimados).
 El dashboard también expone estos campos vía `telemetry_update`.
 
-#### `/api/alerts`
 
-**Método**: GET **Descripción**: Lista de alertas activas **Respuesta**:
+### Esquema JSON para `telemetry_update` (OpenAPI/JSON Schema)
+
+Se ha añadido un JSON Schema canónico en `docs/schemas/telemetry_update.schema.json` que define los campos esperados en el evento `telemetry_update` emitido por el backend. Ejemplo mínimo válido:
+
+```json
+{
+  "fecha_hora": "2026-01-14T12:34:56Z",
+  "velocidad_actual": 72.5,
+  "acelerador": 0.5,
+  "freno_tren": 0.0,
+  "rpm": 1200.0,
+  "senal_procesada": 2,
+  "autopilot_active": false
+}
+```
+
+Usamos `jsonschema` para validar cargas en tests y CI. Consulta `docs/schemas/telemetry_update.schema.json` para el esquema completo.
 
 ```json
 {

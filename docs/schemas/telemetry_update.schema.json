@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema#",
+  "title": "TelemetryUpdate",
+  "description": "Schema for telemetry update messages emitted by the backend to dashboards (event: telemetry_update)",
+  "type": "object",
+  "properties": {
+    "fecha_hora": {"type": "string", "format": "date-time"},
+    "velocidad_actual": {"type": "number", "description": "Speed in km/h"},
+    "acelerador": {"type": "number", "minimum": 0, "maximum": 1},
+    "freno_tren": {"type": "number", "minimum": 0, "maximum": 1},
+    "freno_motor": {"type": "number"},
+    "presion_tubo_freno": {"type": "number"},
+    "presion_freno_tren": {"type": "number"},
+    "rpm": {"type": "number"},
+    "senal_procesada": {"type": "integer"},
+    "velocimetro_mph": {"type": "number"},
+    "distancia_recorrida": {"type": "number"},
+    "autopilot_active": {"type": "boolean"},
+    "predictive_active": {"type": "boolean"}
+  },
+  "required": ["fecha_hora"],
+  "additionalProperties": true
+}
