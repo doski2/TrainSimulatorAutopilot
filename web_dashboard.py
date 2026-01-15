@@ -133,6 +133,11 @@ except Exception as e:
 
     # Minimal request stub
     class _SimpleRequest:
+        def __init__(self):
+            # Minimal headers mapping compatible with Flask's request.headers
+            self.headers = {}
+            self.environ = {}
+
         def get_json(self):
             return _get_current_json_data()
 
@@ -155,18 +160,22 @@ except Exception as e:
             return self._data
 
         def get_data(self, as_text=False):
-            """Return response body as bytes/str compatible with Flask's Response.get_data."""
-            # If inner data is a Flask-like Response object
+            """Return response body as bytes/str compatible with Flask's Response.get_data.
+
+            If the inner data is itself a Response-like object, delegate to its get_data
+            (attempting the `as_text` signature first, falling back if not supported).
+            For strings, return str when `as_text=True` and bytes otherwise.
+            """
             if hasattr(self._data, "get_data"):
                 try:
                     return self._data.get_data(as_text=as_text)
                 except TypeError:
                     # older signatures may not accept as_text
                     return self._data.get_data()
-            # If inner data is a simple string
+
             if isinstance(self._data, str):
-                return self._data
-            # dict -> JSON text
+                return self._data if as_text else self._data.encode("utf-8")
+
             try:
                 return json.dumps(self._data)
             except Exception:
@@ -193,10 +202,22 @@ except Exception as e:
         def __exit__(self, exc_type, exc, tb):
             return False
 
-        def post(self, path, json=None):
+        def post(self, path, json=None, headers=None):
             # Thread-safe: set the thread-local json data for the stub request
             _set_current_json_data(json)
+            # Apply headers to the request stub (dict-like)
+            old_headers = getattr(request, "headers", None)
             try:
+                if headers is not None:
+                    try:
+                        request.headers = headers
+                    except Exception:
+                        # In case request.headers is not assignable, set environ fallback
+                        try:
+                            request.environ = request.environ or {}
+                            request.environ.update({f"HTTP_{k.upper().replace('-', '_')}": v for k, v in headers.items()})
+                        except Exception:
+                            pass
                 func = self.app._routes.get(path)
                 if not func:
                     # Attempt simple parameterized route matching (e.g., /api/control/<action>)
@@ -252,57 +273,76 @@ except Exception as e:
                     data, code = result, 200
                 return _SimpleResponse(code, data)
             finally:
-                # Clear thread-local storage after handling to avoid leakage between requests
+                # Restore headers and clear thread-local json to avoid leakage between requests
+                try:
+                    if old_headers is not None:
+                        request.headers = old_headers
+                except Exception:
+                    pass
                 _set_current_json_data(None)
 
-        def get(self, path):
+        def get(self, path, headers=None):
             """Support simple GET requests in the test stub client."""
-            func = self.app._routes.get(path)
-            if not func:
-                # Attempt parameterized route matching similar to POST handling
-                import re
+            old_headers = getattr(request, "headers", None)
+            try:
+                if headers is not None:
+                    try:
+                        request.headers = headers
+                    except Exception:
+                        request.environ = request.environ or {}
+                        request.environ.update({f"HTTP_{k.upper().replace('-', '_')}": v for k, v in headers.items()})
+                func = self.app._routes.get(path)
+                if not func:
+                    # Attempt parameterized route matching similar to POST handling
+                    import re
 
-                for route_pattern, route_fn in self.app._routes.items():
-                    if "<" in route_pattern and "/" in route_pattern:
-                        names = re.findall(r"<([^>]+)>", route_pattern)
+                    for route_pattern, route_fn in self.app._routes.items():
+                        if "<" in route_pattern and "/" in route_pattern:
+                            names = re.findall(r"<([^>]+)>", route_pattern)
 
-                        def _pattern_to_regex(pat: str) -> str:
-                            ph = re.compile(r"<[^>]+>")
-                            parts = []
-                            last = 0
-                            for mm in ph.finditer(pat):
-                                static = pat[last:mm.start()]
+                            def _pattern_to_regex(pat: str) -> str:
+                                ph = re.compile(r"<[^>]+>")
+                                parts = []
+                                last = 0
+                                for mm in ph.finditer(pat):
+                                    static = pat[last:mm.start()]
+                                    parts.append(re.escape(static))
+                                    parts.append(r"([^/]+)")
+                                    last = mm.end()
+                                static = pat[last:]
                                 parts.append(re.escape(static))
-                                parts.append(r"([^/]+)")
-                                last = mm.end()
-                            static = pat[last:]
-                            parts.append(re.escape(static))
-                            return "^" + "".join(parts) + "$"
+                                return "^" + "".join(parts) + "$"
 
-                        regex = _pattern_to_regex(route_pattern)
-                        try:
-                            m = re.match(regex, path)
-                        except re.error:
-                            m = None
-                        if m:
-                            groups = m.groups()
-                            kwargs = dict(zip(names, groups))
+                            regex = _pattern_to_regex(route_pattern)
                             try:
-                                result = route_fn(**kwargs)
-                            except TypeError:
-                                result = route_fn()
-                            if isinstance(result, tuple):
-                                data, code = result
-                            else:
-                                data, code = result, 200
-                            return _SimpleResponse(code, data)
-                return _SimpleResponse(404, {"error": "not found"})
-            result = func() if callable(func) else (None, 500)
-            if isinstance(result, tuple):
-                data, code = result
-            else:
-                data, code = result, 200
-            return _SimpleResponse(code, data)
+                                m = re.match(regex, path)
+                            except re.error:
+                                m = None
+                            if m:
+                                groups = m.groups()
+                                kwargs = dict(zip(names, groups))
+                                try:
+                                    result = route_fn(**kwargs)
+                                except TypeError:
+                                    result = route_fn()
+                                if isinstance(result, tuple):
+                                    data, code = result
+                                else:
+                                    data, code = result, 200
+                                return _SimpleResponse(code, data)
+                    return _SimpleResponse(404, {"error": "not found"})
+                result = func() if callable(func) else (None, 500)
+                if isinstance(result, tuple):
+                    data, code = result
+                else:
+                    data, code = result, 200
+                return _SimpleResponse(code, data)
+            finally:
+                try:
+                    if old_headers is not None:
+                        request.headers = old_headers
+                except Exception:
+                    pass
 
     class Flask:
         def __init__(self, *a, **kw):
